@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="DicomEditor.View.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
+             xmlns:theme="clr-namespace:DicomEditor.Theme"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModel:SettingsViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#272537">
+    <Grid>
+
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Column="0"
+               Grid.Row="0"
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Center"
+               Foreground="White"
+               Content="Query/Retrieve Server"/>
+        
+        <TextBox Grid.Column="0"
+                 Grid.Row="1"
+                     VerticalContentAlignment="Center"
+                     VerticalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Query/Retrieve Server AET"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding QueryRetrieveServerAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <TextBox Grid.Column="0"
+                 Grid.Row="2"
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Host"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding QueryRetrieveServerHost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <TextBox Grid.Column="0"
+                 Grid.Row="3"
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Port"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding QueryRetrieveServerPort, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <Label Grid.Column="1"
+               Grid.Row="0"
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Center"
+               Foreground="White"
+               Content="Store Server"/>
+        
+        <TextBox Grid.Column="1"
+                 Grid.Row="1"
+                     VerticalContentAlignment="Center"
+                     VerticalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Store Server AET"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding StoreServerAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <TextBox Grid.Column="1"
+                 Grid.Row="2"
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Store Server Host"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding StoreServerHost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <TextBox Grid.Column="1"
+                 Grid.Row="3"
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Store Server Port"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding StoreServerPort, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <Label Grid.Column="2"
+               Grid.Row="0"
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Center"
+               Foreground="White"
+               Content="Dicom Editor"/>
+        
+        <TextBox Grid.Column="2"
+                 Grid.Row="1"
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Margin="10"
+                     MaxWidth="200"
+                     theme:ThemeProperties.SearchFieldName="Dicom Editor AET"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+    </Grid>
+</UserControl>

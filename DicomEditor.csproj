@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\img_editor.png" />
+    <None Remove="Assets\img_import.png" />
+    <None Remove="Assets\img_setting.png" />
+    <None Remove="Assets\toggle_button_default.png" />
+    <None Remove="Assets\toggle_button_MouseOver.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="fo-dicom" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\img_editor.png" />
+    <Resource Include="Assets\img_import.png" />
+    <Resource Include="Assets\img_setting.png" />
+    <Resource Include="Assets\toggle_button_default.png" />
+    <Resource Include="Assets\toggle_button_MouseOver.png" />
+  </ItemGroup>
+
+</Project>

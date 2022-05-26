@@ -1,0 +1,31 @@
+﻿<Application x:Class="DicomEditor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DicomEditor"
+             xmlns:view="clr-namespace:DicomEditor.View"
+             xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/SearchFieldTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModel:ImportViewModel}">
+                <view:ImportView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:EditorViewModel}">
+                <view:EditorView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
+                <view:SettingsView/>
+            </DataTemplate>
+
+        </ResourceDictionary>
+         
+    </Application.Resources>
+</Application>
