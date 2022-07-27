@@ -108,7 +108,20 @@ namespace DicomEditor.ViewModel
 
             QueryCommand = new RelayCommand(async o =>
             {
-               QueryResult = await _importService.Query();
+                try
+                {
+                    QueryResult = await _importService.Query();
+                }
+                catch(FellowOakDicom.Network.DicomAssociationAbortedException e)
+                {
+                    // TODO
+                    Trace.WriteLine(e.Message);
+                }
+                catch(AggregateException e)
+                {
+                    // TODO
+                    Trace.WriteLine(e.Message);
+                }
             });
 
             RetrieveCommand = new RelayCommand(o =>

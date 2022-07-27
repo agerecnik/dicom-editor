@@ -1,5 +1,8 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Threading.Tasks;
 using DicomEditor.Model.Interfaces;
+using static DicomEditor.Model.Interfaces.ISettingsService;
 
 namespace DicomEditor.Model.Services
 {
@@ -82,6 +85,9 @@ namespace DicomEditor.Model.Services
             }
         }
 
+        public VerificationStatus QueryRetrieveServerVerificationStatus { get; set; }
+        public VerificationStatus StoreServerVerificationStatus { get; set; }
+
         public SettingsService()
         {
             _queryRetrieveServerAET = GetSetting("QueryRetrieveServerAET");
@@ -93,6 +99,23 @@ namespace DicomEditor.Model.Services
             _storeServerPort = GetSetting("StoreServerPort");
 
             _dicomEditorAET = GetSetting("DicomEditorAET");
+
+            QueryRetrieveServerVerificationStatus = VerificationStatus.NA;
+            StoreServerVerificationStatus = VerificationStatus.NA;
+
+        }
+
+        public async Task VerifyAsync(ServerType server)
+        {
+            if(server is ServerType.QueryRetrieve)
+            {
+                bool successful = await DicomVerificationService.VerifyAsync(QueryRetrieveServerHost, Int32.Parse(QueryRetrieveServerPort), QueryRetrieveServerAET, DicomEditorAET);
+                QueryRetrieveServerVerificationStatus = (successful ? VerificationStatus.Successful : VerificationStatus.Failed);
+            } else if (server is ServerType.Store)
+            {
+                bool successful = await DicomVerificationService.VerifyAsync(StoreServerHost, Int32.Parse(StoreServerPort), StoreServerAET, DicomEditorAET);
+                StoreServerVerificationStatus = (successful ? VerificationStatus.Successful : VerificationStatus.Failed);
+            }
         }
 
         private static void SetSetting(string key, string value)

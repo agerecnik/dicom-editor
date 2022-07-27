@@ -26,7 +26,7 @@ namespace DicomEditor.View
         public ImportView()
         {
             InitializeComponent();
-            DataContext = App.Current.Services.GetService<ImportViewModel>();
+            DataContext = App.Current.Services.GetService<MainViewModel>().CurrentView;
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

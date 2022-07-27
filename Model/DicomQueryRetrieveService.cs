@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DicomEditor.Model
 {
-    public static class DicomImport
+    public static class DicomQueryRetrieveService
     {
         public static async Task<Dictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patietID, string patientName, string accessionNumber, string studyID, string modality)
         {
@@ -26,7 +26,6 @@ namespace DicomEditor.Model
             request.OnResponseReceived += (req, response) =>
             {
                 DebugStudyResponse(response);
-
                 string studyUID = response.Dataset?.GetSingleValue<string>(DicomTag.StudyInstanceUID);
                 if (studyUID is not null and not "")
                 {
@@ -106,9 +105,8 @@ namespace DicomEditor.Model
                 retrievedSeries.Add(req.Dataset);
                 return Task.FromResult(new DicomCStoreResponse(req, DicomStatus.Success));
             };
-
+            
             HashSet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID);
-
             foreach (string sopClassUID in sopClassUIDs)
             {
                 var pc = DicomPresentationContext.GetScpRolePresentationContext(
@@ -195,13 +193,13 @@ namespace DicomEditor.Model
         private static async Task<HashSet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesUID)
         {
             HashSet<string> sopClassUIDs = new();
-            if (seriesUID != null && seriesUID != "")
+            if (seriesUID is not null and not "")
             {
                 var request = CreateImageRequestBySeriesUID(seriesUID);
                 request.OnResponseReceived += (req, response) =>
                 {
-                    string sopClassUID = response.Dataset?.GetSingleValue<string>(DicomTag.SOPClassUID);
-                    if (sopClassUID != null && sopClassUID != "")
+                    string sopClassUID = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.SOPClassUID, null);
+                    if (sopClassUID is not null and not "")
                     {
                         sopClassUIDs.Add(sopClassUID);
                     }

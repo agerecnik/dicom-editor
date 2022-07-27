@@ -17,6 +17,8 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
 
         </Grid.RowDefinitions>
 
@@ -35,7 +37,8 @@
                Foreground="White"
                Content="Query/Retrieve Server"/>
         
-        <TextBox Grid.Column="0"
+        <TextBox x:Name="test"
+            Grid.Column="0"
                  Grid.Row="1"
                      VerticalContentAlignment="Center"
                      VerticalAlignment="Stretch"
@@ -43,7 +46,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server AET"
                      Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding QueryRetrieveServerAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding QueryRetrieveServer.AET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="0"
                  Grid.Row="2"
@@ -53,7 +56,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Host"
                      Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding QueryRetrieveServerHost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding QueryRetrieveServer.Host, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="0"
                  Grid.Row="3"
@@ -63,7 +66,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Port"
                      Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding QueryRetrieveServerPort, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding QueryRetrieveServer.Port, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <Label Grid.Column="1"
                Grid.Row="0"
@@ -80,7 +83,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server AET"
                      Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding StoreServerAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding StoreServer.AET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="1"
                  Grid.Row="2"
@@ -90,7 +93,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server Host"
                      Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding StoreServerHost, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding StoreServer.Host, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="1"
                  Grid.Row="3"
@@ -100,7 +103,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server Port"
                      Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding StoreServerPort, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding StoreServer.Port, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <Label Grid.Column="2"
                Grid.Row="0"
@@ -111,12 +114,60 @@
         
         <TextBox Grid.Column="2"
                  Grid.Row="1"
-                     VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Dicom Editor AET"
-                     Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                 VerticalContentAlignment="Center"
+                 HorizontalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Dicom Editor AET"
+                 Style="{StaticResource SearchFieldTheme}"
+                 Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+
+        <Button Grid.Column="0"
+                Grid.Row="4"
+                Height="30"
+                Width="100"
+                HorizontalAlignment="Left"
+                Margin="10,10,10,10"
+                Content="Verify"
+                Command="{Binding VerifyCommand}"
+                CommandParameter="{Binding QueryRetrieveServer}">
+        </Button>
+
+        <Label Grid.Column="0"
+               Grid.Row="4"
+               HorizontalAlignment="Right"
+               Margin="10,10,10,10"
+               Content="{Binding QueryRetrieveServer.VerificationStatus}">
+
+        </Label>
+
+        <Button Grid.Column="1"
+                Grid.Row="4"
+                Height="30"
+                Width="100"
+                HorizontalAlignment="Left"
+                Margin="10,10,10,10"
+                Content="Verify"
+                Command="{Binding VerifyCommand}"
+                CommandParameter="{Binding StoreServer}">
+        </Button>
+
+        <Label Grid.Column="1"
+               Grid.Row="4"
+               HorizontalAlignment="Right"
+               Margin="10,10,10,10"
+               Content="{Binding StoreServer.VerificationStatus}">
+            
+        </Label>
+
+        <Button Grid.Column="0"
+                Grid.Row="5"
+                Height="30"
+                Margin="10,10,10,10"
+                Content="Save Settings"
+                VerticalAlignment="Bottom"
+                Command="{Binding SaveSettingsCommand}">
+
+        </Button>
     </Grid>
 </UserControl>

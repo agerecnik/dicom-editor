@@ -41,7 +41,7 @@ namespace DicomEditor.Model.Services
             string serverAET = _settingsService.QueryRetrieveServerAET;
             string appAET = _settingsService.DicomEditorAET;
 
-            Dictionary<string, Patient> queryResult = await DicomImport.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality);
+            Dictionary<string, Patient> queryResult = await DicomQueryRetrieveService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality);
             QueryResult = queryResult;
             return queryResult;
         }
@@ -65,7 +65,7 @@ namespace DicomEditor.Model.Services
 
             foreach (Series series in seriesList)
             {
-                List<DicomDataset> retrievedDataset = await DicomImport.Retrieve(serverHost, serverPort, serverAET, appAET, series);
+                List<DicomDataset> retrievedDataset = await DicomQueryRetrieveService.Retrieve(serverHost, serverPort, serverAET, appAET, series);
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {

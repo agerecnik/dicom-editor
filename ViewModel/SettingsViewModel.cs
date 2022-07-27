@@ -1,81 +1,25 @@
-﻿using DicomEditor.Model;
+﻿using DicomEditor.Commands;
+using DicomEditor.Model;
 using DicomEditor.Model.Interfaces;
 using DicomEditor.Model.Services;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
+using static DicomEditor.Model.Interfaces.ISettingsService;
 
 namespace DicomEditor.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
-        public ISettingsService SettingsService { get; set; }
+        private IImportService _importService;
 
-        private string _queryRetrieveServerAET;
-        public string QueryRetrieveServerAET
-        {
-            get => _queryRetrieveServerAET;
-            set
-            {
-                SetProperty(ref _queryRetrieveServerAET, value);
-                SettingsService.QueryRetrieveServerAET = value;
-            }
-        }
+        private ISettingsService _settingsService;
 
-        private string _queryRetrieveServerHost;
-        public string QueryRetrieveServerHost
-        {
-            get => _queryRetrieveServerHost;
-            set
-            {
-                SetProperty(ref _queryRetrieveServerHost, value);
-                SettingsService.QueryRetrieveServerHost = value;
-            }
-        }
+        public DICOMServer QueryRetrieveServer { get; set; }
 
-        private string _queryRetrieveServerPort;
-        public string QueryRetrieveServerPort
-        {
-            get => _queryRetrieveServerPort;
-            set
-            {
-                SetProperty(ref _queryRetrieveServerPort, value);
-                SettingsService.QueryRetrieveServerPort = value;
-            }
-        }
-
-        private string _storeServerAET;
-        public string StoreServerAET
-        {
-            get => _storeServerAET;
-            set
-            {
-                SetProperty(ref _storeServerAET, value);
-                SettingsService.StoreServerAET = value;
-            }
-        }
-
-        private string _storeServerHost;
-        public string StoreServerHost
-        {
-            get => _storeServerHost;
-            set
-            {
-                SetProperty(ref _storeServerHost, value);
-                SettingsService.StoreServerHost = value;
-            }
-        }
-
-        private string _storeServerPort;
-        public string StoreServerPort
-        {
-            get => _storeServerPort;
-            set
-            {
-                SetProperty(ref _storeServerPort, value);
-                SettingsService.StoreServerPort = value;
-            }
-        }
+        public DICOMServer StoreServer { get; set; }
 
         private string _dicomEditorAET;
         public string DicomEditorAET
@@ -84,28 +28,122 @@ namespace DicomEditor.ViewModel
             set
             {
                 SetProperty(ref _dicomEditorAET, value);
-                SettingsService.DicomEditorAET = value;
             }
         }
 
-        public SettingsViewModel(ISettingsService settingsService)
-        {
-            SettingsService = settingsService;
+        public ICommand SaveSettingsCommand { get; }
 
-            QueryRetrieveServerAET = SettingsService.QueryRetrieveServerAET;
-            QueryRetrieveServerHost = SettingsService.QueryRetrieveServerHost;
-            QueryRetrieveServerPort = SettingsService.QueryRetrieveServerPort;
-            StoreServerAET = SettingsService.StoreServerAET;
-            StoreServerHost = SettingsService.StoreServerHost;
-            StoreServerPort = SettingsService.StoreServerPort;
-            DicomEditorAET = SettingsService.DicomEditorAET;
+        public ICommand VerifyCommand { get; }
+
+        public SettingsViewModel(ISettingsService settingsService, IImportService importService)
+        {
+            _importService = importService;
+            _settingsService = settingsService;
+            QueryRetrieveServer = new(ServerType.QueryRetrieve);
+            StoreServer = new(ServerType.Store);
+
+            SaveSettingsCommand = new RelayCommand(o =>
+            {
+                SaveSettings();
+            });
+
+            VerifyCommand = new RelayCommand(async o =>
+            {
+                SaveSettings();
+                DICOMServer server = (DICOMServer)o;
+                await _settingsService.VerifyAsync(server.ServerType);
+                if (server.ServerType is ServerType.QueryRetrieve)
+                {
+                    server.VerificationStatus = settingsService.QueryRetrieveServerVerificationStatus;
+                } else if(server.ServerType is ServerType.Store)
+                {
+                    server.VerificationStatus = settingsService.StoreServerVerificationStatus;
+                }
+
+            });
+
+            QueryRetrieveServer.AET = _settingsService.QueryRetrieveServerAET;
+            QueryRetrieveServer.Host = _settingsService.QueryRetrieveServerHost;
+            QueryRetrieveServer.Port = _settingsService.QueryRetrieveServerPort;
+            QueryRetrieveServer.VerificationStatus = _settingsService.QueryRetrieveServerVerificationStatus;
+            StoreServer.AET = _settingsService.StoreServerAET;
+            StoreServer.Host = _settingsService.StoreServerHost;
+            StoreServer.Port = _settingsService.StoreServerPort;
+            StoreServer.VerificationStatus = _settingsService.StoreServerVerificationStatus;
+            DicomEditorAET = _settingsService.DicomEditorAET;
         }
 
-        public SettingsViewModel() : this(new SettingsService())
+        public SettingsViewModel() : this(new SettingsService(), new ImportService(new SettingsService(), new Cache()))
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
                 throw new Exception("Use only for design mode");
+            }
+        }
+
+        private void SaveSettings()
+        {
+            _settingsService.QueryRetrieveServerAET = QueryRetrieveServer.AET;
+            _settingsService.QueryRetrieveServerHost = QueryRetrieveServer.Host;
+            _settingsService.QueryRetrieveServerPort = QueryRetrieveServer.Port;
+            _settingsService.StoreServerAET = StoreServer.AET;
+            _settingsService.StoreServerHost = StoreServer.Host;
+            _settingsService.StoreServerPort = StoreServer.Port;
+            _settingsService.DicomEditorAET = _dicomEditorAET;
+
+            if (_importService.QueryResult is not null)
+            {
+                _importService.QueryResult = null;
+            }
+        }
+    }
+
+    public class DICOMServer : ViewModelBase
+    {
+        public DICOMServer(ServerType serverType)
+        {
+            ServerType = serverType;
+        }
+
+        public ServerType ServerType{ get; }
+
+        private string _AET;
+        public string AET
+        {
+            get => _AET;
+            set
+            {
+                SetProperty(ref _AET, value);
+            }
+        }
+
+        private string _host;
+        public string Host
+        {
+            get => _host;
+            set
+            {
+                SetProperty(ref _host, value);
+            }
+        }
+
+        private string _port;
+        public string Port
+        {
+            get => _port;
+            set
+            {
+                SetProperty(ref _port, value);
+            }
+        }
+
+        private VerificationStatus _verificationStatus;
+        public VerificationStatus VerificationStatus
+        {
+            get => _verificationStatus;
+            set
+            {
+                SetProperty(ref _verificationStatus, value);
             }
         }
     }

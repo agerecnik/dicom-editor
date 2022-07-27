@@ -29,7 +29,8 @@ namespace DicomEditor.View
         public EditorView()
         {
             InitializeComponent();
-		}
+            DataContext = App.Current.Services.GetService<MainViewModel>().CurrentView;
+        }
 
         private void Toggle_Click(object sender, RoutedEventArgs e)
         {

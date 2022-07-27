@@ -14,10 +14,6 @@ namespace DicomEditor.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        public ImportViewModel ImportVM { get; set; }
-        public EditorViewModel EditorVM { get; set; }
-        public SettingsViewModel SettingsVM { get; set; }
-
         private object _currentView;
         public object CurrentView
         {
@@ -29,37 +25,26 @@ namespace DicomEditor.ViewModel
         public ICommand EditorViewCommand { get; }
         public ICommand SettingsViewCommand { get; }
 
-        public MainViewModel(ImportViewModel importVM, EditorViewModel editorVM, SettingsViewModel settingsVM)
+        public MainViewModel(IImportService importService, IEditorService editorService, ISettingsService settingsService, ICache cache)
         {
-            ImportVM = importVM;
-            EditorVM = editorVM;
-            SettingsVM = settingsVM;
-
-            CurrentView = ImportVM;
+            CurrentView = new ImportViewModel(importService);
 
             ImportViewCommand = new RelayCommand(o =>
             {
-                CurrentView = ImportVM;
+                CurrentView = new ImportViewModel(importService);
             });
 
             EditorViewCommand = new RelayCommand(o =>
             {
-                CurrentView = EditorVM;
-                EditorVM.UpdateLoadedSeriesList();
+                CurrentView = new EditorViewModel(editorService);
+                EditorViewModel evm = (EditorViewModel)CurrentView;
+                evm.UpdateLoadedSeriesList();
             });
 
             SettingsViewCommand = new RelayCommand(o =>
             {
-                CurrentView = SettingsVM;
+                CurrentView = new SettingsViewModel(settingsService, importService);
             });
-        }
-
-        public MainViewModel() : this(new ImportViewModel(), new EditorViewModel(), new SettingsViewModel())
-        {
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                throw new Exception("Use only for design mode");
-            }
         }
     }
 }

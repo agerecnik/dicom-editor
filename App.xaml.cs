@@ -35,11 +35,7 @@ namespace DicomEditor
             services.AddSingleton<IEditorService, EditorService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ICache, Cache>();
-
-            services.AddTransient<MainViewModel>();
-            services.AddTransient<ImportViewModel>();
-            services.AddTransient<EditorViewModel>();
-            services.AddTransient<SettingsViewModel>();
+            services.AddSingleton<MainViewModel>();
 
             return services.BuildServiceProvider();
         }
