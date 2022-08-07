@@ -1,78 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 using DicomEditor.Model.Interfaces;
+using static DicomEditor.Model.IDICOMServer;
 using static DicomEditor.Model.Interfaces.ISettingsService;
 
 namespace DicomEditor.Model.Services
 {
     public class SettingsService : ISettingsService
     {
-        private string _queryRetrieveServerAET;
-        public string QueryRetrieveServerAET
-        {
-            get => _queryRetrieveServerAET;
-            set
-            {
-                _queryRetrieveServerAET = value;
-                SetSetting("QueryRetrieveServerAET", value);
-            }
-        }
+        public event UpdatedVerificationStatusHandler UpdatedVerificationStatusEvent;
+        public event SettingsSavedHandler SettingsSavedEvent;
 
-        private string _queryRetrieveServerHost;
-        public string QueryRetrieveServerHost
-        {
-            get => _queryRetrieveServerHost;
-            set
-            {
-                _queryRetrieveServerHost = value;
-                SetSetting("QueryRetrieveServerHost", value);
-            }
-        }
-
-        private string _queryRetrieveServerPort;
-        public string QueryRetrieveServerPort
-        {
-            get => _queryRetrieveServerPort;
-            set
-            {
-                _queryRetrieveServerPort = value;
-                SetSetting("QueryRetrieveServerPort", value);
-            }
-        }
-
-        private string _storeServerAET;
-        public string StoreServerAET
-        {
-            get => _storeServerAET;
-            set
-            {
-                _storeServerAET = value;
-                SetSetting("StoreServerAET", value);
-            }
-        }
-
-        private string _storeServerHost;
-        public string StoreServerHost
-        {
-            get => _storeServerHost;
-            set
-            {
-                _storeServerHost = value;
-                SetSetting("StoreServerHost", value);
-            }
-        }
-
-        private string _storeServerPort;
-        public string StoreServerPort
-        {
-            get => _storeServerPort;
-            set
-            {
-                _storeServerPort = value;
-                SetSetting("StoreServerPort", value);
-            }
-        }
+        private IDictionary<ServerType, IDICOMServer> _servers;
 
         private string _dicomEditorAET;
         public string DicomEditorAET
@@ -85,51 +27,86 @@ namespace DicomEditor.Model.Services
             }
         }
 
-        public VerificationStatus QueryRetrieveServerVerificationStatus { get; set; }
-        public VerificationStatus StoreServerVerificationStatus { get; set; }
-
         public SettingsService()
         {
-            _queryRetrieveServerAET = GetSetting("QueryRetrieveServerAET");
-            _queryRetrieveServerHost = GetSetting("QueryRetrieveServerHost");
-            _queryRetrieveServerPort = GetSetting("QueryRetrieveServerPort");
-
-            _storeServerAET = GetSetting("StoreServerAET");
-            _storeServerHost = GetSetting("StoreServerHost");
-            _storeServerPort = GetSetting("StoreServerPort");
-
+            _servers = new Dictionary<ServerType, IDICOMServer>
+            {
+                { ServerType.QueryRetrieveServer, new DICOMServer(ServerType.QueryRetrieveServer, GetSetting(ServerType.QueryRetrieveServer + "AET"), GetSetting(ServerType.QueryRetrieveServer + "Host"), GetSetting(ServerType.QueryRetrieveServer + "Port")) },
+                { ServerType.StoreServer, new DICOMServer(ServerType.StoreServer, GetSetting(ServerType.StoreServer + "AET"), GetSetting(ServerType.StoreServer + "Host"), GetSetting(ServerType.StoreServer + "Port")) }
+            };
             _dicomEditorAET = GetSetting("DicomEditorAET");
-
-            QueryRetrieveServerVerificationStatus = VerificationStatus.NA;
-            StoreServerVerificationStatus = VerificationStatus.NA;
-
         }
 
-        public async Task VerifyAsync(ServerType server)
+        public void SetServer(IDICOMServer server)
         {
-            if(server is ServerType.QueryRetrieve)
+            _servers[server.Type] = server;
+            SetSetting(server.Type + nameof(server.AET), server.AET);
+            SetSetting(server.Type + nameof(server.Host), server.Host);
+            SetSetting(server.Type + nameof(server.Port), server.Port);
+        }
+
+        public IDICOMServer GetServer(ServerType type)
+        {
+            return _servers[type];
+        }
+
+        public async Task VerifyAsync(ServerType type)
+        {
+            IDICOMServer server = _servers[type];
+            UpdateVerificationStatus(server, VerificationStatus.InProgress);
+            try
             {
-                bool successful = await DicomVerificationService.VerifyAsync(QueryRetrieveServerHost, Int32.Parse(QueryRetrieveServerPort), QueryRetrieveServerAET, DicomEditorAET);
-                QueryRetrieveServerVerificationStatus = (successful ? VerificationStatus.Successful : VerificationStatus.Failed);
-            } else if (server is ServerType.Store)
+                bool successful = await DicomVerificationService.VerifyAsync(server.Host, Int32.Parse(server.Port), server.AET, DicomEditorAET);
+                if(successful)
+                {
+                    UpdateVerificationStatus(server, VerificationStatus.Successful);
+                } else
+                {
+                    UpdateVerificationStatus(server, VerificationStatus.Failed);
+                }
+            } catch(AggregateException)
             {
-                bool successful = await DicomVerificationService.VerifyAsync(StoreServerHost, Int32.Parse(StoreServerPort), StoreServerAET, DicomEditorAET);
-                StoreServerVerificationStatus = (successful ? VerificationStatus.Successful : VerificationStatus.Failed);
+                UpdateVerificationStatus(server, VerificationStatus.Failed);
             }
         }
 
-        private static void SetSetting(string key, string value)
+        private void SetSetting(string key, string value)
         {
             Configuration configuration =
                 ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             configuration.AppSettings.Settings[key].Value = value;
             configuration.Save(ConfigurationSaveMode.Minimal, true);
             ConfigurationManager.RefreshSection("appSettings");
+            SettingsSavedEvent();
+
         }
 
-        private static string GetSetting(string key)
+        private string GetSetting(string key)
         {
             return ConfigurationManager.AppSettings[key];
         }
+
+        private void UpdateVerificationStatus(IDICOMServer server, VerificationStatus status)
+        {
+            server.Status = status;
+            UpdatedVerificationStatusEvent(server.Type);
+        }
+    }
+
+    public class DICOMServer : IDICOMServer
+    {
+        public DICOMServer(ServerType type, string aet, string host, string port)
+        {
+            Type = type;
+            AET = aet;
+            Host = host;
+            Port = port;
+            Status = VerificationStatus.NA;
+        }
+        public ServerType Type { get; }
+        public string AET { get; set; }
+        public string Host { get; set; }
+        public string Port { get; set; }
+        public VerificationStatus Status { get; set; }
     }
 }

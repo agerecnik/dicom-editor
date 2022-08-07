@@ -25,13 +25,7 @@ namespace DicomEditor.Model
                 }
             };
             await client.AddRequestAsync(request);
-            try
-            {
-                await client.SendAsync();
-            } catch(AggregateException)
-            {
-
-            }
+            await client.SendAsync();
             return successful;
         }
     }

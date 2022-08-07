@@ -3,33 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static DicomEditor.Model.IDICOMServer;
 
 namespace DicomEditor.Model.Interfaces
 {
+    public delegate void UpdatedVerificationStatusHandler(ServerType type);
+    public delegate void SettingsSavedHandler();
+
     public interface ISettingsService
     {
-        enum ServerType
-        {
-            QueryRetrieve,
-            Store
-        }
-        enum VerificationStatus
-        {
-            Successful,
-            Failed,
-            NA
-        }
+        event UpdatedVerificationStatusHandler UpdatedVerificationStatusEvent;
+        event SettingsSavedHandler SettingsSavedEvent;
 
-        public string QueryRetrieveServerHost { get; set; }
-        public string QueryRetrieveServerPort { get; set; }
-        public string QueryRetrieveServerAET { get; set; }
-        public string StoreServerHost { get; set; }
-        public string StoreServerPort { get; set; }
-        public string StoreServerAET { get; set; }
         public string DicomEditorAET { get; set; }
-        public VerificationStatus QueryRetrieveServerVerificationStatus { get; set; }
-        public VerificationStatus StoreServerVerificationStatus { get; set; }
 
+        public void SetServer(IDICOMServer server);
+        public IDICOMServer GetServer(ServerType type);
         public Task VerifyAsync(ServerType serverType);
     }
 }

@@ -137,7 +137,7 @@
                Grid.Row="4"
                HorizontalAlignment="Right"
                Margin="10,10,10,10"
-               Content="{Binding QueryRetrieveServer.VerificationStatus}">
+               Content="{Binding QueryRetrieveServer.Status}">
 
         </Label>
 
@@ -156,7 +156,7 @@
                Grid.Row="4"
                HorizontalAlignment="Right"
                Margin="10,10,10,10"
-               Content="{Binding StoreServer.VerificationStatus}">
+               Content="{Binding StoreServer.Status}">
             
         </Label>
 

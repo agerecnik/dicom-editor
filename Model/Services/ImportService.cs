@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static DicomEditor.Model.IDICOMServer;
 
 namespace DicomEditor.Model.Services
 {
@@ -27,18 +28,19 @@ namespace DicomEditor.Model.Services
         public ImportService(ISettingsService settingsService, ICache cache)
         {
             _settingsService = settingsService;
+            _settingsService.SettingsSavedEvent += new SettingsSavedHandler(HandleSettingsSaved);
             _cache = cache;
         }
 
         public async Task<Dictionary<string, Patient>> Query()
         {
-            string serverHost = _settingsService.QueryRetrieveServerHost;
+            string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;
-            if (int.TryParse(_settingsService.QueryRetrieveServerPort, out int port))
+            if (int.TryParse(_settingsService.GetServer(ServerType.QueryRetrieveServer).Port, out int port))
             {
                 serverPort = port;
             }
-            string serverAET = _settingsService.QueryRetrieveServerAET;
+            string serverAET = _settingsService.GetServer(ServerType.QueryRetrieveServer).AET;
             string appAET = _settingsService.DicomEditorAET;
 
             Dictionary<string, Patient> queryResult = await DicomQueryRetrieveService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality);
@@ -49,13 +51,13 @@ namespace DicomEditor.Model.Services
         //TODO progress bar
         public async void Retrieve(List<Series> seriesList, IProgress<int> progress)
         {
-            string serverHost = _settingsService.QueryRetrieveServerHost;
+            string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;
-            if (int.TryParse(_settingsService.QueryRetrieveServerPort, out int port))
+            if (int.TryParse(_settingsService.GetServer(ServerType.QueryRetrieveServer).Port, out int port))
             {
                 serverPort = port;
             }
-            string serverAET = _settingsService.QueryRetrieveServerAET;
+            string serverAET = _settingsService.GetServer(ServerType.QueryRetrieveServer).AET;
             string appAET = _settingsService.DicomEditorAET;
 
             List<Series> retrievedSeries = new();
@@ -89,6 +91,11 @@ namespace DicomEditor.Model.Services
 
             _cache.LoadedSeries = retrievedSeries;
             _cache.LoadedInstances = retrievedInstances;
+        }
+
+        private void HandleSettingsSaved()
+        {
+            QueryResult = new();
         }
     }
 }

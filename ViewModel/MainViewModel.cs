@@ -43,7 +43,7 @@ namespace DicomEditor.ViewModel
 
             SettingsViewCommand = new RelayCommand(o =>
             {
-                CurrentView = new SettingsViewModel(settingsService, importService);
+                CurrentView = new SettingsViewModel(settingsService);
             });
         }
     }

@@ -4,22 +4,20 @@ using DicomEditor.Model.Interfaces;
 using DicomEditor.Model.Services;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using static DicomEditor.Model.IDICOMServer;
 using static DicomEditor.Model.Interfaces.ISettingsService;
 
 namespace DicomEditor.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
-        private IImportService _importService;
-
         private ISettingsService _settingsService;
 
-        public DICOMServer QueryRetrieveServer { get; set; }
+        public DICOMServerViewModel QueryRetrieveServer { get; set; }
 
-        public DICOMServer StoreServer { get; set; }
+        public DICOMServerViewModel StoreServer { get; set; }
 
         private string _dicomEditorAET;
         public string DicomEditorAET
@@ -35,45 +33,30 @@ namespace DicomEditor.ViewModel
 
         public ICommand VerifyCommand { get; }
 
-        public SettingsViewModel(ISettingsService settingsService, IImportService importService)
+        public SettingsViewModel(ISettingsService settingsService)
         {
-            _importService = importService;
             _settingsService = settingsService;
-            QueryRetrieveServer = new(ServerType.QueryRetrieve);
-            StoreServer = new(ServerType.Store);
+
+            _settingsService.UpdatedVerificationStatusEvent += new UpdatedVerificationStatusHandler(HandleUpdatedVerificationStatus);
+
+            IDICOMServer qrServer = _settingsService.GetServer(ServerType.QueryRetrieveServer);
+            QueryRetrieveServer = new(qrServer.Type, qrServer.AET, qrServer.Host, qrServer.Port, qrServer.Status);
+
+            IDICOMServer stServer = _settingsService.GetServer(ServerType.StoreServer);
+            StoreServer = new(stServer.Type, stServer.AET, stServer.Host, stServer.Port, stServer.Status);
+
+            DicomEditorAET = _settingsService.DicomEditorAET;
 
             SaveSettingsCommand = new RelayCommand(o =>
             {
                 SaveSettings();
             });
 
-            VerifyCommand = new RelayCommand(async o =>
-            {
-                SaveSettings();
-                DICOMServer server = (DICOMServer)o;
-                await _settingsService.VerifyAsync(server.ServerType);
-                if (server.ServerType is ServerType.QueryRetrieve)
-                {
-                    server.VerificationStatus = settingsService.QueryRetrieveServerVerificationStatus;
-                } else if(server.ServerType is ServerType.Store)
-                {
-                    server.VerificationStatus = settingsService.StoreServerVerificationStatus;
-                }
-
-            });
-
-            QueryRetrieveServer.AET = _settingsService.QueryRetrieveServerAET;
-            QueryRetrieveServer.Host = _settingsService.QueryRetrieveServerHost;
-            QueryRetrieveServer.Port = _settingsService.QueryRetrieveServerPort;
-            QueryRetrieveServer.VerificationStatus = _settingsService.QueryRetrieveServerVerificationStatus;
-            StoreServer.AET = _settingsService.StoreServerAET;
-            StoreServer.Host = _settingsService.StoreServerHost;
-            StoreServer.Port = _settingsService.StoreServerPort;
-            StoreServer.VerificationStatus = _settingsService.StoreServerVerificationStatus;
-            DicomEditorAET = _settingsService.DicomEditorAET;
+            VerifyCommand = new RelayCommand(Verify, CanUseVerifyButton);
+            
         }
 
-        public SettingsViewModel() : this(new SettingsService(), new ImportService(new SettingsService(), new Cache()))
+        public SettingsViewModel() : this(new SettingsService())
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -83,68 +66,38 @@ namespace DicomEditor.ViewModel
 
         private void SaveSettings()
         {
-            _settingsService.QueryRetrieveServerAET = QueryRetrieveServer.AET;
-            _settingsService.QueryRetrieveServerHost = QueryRetrieveServer.Host;
-            _settingsService.QueryRetrieveServerPort = QueryRetrieveServer.Port;
-            _settingsService.StoreServerAET = StoreServer.AET;
-            _settingsService.StoreServerHost = StoreServer.Host;
-            _settingsService.StoreServerPort = StoreServer.Port;
+            _settingsService.SetServer(QueryRetrieveServer);
+            _settingsService.SetServer(StoreServer);
             _settingsService.DicomEditorAET = _dicomEditorAET;
-
-            if (_importService.QueryResult is not null)
-            {
-                _importService.QueryResult = null;
-            }
-        }
-    }
-
-    public class DICOMServer : ViewModelBase
-    {
-        public DICOMServer(ServerType serverType)
-        {
-            ServerType = serverType;
         }
 
-        public ServerType ServerType{ get; }
-
-        private string _AET;
-        public string AET
+        private async void Verify(object o)
         {
-            get => _AET;
-            set
-            {
-                SetProperty(ref _AET, value);
-            }
+            SaveSettings();
+            IDICOMServer server = (IDICOMServer)o;
+            await _settingsService.VerifyAsync(server.Type);
         }
 
-        private string _host;
-        public string Host
+        private bool CanUseVerifyButton(object o)
         {
-            get => _host;
-            set
+            IDICOMServer server = (IDICOMServer)o;
+            if(server == null || server.Status == VerificationStatus.InProgress)
             {
-                SetProperty(ref _host, value);
+                return false;
             }
+            return true;
         }
 
-        private string _port;
-        public string Port
+        private void HandleUpdatedVerificationStatus(ServerType type)
         {
-            get => _port;
-            set
+            if(type == ServerType.QueryRetrieveServer)
             {
-                SetProperty(ref _port, value);
-            }
-        }
-
-        private VerificationStatus _verificationStatus;
-        public VerificationStatus VerificationStatus
-        {
-            get => _verificationStatus;
-            set
+                QueryRetrieveServer.Status = _settingsService.GetServer(type).Status;
+            } else if(type == ServerType.StoreServer)
             {
-                SetProperty(ref _verificationStatus, value);
+                StoreServer.Status = _settingsService.GetServer(type).Status;
             }
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 }
