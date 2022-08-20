@@ -344,7 +344,7 @@
                     Command="{Binding QueryCommand}">
                 
             </Button>
-            
+
             <Button Grid.Column="1"
                     Height="30"
                     Margin="10,10,10,10"
@@ -353,14 +353,6 @@
 
             </Button>
 
-            <ProgressBar x:Name="retrievalProgress"
-                         Grid.Column="2"
-                         Height="30"
-                         Margin="10,10,10,10"
-                         Value="{Binding RetrievalProgress}">
-                
-            </ProgressBar>
-            
         </Grid>
         
     </Grid>

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static DicomEditor.Model.IDICOMServer;
 
@@ -49,7 +50,7 @@ namespace DicomEditor.Model.Services
         }
 
         //TODO progress bar
-        public async void Retrieve(List<Series> seriesList, IProgress<int> progress)
+        public async void Retrieve(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;
@@ -67,7 +68,12 @@ namespace DicomEditor.Model.Services
 
             foreach (Series series in seriesList)
             {
-                List<DicomDataset> retrievedDataset = await DicomQueryRetrieveService.Retrieve(serverHost, serverPort, serverAET, appAET, series);
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                List<DicomDataset> retrievedDataset = await DicomQueryRetrieveService.Retrieve(serverHost, serverPort, serverAET, appAET, series, cancellationToken);
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {
@@ -82,6 +88,7 @@ namespace DicomEditor.Model.Services
                     series.Instances.Add(instance);
                 }
                 retrievedSeries.Add(series);
+
                 tempCount++;
                 if (progress != null)
                 {

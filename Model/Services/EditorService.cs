@@ -28,7 +28,8 @@ namespace DicomEditor.Model.Services
 
         public DatasetTree GetInstance(string instanceUID)
         {
-            DicomDataset dataset = _cache.LoadedInstances[instanceUID];
+            DicomDataset dataset = new();
+            _cache.LoadedInstances.TryGetValue(instanceUID, out dataset);
             return DatasetTree.CreateTree(dataset);
         }
     }

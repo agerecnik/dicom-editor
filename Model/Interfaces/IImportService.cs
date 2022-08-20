@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DicomEditor.Model.Interfaces
@@ -18,6 +19,6 @@ namespace DicomEditor.Model.Interfaces
         public Dictionary<string, Patient> QueryResult { get; set; }
 
         public Task<Dictionary<string, Patient>> Query();
-        public void Retrieve(List<Series> seriesList, IProgress<int> progress);
+        public void Retrieve(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

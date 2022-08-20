@@ -52,7 +52,7 @@ namespace DicomEditor.ViewModel
                 SaveSettings();
             });
 
-            VerifyCommand = new RelayCommand(Verify, CanUseVerifyButton);
+            VerifyCommand = new RelayCommand(Verify, CanUseVerifyCommand);
             
         }
 
@@ -78,7 +78,7 @@ namespace DicomEditor.ViewModel
             await _settingsService.VerifyAsync(server.Type);
         }
 
-        private bool CanUseVerifyButton(object o)
+        private bool CanUseVerifyCommand(object o)
         {
             IDICOMServer server = (IDICOMServer)o;
             if(server == null || server.Status == VerificationStatus.InProgress)

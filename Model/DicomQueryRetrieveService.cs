@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DicomEditor.Model
@@ -94,7 +95,7 @@ namespace DicomEditor.Model
             return patients;
         }
 
-        public static async Task<List<DicomDataset>> Retrieve(string serverHost, int serverPort, string serverAET, string appAET, Series series)
+        public static async Task<List<DicomDataset>> Retrieve(string serverHost, int serverPort, string serverAET, string appAET, Series series, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             var cGetRequest = CreateCGetBySeriesUID(series.StudyUID, series.SeriesUID);
@@ -119,7 +120,7 @@ namespace DicomEditor.Model
             }
 
             await client.AddRequestAsync(cGetRequest);
-            await client.SendAsync();
+            await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
             return retrievedSeries;
         }
 

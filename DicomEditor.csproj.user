@@ -7,10 +7,16 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\DialogWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\EditorView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\ImportView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\RetrievalDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SettingsView.xaml.cs">
@@ -24,10 +30,16 @@
     <Page Update="Theme\SearchFieldTheme.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="View\DialogWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\EditorView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ImportView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\RetrievalDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SettingsView.xaml">

@@ -1,6 +1,7 @@
 ﻿using DicomEditor.Model;
 using DicomEditor.Model.Interfaces;
 using DicomEditor.Model.Services;
+using DicomEditor.View;
 using DicomEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -21,6 +22,7 @@ namespace DicomEditor
         public App()
         {
             Services = ConfigureServices();
+            DialogService.RegisterDialog<RetrievalDialog, RetrievalDialogViewModel>();
         }
 
         public new static App Current => (App)Application.Current;
@@ -34,6 +36,7 @@ namespace DicomEditor
             services.AddSingleton<IImportService, ImportService>();
             services.AddSingleton<IEditorService, EditorService>();
             services.AddSingleton<ISettingsService, SettingsService>();
+            services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<ICache, Cache>();
             services.AddSingleton<MainViewModel>();
 

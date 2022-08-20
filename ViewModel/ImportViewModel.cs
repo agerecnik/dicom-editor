@@ -18,6 +18,7 @@ namespace DicomEditor.ViewModel
     public class ImportViewModel : ViewModelBase
     {
         private IImportService _importService;
+        private IDialogService _dialogService;
 
         private string _patientID;
         public string PatientID
@@ -91,20 +92,14 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _selectedSeriesList, value);
         }
 
-        private int _retrievalProgress;
-        public int RetrievalProgress
-        {
-            get => _retrievalProgress;
-            set => SetProperty(ref _retrievalProgress, value);
-        }
-
         public ICommand QueryCommand { get; }
 
         public ICommand RetrieveCommand { get; }
 
-        public ImportViewModel(IImportService importService)
+        public ImportViewModel(IImportService importService, IDialogService dialogService)
         {
             _importService = importService;
+            _dialogService = dialogService;
 
             QueryCommand = new RelayCommand(async o =>
             {
@@ -128,14 +123,12 @@ namespace DicomEditor.ViewModel
             {
                 if (SelectedSeriesList is not null && SelectedSeriesList.Count > 0)
                 {
-                    var progress = new Progress<int>(percent =>
+                    _dialogService.ShowDialog<RetrievalDialogViewModel>("Retrieval in progress", result =>
                     {
-                        RetrievalProgress = percent;
-
-                    });
-                    _importService.Retrieve(SelectedSeriesList, progress);
+                        var test = result;
+                    }, importService, SelectedSeriesList);
                 }
-            });
+            }, CanUseRetrieveCommand);
 
             PatientID = _importService.PatientID;
             PatientName = _importService.PatientName;
@@ -146,7 +139,7 @@ namespace DicomEditor.ViewModel
             SelectedSeriesList = new();
         }
 
-        public ImportViewModel() : this(new ImportService(new SettingsService(), new Cache()))
+        public ImportViewModel() : this(new ImportService(new SettingsService(), new Cache()), new DialogService())
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -183,6 +176,15 @@ namespace DicomEditor.ViewModel
             }
 
             SelectedSeriesList = seriesList;
+        }
+
+        private bool CanUseRetrieveCommand(object o)
+        {
+            if (SelectedSeriesList is null || SelectedSeriesList.Count <= 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
