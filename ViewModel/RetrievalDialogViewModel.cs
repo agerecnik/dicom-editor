@@ -48,11 +48,24 @@ namespace DicomEditor.ViewModel
 
         private void Retrieve(IImportService importService, List<Series> selectedSeriesList)
         {
-            var progress = new Progress<int>(percent =>
-            {
-                RetrievalProgress = percent;
+            int totalCount = 0;
+            int tempCount = 0;
 
-            });
+            foreach (Series series in selectedSeriesList)
+            {
+                totalCount += series.NumberOfInstances;
+            }
+
+            Progress<int> progress = null;
+            if (totalCount > 0)
+            {
+                progress = new Progress<int>(progressCount =>
+                {
+                    tempCount += progressCount;
+                    RetrievalProgress = tempCount * 100 / totalCount;
+
+                });
+            }
 
             importService.Retrieve(selectedSeriesList, progress, cancellationTokenSource.Token);
         }

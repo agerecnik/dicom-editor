@@ -13,15 +13,17 @@ namespace DicomEditor.Model
         public string SeriesDescription { get; }
         public DateTime SeriesDateTime { get; }
         public string Modality { get; }
+        public int NumberOfInstances { get; }
         public string StudyUID { get; }
         public ObservableCollection<Instance> Instances { get; }
 
-        public Series(string seriesUID, string seriesDescription, DateTime seriesDateTime, string modality, string studyUID, List<Instance> instances)
+        public Series(string seriesUID, string seriesDescription, DateTime seriesDateTime, string modality, int numberOfInstances, string studyUID, List<Instance> instances)
         {
             SeriesUID = seriesUID;
             SeriesDescription = seriesDescription;
             SeriesDateTime = seriesDateTime;
             Modality = modality;
+            NumberOfInstances = numberOfInstances;
             StudyUID = studyUID;
             Instances = new ObservableCollection<Instance>(instances);
         }

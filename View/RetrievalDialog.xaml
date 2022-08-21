@@ -9,6 +9,37 @@
              d:DataContext="{d:DesignInstance viewModel:RetrievalDialogViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="150" d:DesignWidth="300"
              Background="#272537">
+
+
+    <UserControl.Resources>
+
+        <Style x:Key="{x:Type ProgressBar}"
+               TargetType="{x:Type ProgressBar}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ProgressBar}">
+                        <Grid MinHeight="14" MinWidth="200">
+                            <Border 
+                                Name="PART_Track" 
+                                CornerRadius="0" 
+                                Background="#1a1824"
+                                BorderBrush="#1a1824"
+                                BorderThickness="1" />
+                            <Border 
+                                Name="PART_Indicator" 
+                                CornerRadius="0" 
+                                Background="#504c70" 
+                                BorderBrush="#504c70" 
+                                BorderThickness="1" 
+                                HorizontalAlignment="Left" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>

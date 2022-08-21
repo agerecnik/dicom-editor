@@ -63,8 +63,6 @@ namespace DicomEditor.Model.Services
 
             List<Series> retrievedSeries = new();
             Dictionary<string, DicomDataset> retrievedInstances = new();
-            int totalCount = seriesList.Count;
-            int tempCount = 0;
 
             foreach (Series series in seriesList)
             {
@@ -73,7 +71,7 @@ namespace DicomEditor.Model.Services
                     break;
                 }
 
-                List<DicomDataset> retrievedDataset = await DicomQueryRetrieveService.Retrieve(serverHost, serverPort, serverAET, appAET, series, cancellationToken);
+                List<DicomDataset> retrievedDataset = await DicomQueryRetrieveService.RetrieveAsync(serverHost, serverPort, serverAET, appAET, series, progress, cancellationToken);
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {
@@ -88,12 +86,6 @@ namespace DicomEditor.Model.Services
                     series.Instances.Add(instance);
                 }
                 retrievedSeries.Add(series);
-
-                tempCount++;
-                if (progress != null)
-                {
-                    progress.Report(tempCount * 100 / totalCount);
-                }
             }
 
             _cache.LoadedSeries = retrievedSeries;

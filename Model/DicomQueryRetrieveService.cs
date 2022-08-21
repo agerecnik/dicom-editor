@@ -4,8 +4,6 @@ using FellowOakDicom.Network.Client;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -76,14 +74,28 @@ namespace DicomEditor.Model
                         {
                             string patientIDResult = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.PatientID, "");
                             string seriesDescription = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.SeriesDescription, "");
-                            DateTime seriesDate = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesDate, new DateTime());
-                            DateTime seriesTime = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesTime, new DateTime());
                             string modality = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.Modality, "");
+
+                            DateTime seriesDate;
+                            DateTime seriesTime;
+                            int numberOfInstances;
+                            if (response.Dataset is not null)
+                            {
+                                seriesDate = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesDate, new DateTime());
+                                seriesTime = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesTime, new DateTime());
+                                numberOfInstances = response.Dataset.GetSingleValueOrDefault<int>(DicomTag.NumberOfSeriesRelatedInstances, 0);
+                            } else
+                            {
+                                seriesDate = new();
+                                seriesTime = new();
+                                numberOfInstances = 0;
+                            }
+
                             DateTime seriesDateTime = seriesDate;
                             seriesDateTime.AddHours(seriesTime.Hour);
                             seriesDateTime.AddMinutes(seriesTime.Minute);
-
-                            Series series = new(seriesInstanceUID, seriesDescription, seriesDateTime, modality, studyUID, new List<Instance>());
+                            
+                            Series series = new(seriesInstanceUID, seriesDescription, seriesDateTime, modality, numberOfInstances, studyUID, new List<Instance>());
                             patients[patientIDResult].Studies[studyUID].Series.Add(seriesInstanceUID, series);
                         }
                     };
@@ -95,15 +107,21 @@ namespace DicomEditor.Model
             return patients;
         }
 
-        public static async Task<List<DicomDataset>> Retrieve(string serverHost, int serverPort, string serverAET, string appAET, Series series, CancellationToken cancellationToken)
+        public static async Task<List<DicomDataset>> RetrieveAsync(string serverHost, int serverPort, string serverAET, string appAET, Series series, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             var cGetRequest = CreateCGetBySeriesUID(series.StudyUID, series.SeriesUID);
             List<DicomDataset> retrievedSeries = new();
 
+            int progressCounter = 0;
             client.OnCStoreRequest += (DicomCStoreRequest req) =>
             {
                 retrievedSeries.Add(req.Dataset);
+                if (progress != null)
+                {
+                    progressCounter++;
+                    progress.Report(progressCounter);
+                }
                 return Task.FromResult(new DicomCStoreResponse(req, DicomStatus.Success));
             };
             
@@ -166,12 +184,12 @@ namespace DicomEditor.Model
             // add the dicom tags that contain the filter criterias
             request.Dataset.AddOrUpdate(DicomTag.PatientID, "");
             request.Dataset.AddOrUpdate(DicomTag.StudyInstanceUID, studyInstanceUID);
-
             request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesDescription, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesDate, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesTime, "");
             request.Dataset.AddOrUpdate(DicomTag.Modality, "");
+            request.Dataset.AddOrUpdate(DicomTag.NumberOfSeriesRelatedInstances, "");
 
             return request;
         }
