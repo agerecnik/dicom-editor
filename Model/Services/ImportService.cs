@@ -33,7 +33,7 @@ namespace DicomEditor.Model.Services
             _cache = cache;
         }
 
-        public async Task<Dictionary<string, Patient>> Query()
+        public async Task Query(CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;
@@ -44,13 +44,10 @@ namespace DicomEditor.Model.Services
             string serverAET = _settingsService.GetServer(ServerType.QueryRetrieveServer).AET;
             string appAET = _settingsService.DicomEditorAET;
 
-            Dictionary<string, Patient> queryResult = await DicomQueryRetrieveService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality);
-            QueryResult = queryResult;
-            return queryResult;
+            QueryResult = await DicomQueryRetrieveService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
         }
 
-        //TODO progress bar
-        public async void Retrieve(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task Retrieve(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;

@@ -8,6 +8,6 @@ namespace DicomEditor.Model.Interfaces
 {
     public interface IDialogService
     {
-        public void ShowDialog<TViewModel>(string title, Action<string> callback, params object[] parameters);
+        public void ShowDialog<TViewModel>(string title, params object[] parameters);
     }
 }

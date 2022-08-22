@@ -16,10 +16,16 @@
     <Compile Update="View\ImportView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\QueryDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\RetrievalDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SettingsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Theme\Spinner.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -39,10 +45,16 @@
     <Page Update="View\ImportView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="View\QueryDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\RetrievalDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SettingsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\Spinner.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

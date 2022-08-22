@@ -12,11 +12,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using FellowOakDicom.Network;
+
 
 namespace DicomEditor.ViewModel
 {
-    public class RetrievalDialogViewModel : ViewModelBase
+    public class RetrievalDialogViewModel : ViewModelBase, IDialogViewModel
     {
+        private string _retrievalStatus;
+        public string RetrievalStatus
+        {
+            get => _retrievalStatus;
+            set => SetProperty(ref _retrievalStatus, value);
+        }
+
         private int _retrievalProgress;
         public int RetrievalProgress
         {
@@ -26,11 +35,15 @@ namespace DicomEditor.ViewModel
 
         public ICommand CancelRetrievalCommand { get; }
 
-        private CancellationTokenSource cancellationTokenSource = new();
+        private readonly IImportService _importService;
+        private readonly List<Series> _selectedSeriesList;
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         public RetrievalDialogViewModel(IImportService importService, List<Series> selectedSeriesList) {
+            _importService = importService;
+            _selectedSeriesList = selectedSeriesList;
             CancelRetrievalCommand = new RelayCommand(o => CancelRetrieval());
-            Retrieve(importService, selectedSeriesList);
+            
         }
 
         public RetrievalDialogViewModel() : this(new ImportService(new SettingsService(), new Cache()), new List<Series>())
@@ -41,17 +54,22 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private void CancelRetrieval()
+        public void Execute()
         {
-            cancellationTokenSource.Cancel();
+            Retrieve();
         }
 
-        private void Retrieve(IImportService importService, List<Series> selectedSeriesList)
+        private void CancelRetrieval()
+        {
+            _cancellationTokenSource.Cancel();
+        }
+
+        private async void Retrieve()
         {
             int totalCount = 0;
             int tempCount = 0;
 
-            foreach (Series series in selectedSeriesList)
+            foreach (Series series in _selectedSeriesList)
             {
                 totalCount += series.NumberOfInstances;
             }
@@ -67,7 +85,21 @@ namespace DicomEditor.ViewModel
                 });
             }
 
-            importService.Retrieve(selectedSeriesList, progress, cancellationTokenSource.Token);
+            try
+            {
+                await _importService.Retrieve(_selectedSeriesList, progress, _cancellationTokenSource.Token);
+                RetrievalStatus = "Completed";
+            }
+            catch (Exception e) when (e is ConnectionClosedPrematurelyException
+            or DicomAssociationAbortedException
+            or DicomAssociationRejectedException
+            or DicomAssociationRequestTimedOutException
+            or DicomNetworkException
+            or DicomRequestTimedOutException
+            or AggregateException)
+            {
+                RetrievalStatus = e.Message;
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DicomEditor.Model.Interfaces;
 using DicomEditor.View;
+using DicomEditor.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,35 +19,27 @@ namespace DicomEditor.Model.Services
             _mappings.Add(typeof(TViewModel), typeof(TView));
         }
 
-        public void ShowDialog<TViewModel>(string title, Action<string> callback, params object[] vmParameters)
+        public void ShowDialog<TViewModel>(string title, params object[] vmParameters)
         {
             var type = _mappings[typeof(TViewModel)];
-            ShowDialogInternal(title, type, callback, typeof(TViewModel), vmParameters);
+            ShowDialogInternal(title, type, typeof(TViewModel), vmParameters);
         }
 
-        private static void ShowDialogInternal(string title, Type type, Action<string> callback, Type vmType, params object[] vmParameters)
+        private static void ShowDialogInternal(string title, Type type, Type vmType, params object[] vmParameters)
         {
             var dialog = new DialogWindow();
             dialog.Title = title;
 
-            //EventHandler closeEventHandler = null;
-            //closeEventHandler = (s, e) =>
-            //{
-            //    callback(dialog.DialogResult.ToString());
-            //    dialog.Closed -= closeEventHandler;
-            //};
-            //dialog.Closed += closeEventHandler;
-
             var content = Activator.CreateInstance(type);
+            var vm = Activator.CreateInstance(vmType, vmParameters);
+            (content as FrameworkElement).DataContext = vm;
 
-            if (vmType != null)
-            {
-                var vm = Activator.CreateInstance(vmType, vmParameters);
-                (content as FrameworkElement).DataContext = vm;
-            }
+            IDialogViewModel viewModel = (IDialogViewModel)vm;
+            viewModel.Execute();
 
             dialog.Content = content;
-
+            
+            
             dialog.ShowDialog();
         }
     }

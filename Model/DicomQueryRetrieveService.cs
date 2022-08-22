@@ -11,7 +11,7 @@ namespace DicomEditor.Model
 {
     public static class DicomQueryRetrieveService
     {
-        public static async Task<Dictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patietID, string patientName, string accessionNumber, string studyID, string modality)
+        public static async Task<Dictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patietID, string patientName, string accessionNumber, string studyID, string modality, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             client.NegotiateAsyncOps();
@@ -59,9 +59,9 @@ namespace DicomEditor.Model
 
             };
             await client.AddRequestAsync(request);
-            await client.SendAsync();
+            await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
 
-            // find all series from a study that previously was returned
+            // find all series from a study that was previously returned
             foreach (string studyUID in studyUIDs)
             {
                 if (studyUID is not null and not "")
@@ -84,7 +84,8 @@ namespace DicomEditor.Model
                                 seriesDate = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesDate, new DateTime());
                                 seriesTime = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesTime, new DateTime());
                                 numberOfInstances = response.Dataset.GetSingleValueOrDefault<int>(DicomTag.NumberOfSeriesRelatedInstances, 0);
-                            } else
+                            }
+                            else
                             {
                                 seriesDate = new();
                                 seriesTime = new();
@@ -94,13 +95,13 @@ namespace DicomEditor.Model
                             DateTime seriesDateTime = seriesDate;
                             seriesDateTime.AddHours(seriesTime.Hour);
                             seriesDateTime.AddMinutes(seriesTime.Minute);
-                            
+
                             Series series = new(seriesInstanceUID, seriesDescription, seriesDateTime, modality, numberOfInstances, studyUID, new List<Instance>());
                             patients[patientIDResult].Studies[studyUID].Series.Add(seriesInstanceUID, series);
                         }
                     };
                     await client.AddRequestAsync(request);
-                    await client.SendAsync();
+                    await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
                 }
             }
 

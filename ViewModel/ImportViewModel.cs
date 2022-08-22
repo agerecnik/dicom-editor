@@ -101,32 +101,17 @@ namespace DicomEditor.ViewModel
             _importService = importService;
             _dialogService = dialogService;
 
-            QueryCommand = new RelayCommand(async o =>
+            QueryCommand = new RelayCommand(o =>
             {
-                try
-                {
-                    QueryResult = await _importService.Query();
-                }
-                catch(FellowOakDicom.Network.DicomAssociationAbortedException e)
-                {
-                    // TODO
-                    Trace.WriteLine(e.Message);
-                }
-                catch(AggregateException e)
-                {
-                    // TODO
-                    Trace.WriteLine(e.Message);
-                }
+                _dialogService.ShowDialog<QueryDialogViewModel>("Query in progress", importService);
+                QueryResult = _importService.QueryResult;
             });
 
             RetrieveCommand = new RelayCommand(o =>
             {
                 if (SelectedSeriesList is not null && SelectedSeriesList.Count > 0)
                 {
-                    _dialogService.ShowDialog<RetrievalDialogViewModel>("Retrieval in progress", result =>
-                    {
-                        var test = result;
-                    }, importService, SelectedSeriesList);
+                    _dialogService.ShowDialog<RetrievalDialogViewModel>("Retrieval in progress", importService, SelectedSeriesList);
                 }
             }, CanUseRetrieveCommand);
 

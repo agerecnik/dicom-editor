@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,21 +17,13 @@ using System.Windows.Shapes;
 namespace DicomEditor.View
 {
     /// <summary>
-    /// Interaction logic for RetrievalDialog.xaml
+    /// Interaction logic for QueryDialog.xaml
     /// </summary>
-    public partial class RetrievalDialog : UserControl
+    public partial class QueryDialog : UserControl
     {
-        public RetrievalDialog()
+        public QueryDialog()
         {
             InitializeComponent();
-        }
-
-        private void RetrievalProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if(RetrievalProgress.Value == 100)
-            {
-                Window.GetWindow(this).Close();
-            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -46,7 +39,7 @@ namespace DicomEditor.View
             }
             else if (Status.Text is not null and not "")
             {
-                RetrievalProgress.Visibility = Visibility.Collapsed;
+                Spinner.Visibility = Visibility.Collapsed;
                 Status.Visibility = Visibility.Visible;
             }
         }
