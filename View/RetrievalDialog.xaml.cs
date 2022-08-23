@@ -25,14 +25,6 @@ namespace DicomEditor.View
             InitializeComponent();
         }
 
-        private void RetrievalProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if(RetrievalProgress.Value == 100)
-            {
-                Window.GetWindow(this).Close();
-            }
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Close();

@@ -41,20 +41,20 @@
     </UserControl.Resources>
     
     <Grid>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
 
         <Grid>
+            
             <ProgressBar x:Name="RetrievalProgress"
                          Grid.Row="0"
                          Height="25"
                          Margin="10,10,10,0"
-                         Value="{Binding RetrievalProgress}"
-                         ValueChanged="RetrievalProgress_ValueChanged">
-
-            </ProgressBar>
+                         Value="{Binding RetrievalProgress}"/>
+            
             <TextBlock x:Name="Status"
                        Grid.Column="0"
                        HorizontalAlignment="Center"
@@ -67,6 +67,7 @@
                        Background="#353340"
                        Text="{Binding RetrievalStatus, NotifyOnTargetUpdated=True}"
                        TargetUpdated="Status_TargetUpdated"/>
+            
         </Grid>
 
         <Button Grid.Row="1"
