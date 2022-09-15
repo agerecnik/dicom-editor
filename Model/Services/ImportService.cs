@@ -33,7 +33,7 @@ namespace DicomEditor.Model.Services
             _cache = cache;
         }
 
-        public async Task Query(CancellationToken cancellationToken)
+        public async Task QueryAsync(CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;
@@ -47,7 +47,7 @@ namespace DicomEditor.Model.Services
             QueryResult = await DicomQueryRetrieveService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
         }
 
-        public async Task Retrieve(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task RetrieveAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;

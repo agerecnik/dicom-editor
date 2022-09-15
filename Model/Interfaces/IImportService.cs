@@ -18,7 +18,7 @@ namespace DicomEditor.Model.Interfaces
         public string Modality { get; set; }
         public Dictionary<string, Patient> QueryResult { get; set; }
 
-        public Task Query(CancellationToken cancellationToken);
-        public Task Retrieve(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
+        public Task QueryAsync(CancellationToken cancellationToken);
+        public Task RetrieveAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

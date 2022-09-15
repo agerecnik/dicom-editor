@@ -5,11 +5,7 @@ using DicomEditor.Model.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using FellowOakDicom.Network;
@@ -79,7 +75,7 @@ namespace DicomEditor.ViewModel
             {
                 progress = new Progress<int>(progressCount =>
                 {
-                    tempCount += progressCount;
+                    tempCount++;
                     RetrievalProgress = tempCount * 100 / totalCount;
 
                 });
@@ -87,7 +83,7 @@ namespace DicomEditor.ViewModel
 
             try
             {
-                await _importService.Retrieve(_selectedSeriesList, progress, _cancellationTokenSource.Token);
+                await _importService.RetrieveAsync(_selectedSeriesList, progress, _cancellationTokenSource.Token);
                 RetrievalStatus = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
@@ -96,7 +92,8 @@ namespace DicomEditor.ViewModel
             or DicomAssociationRequestTimedOutException
             or DicomNetworkException
             or DicomRequestTimedOutException
-            or AggregateException)
+            or AggregateException
+            or ArgumentException)
             {
                 RetrievalStatus = e.Message;
             }

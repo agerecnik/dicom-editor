@@ -1,4 +1,5 @@
-﻿using DicomEditor.Model;
+﻿using DicomEditor.Commands;
+using DicomEditor.Model;
 using DicomEditor.Model.EditorModel.Tree;
 using DicomEditor.Model.Interfaces;
 using DicomEditor.Model.Services;
@@ -10,14 +11,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace DicomEditor.ViewModel
 {
     public class EditorViewModel : ViewModelBase
     {
         private IEditorService _editorService;
+        private IDialogService _dialogService;
 
         private ObservableCollection<Series> _loadedSeriesList;
         public ObservableCollection<Series> LoadedSeriesList
@@ -69,12 +73,24 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        public EditorViewModel(IEditorService editorService)
+        public ICommand StoreCommand { get; }
+
+        public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
             _editorService = editorService;
+            _dialogService = dialogService;
+
+            StoreCommand = new RelayCommand(o =>
+            {
+                if (SelectedSeries is not null)
+                {
+                    _dialogService.ShowDialog<StoreDialogViewModel>("Store in progress", editorService, SelectedSeries);
+                    // await _editorService.StoreAsync(SelectedSeries, null, _cancellationTokenSource.Token);
+                }
+            }, CanUseStoreCommand);
         }
 
-        public EditorViewModel() : this(new EditorService(new SettingsService(), new Cache()))
+        public EditorViewModel() : this(new EditorService(new SettingsService(), new Cache()), new DialogService())
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -90,6 +106,15 @@ namespace DicomEditor.ViewModel
         private void UpdateListOfAttributes()
         {
             SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID);
+        }
+
+        private bool CanUseStoreCommand(object o)
+        {
+            if (SelectedSeries is null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

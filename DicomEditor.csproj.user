@@ -28,6 +28,9 @@
     <Compile Update="Theme\Spinner.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\StoreDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
@@ -55,6 +58,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\Spinner.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\StoreDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

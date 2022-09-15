@@ -36,7 +36,7 @@ namespace DicomEditor.ViewModel
 
             EditorViewCommand = new RelayCommand(o =>
             {
-                CurrentView = new EditorViewModel(editorService);
+                CurrentView = new EditorViewModel(editorService, dialogService);
                 EditorViewModel evm = (EditorViewModel)CurrentView;
                 evm.UpdateLoadedSeriesList();
             });

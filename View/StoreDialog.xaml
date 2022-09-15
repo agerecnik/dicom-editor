@@ -1,15 +1,15 @@
-﻿<UserControl x:Class="DicomEditor.View.RetrievalDialog"
+﻿<UserControl x:Class="DicomEditor.View.StoreDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DicomEditor.View"
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance viewModel:RetrievalDialogViewModel, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModel:StoreDialogViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="125" d:DesignWidth="250"
              Background="#272537">
-
+    
     <UserControl.Resources>
 
         <Style x:Key="{x:Type ProgressBar}"
@@ -38,22 +38,22 @@
         </Style>
 
     </UserControl.Resources>
-    
+
     <Grid>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
 
         <Grid>
-            
-            <ProgressBar x:Name="RetrievalProgress"
+
+            <ProgressBar x:Name="StoreProgress"
                          Grid.Row="0"
                          Height="25"
                          Margin="10,10,10,0"
-                         Value="{Binding RetrievalProgress}"/>
-            
+                         Value="{Binding StoreProgress}"/>
+
             <TextBlock x:Name="Status"
                        Grid.Column="0"
                        HorizontalAlignment="Center"
@@ -64,9 +64,9 @@
                        TextWrapping="Wrap"
                        Foreground="DarkGray"
                        Background="#353340"
-                       Text="{Binding RetrievalStatus, NotifyOnTargetUpdated=True}"
+                       Text="{Binding StoreStatus, NotifyOnTargetUpdated=True}"
                        TargetUpdated="Status_TargetUpdated"/>
-            
+
         </Grid>
 
         <Button Grid.Row="1"
@@ -74,7 +74,7 @@
                 Width="80"
                 Margin="10,0,10,10"
                 Content="Cancel"
-                Command="{Binding CancelRetrievalCommand}"
+                Command="{Binding CancelStoreCommand}"
                 Click="Button_Click">
 
         </Button>

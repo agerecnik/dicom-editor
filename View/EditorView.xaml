@@ -137,8 +137,9 @@
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="0.2*" />
             </Grid.RowDefinitions>
 
             <ListView Grid.Row="0"
@@ -170,6 +171,15 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ListView>
+
+            <Button Grid.Row="2"
+                    Height="30"
+                    Margin="10,0,0,10"
+                    Content="Store selected series"
+                    Command="{Binding StoreCommand}">
+
+            </Button>
+            
         </Grid>
 
         <tree:TreeList x:Name="_tree"

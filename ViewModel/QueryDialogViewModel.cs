@@ -57,7 +57,7 @@ namespace DicomEditor.ViewModel
         {
             try
             {
-                await _importService.Query(_cancellationTokenSource.Token);
+                await _importService.QueryAsync(_cancellationTokenSource.Token);
                 QueryStatus = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
