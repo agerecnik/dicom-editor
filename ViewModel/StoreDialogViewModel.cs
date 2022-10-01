@@ -52,7 +52,7 @@ namespace DicomEditor.ViewModel
             ExecutionFinished = false;
         }
 
-        public StoreDialogViewModel() : this(new EditorService(new SettingsService(), new Cache()), new List<Series>())
+        public StoreDialogViewModel() : this(new EditorService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new List<Series>())
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

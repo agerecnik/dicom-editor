@@ -14,7 +14,8 @@ namespace DicomEditor.Model.Services
         public event UpdatedVerificationStatusHandler UpdatedVerificationStatusEvent;
         public event SettingsSavedHandler SettingsSavedEvent;
 
-        private IDictionary<ServerType, IDICOMServer> _servers;
+        private readonly IDictionary<ServerType, IDICOMServer> _servers;
+        private readonly IDICOMService _DICOMService;
 
         private string _dicomEditorAET;
         public string DicomEditorAET
@@ -27,7 +28,7 @@ namespace DicomEditor.Model.Services
             }
         }
 
-        public SettingsService()
+        public SettingsService(IDICOMService DICOMService)
         {
             _servers = new Dictionary<ServerType, IDICOMServer>
             {
@@ -35,6 +36,7 @@ namespace DicomEditor.Model.Services
                 { ServerType.StoreServer, new DICOMServer(ServerType.StoreServer, GetSetting(ServerType.StoreServer + "AET"), GetSetting(ServerType.StoreServer + "Host"), GetSetting(ServerType.StoreServer + "Port")) }
             };
             _dicomEditorAET = GetSetting("DicomEditorAET");
+            _DICOMService = DICOMService;
         }
 
         public void SetServer(IDICOMServer server)
@@ -56,7 +58,7 @@ namespace DicomEditor.Model.Services
             UpdateVerificationStatus(server, VerificationStatus.InProgress);
             try
             {
-                bool successful = await DicomVerificationService.VerifyAsync(server.Host, Int32.Parse(server.Port), server.AET, DicomEditorAET);
+                bool successful = await _DICOMService.VerifyAsync(server.Host, Int32.Parse(server.Port), server.AET, DicomEditorAET);
                 if(successful)
                 {
                     UpdateVerificationStatus(server, VerificationStatus.Successful);

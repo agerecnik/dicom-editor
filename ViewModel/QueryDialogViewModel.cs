@@ -43,7 +43,7 @@ namespace DicomEditor.ViewModel
             ExecutionFinished = false;
         }
 
-        public QueryDialogViewModel() : this(new ImportService(new SettingsService(), new Cache()))
+        public QueryDialogViewModel() : this(new ImportService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()))
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

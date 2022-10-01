@@ -39,6 +39,7 @@ namespace DicomEditor
             services.AddSingleton<IEditorService, EditorService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IDICOMService, DICOMService>();
             services.AddSingleton<ICache, Cache>();
             services.AddSingleton<MainViewModel>();
 

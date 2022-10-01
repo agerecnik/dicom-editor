@@ -12,7 +12,7 @@ namespace DicomEditor.Model.Services
 {
     public  class DialogService : IDialogService
     {
-        private static Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
+        private static readonly Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 
         public static void RegisterDialog<TView, TViewModel>()
         {

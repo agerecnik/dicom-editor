@@ -14,13 +14,15 @@ namespace DicomEditor.Model.Services
 {
     public class EditorService : IEditorService
     {
-        private ISettingsService _settingsService;
-        private ICache _cache;
+        private readonly ISettingsService _settingsService;
+        private readonly ICache _cache;
+        private readonly IDICOMService _DICOMService;
 
-        public EditorService(ISettingsService settingsService, ICache cache)
+        public EditorService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
         {
             _settingsService = settingsService;
             _cache = cache;
+            _DICOMService = DICOMService;
         }
 
         public List<Series> GetLoadedSeries()
@@ -58,7 +60,7 @@ namespace DicomEditor.Model.Services
                     // TODO: throw exception if instance does not exist?
                 }
 
-                await DicomStoreService.StoreAsync(serverHost, serverPort, serverAET, appAET, instances, progress, cancellationToken);
+                await _DICOMService.StoreAsync(serverHost, serverPort, serverAET, appAET, instances, progress, cancellationToken);
             }
         }
     }

@@ -2,13 +2,8 @@
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static DicomEditor.Model.IDICOMServer;
@@ -17,8 +12,9 @@ namespace DicomEditor.Model.Services
 {
     public class ImportService : IImportService
     {
-        private ISettingsService _settingsService;
-        private ICache _cache;
+        private readonly ISettingsService _settingsService;
+        private readonly ICache _cache;
+        private readonly IDICOMService _DICOMService;
 
         public string PatientID { get; set; }
         public string PatientName { get; set; }
@@ -28,11 +24,12 @@ namespace DicomEditor.Model.Services
         public Dictionary<string, Patient> QueryResult { get; set; }
         public string LocalImportPath { get; set; }
 
-        public ImportService(ISettingsService settingsService, ICache cache)
+        public ImportService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
         {
             _settingsService = settingsService;
             _settingsService.SettingsSavedEvent += new SettingsSavedHandler(HandleSettingsSaved);
             _cache = cache;
+            _DICOMService = DICOMService;
         }
 
         public async Task QueryAsync(CancellationToken cancellationToken)
@@ -46,7 +43,7 @@ namespace DicomEditor.Model.Services
             string serverAET = _settingsService.GetServer(ServerType.QueryRetrieveServer).AET;
             string appAET = _settingsService.DicomEditorAET;
 
-            QueryResult = await DicomQueryRetrieveService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
+            QueryResult = await _DICOMService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
         }
 
         public async Task RetrieveAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
@@ -70,7 +67,7 @@ namespace DicomEditor.Model.Services
                     break;
                 }
 
-                List<DicomDataset> retrievedDataset = await DicomQueryRetrieveService.RetrieveAsync(serverHost, serverPort, serverAET, appAET, series, progress, cancellationToken);
+                List<DicomDataset> retrievedDataset = await _DICOMService.RetrieveAsync(serverHost, serverPort, serverAET, appAET, series, progress, cancellationToken);
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {

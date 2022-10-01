@@ -144,7 +144,7 @@ namespace DicomEditor.ViewModel
             SelectedSeriesList = new();
         }
 
-        public ImportViewModel() : this(new ImportService(new SettingsService(), new Cache()), new DialogService())
+        public ImportViewModel() : this(new ImportService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new DialogService())
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

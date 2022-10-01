@@ -55,7 +55,7 @@ namespace DicomEditor.ViewModel
             _seriesList = null;
         }
 
-        public RetrievalDialogViewModel() : this(new ImportService(new SettingsService(), new Cache()), new List<Series>())
+        public RetrievalDialogViewModel() : this(new ImportService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new List<Series>())
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

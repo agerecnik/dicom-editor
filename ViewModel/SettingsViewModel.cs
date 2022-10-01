@@ -56,7 +56,7 @@ namespace DicomEditor.ViewModel
             
         }
 
-        public SettingsViewModel() : this(new SettingsService())
+        public SettingsViewModel() : this(new SettingsService(new DICOMService()))
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

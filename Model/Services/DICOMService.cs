@@ -1,24 +1,26 @@
-﻿using FellowOakDicom;
+﻿using DicomEditor.Model.Interfaces;
+using FellowOakDicom;
 using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DicomEditor.Model
+namespace DicomEditor.Model.Services
 {
-    public static class DicomQueryRetrieveService
+    public class DICOMService : IDICOMService
     {
-        public static async Task<Dictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patietID, string patientName, string accessionNumber, string studyID, string modality, CancellationToken cancellationToken)
+        public async Task<Dictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patientID, string patientName, string accessionNumber, string studyID, string modality, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             client.NegotiateAsyncOps();
 
             // Find a list of Studies
 
-            var request = CreateStudyRequest(patietID, patientName, accessionNumber, studyID, modality);
+            var request = CreateStudyRequest(patientID, patientName, accessionNumber, studyID, modality);
 
             Dictionary<string, Patient> patients = new();
             var studyUIDs = new List<string>();
@@ -108,7 +110,7 @@ namespace DicomEditor.Model
             return patients;
         }
 
-        public static async Task<List<DicomDataset>> RetrieveAsync(string serverHost, int serverPort, string serverAET, string appAET, Series series, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<List<DicomDataset>> RetrieveAsync(string serverHost, int serverPort, string serverAET, string appAET, Series series, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             var cGetRequest = CreateCGetBySeriesUID(series.StudyUID, series.SeriesUID);
@@ -125,7 +127,7 @@ namespace DicomEditor.Model
                 }
                 return Task.FromResult(new DicomCStoreResponse(req, DicomStatus.Success));
             };
-            
+
             HashSet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID);
             foreach (string sopClassUID in sopClassUIDs)
             {
@@ -143,14 +145,60 @@ namespace DicomEditor.Model
             return retrievedSeries;
         }
 
-        public static DicomCGetRequest CreateCGetBySeriesUID(string studyUID, string seriesUID)
+        public async Task StoreAsync(string serverHost, int serverPort, string serverAET, string appAET, List<DicomDataset> series, IProgress<int> progress, CancellationToken cancellationToken)
+        {
+            var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
+            client.NegotiateAsyncOps();
+
+            int progressCounter = 0;
+
+            foreach (DicomDataset instance in series)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                DicomFile file = new DicomFile(instance);
+                var request = new DicomCStoreRequest(file, DicomPriority.Medium);
+                request.OnResponseReceived += (req, response) =>
+                {
+                    if (progress != null && response.Status == DicomStatus.Success)
+                    {
+                        progressCounter++;
+                        progress.Report(progressCounter);
+                    }
+                };
+                await client.AddRequestAsync(request);
+                await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
+            }
+        }
+
+        public async Task<bool> VerifyAsync(string serverHost, int serverPort, string serverAET, string appAET)
+        {
+            bool successful = false;
+            var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
+            client.NegotiateAsyncOps();
+            var request = new DicomCEchoRequest();
+            request.OnResponseReceived += (req, res) =>
+            {
+                if (res.Status.State == DicomState.Success)
+                {
+                    successful = true;
+                }
+            };
+            await client.AddRequestAsync(request);
+            await client.SendAsync();
+            return successful;
+        }
+
+        private DicomCGetRequest CreateCGetBySeriesUID(string studyUID, string seriesUID)
         {
             var request = new DicomCGetRequest(studyUID, seriesUID);
             // no more dicomtags have to be set
             return request;
         }
 
-        public static DicomCFindRequest CreateStudyRequest(string patientID, string patientName, string accessionNumber, string studyID, string modality)
+        private DicomCFindRequest CreateStudyRequest(string patientID, string patientName, string accessionNumber, string studyID, string modality)
         {
             var request = new DicomCFindRequest(DicomQueryRetrieveLevel.Study);
 
@@ -175,7 +223,7 @@ namespace DicomEditor.Model
             return request;
         }
 
-        public static DicomCFindRequest CreateSeriesRequestByStudyUID(string studyInstanceUID)
+        private DicomCFindRequest CreateSeriesRequestByStudyUID(string studyInstanceUID)
         {
             var request = new DicomCFindRequest(DicomQueryRetrieveLevel.Series);
 
@@ -195,7 +243,7 @@ namespace DicomEditor.Model
             return request;
         }
 
-        public static DicomCFindRequest CreateImageRequestBySeriesUID(string seriesInstanceUID)
+        private DicomCFindRequest CreateImageRequestBySeriesUID(string seriesInstanceUID)
         {
             var request = new DicomCFindRequest(DicomQueryRetrieveLevel.Image);
 
@@ -210,7 +258,7 @@ namespace DicomEditor.Model
             return request;
         }
 
-        private static async Task<HashSet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesUID)
+        private async Task<HashSet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesUID)
         {
             HashSet<string> sopClassUIDs = new();
             if (seriesUID is not null and not "")
@@ -230,7 +278,7 @@ namespace DicomEditor.Model
             return sopClassUIDs;
         }
 
-        public static void DebugStudyResponse(DicomCFindResponse response)
+        private void DebugStudyResponse(DicomCFindResponse response)
         {
             if (response.Status == DicomStatus.Pending)
             {
@@ -244,7 +292,7 @@ namespace DicomEditor.Model
         }
 
 
-        public static void DebugSerieResponse(DicomCFindResponse response)
+        private void DebugSerieResponse(DicomCFindResponse response)
         {
             try
             {
