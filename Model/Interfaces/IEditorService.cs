@@ -13,6 +13,6 @@ namespace DicomEditor.Model.Interfaces
     {
         public List<Series> GetLoadedSeries();
         public DatasetTree GetInstance(string instanceUID);
-        public Task StoreAsync(Series series, IProgress<int> progress, CancellationToken cancellationToken);
+        public Task StoreAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

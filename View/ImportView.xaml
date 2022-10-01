@@ -329,20 +329,21 @@
 
         </TreeView>
 
-        <Grid Grid.Row="3">
-            
+        <Grid Grid.Row="2">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="100" MaxWidth="200"/>
                 <ColumnDefinition MinWidth="100" MaxWidth="200"/>
-                <ColumnDefinition MinWidth="100"/>
+                <ColumnDefinition MinWidth="100" MaxWidth="400"/>
+                <ColumnDefinition MinWidth="100" MaxWidth="200"/>
             </Grid.ColumnDefinitions>
-            
+
             <Button Grid.Column="0"
                     Height="30"
                     Margin="10,10,10,10"
                     Content="Query"
                     Command="{Binding QueryCommand}">
-                
+
             </Button>
 
             <Button Grid.Column="1"
@@ -353,8 +354,25 @@
 
             </Button>
 
+            <TextBox Grid.Column="2"
+                     VerticalContentAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Margin="100 10 10 10"
+                     MaxWidth="400"
+                     theme:ThemeProperties.SearchFieldName="Local Import Path"
+                     Style="{StaticResource SearchFieldTheme}"
+                     Text="{Binding LocalImportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Button Grid.Column="3"
+                    Height="30"
+                    Margin="10,10,10,10"
+                    Content="Import"
+                    Command="{Binding LocalImportCommand}">
+
+            </Button>
+
         </Grid>
-        
+
     </Grid>
     
 </UserControl>

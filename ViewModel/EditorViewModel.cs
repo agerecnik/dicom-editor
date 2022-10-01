@@ -84,7 +84,7 @@ namespace DicomEditor.ViewModel
             {
                 if (SelectedSeries is not null)
                 {
-                    _dialogService.ShowDialog<StoreDialogViewModel>("Store in progress", editorService, SelectedSeries);
+                    _dialogService.ShowDialog<StoreDialogViewModel>("Store in progress", editorService, new List<Series> { SelectedSeries });
                     // await _editorService.StoreAsync(SelectedSeries, null, _cancellationTokenSource.Token);
                 }
             }, CanUseStoreCommand);

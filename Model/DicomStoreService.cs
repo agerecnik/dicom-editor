@@ -31,7 +31,6 @@ namespace DicomEditor.Model
                         progressCounter++;
                         progress.Report(progressCounter);
                     }
-                    Trace.WriteLine("C-Store Response Received, Status: " + response.Status);
                 };
                 await client.AddRequestAsync(request);
                 await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);

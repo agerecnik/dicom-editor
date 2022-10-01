@@ -17,8 +17,10 @@ namespace DicomEditor.Model.Interfaces
         public string StudyID { get; set; }
         public string Modality { get; set; }
         public Dictionary<string, Patient> QueryResult { get; set; }
+        public string LocalImportPath { get; set; }
 
         public Task QueryAsync(CancellationToken cancellationToken);
         public Task RetrieveAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
+        public Task LocalImportAsync(string path, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }

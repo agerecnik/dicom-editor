@@ -9,12 +9,19 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using FellowOakDicom.Network;
-
+using System.IO;
 
 namespace DicomEditor.ViewModel
 {
     public class RetrievalDialogViewModel : ViewModelBase, IDialogViewModel
     {
+        private bool _executionFinished;
+        public  bool ExecutionFinished
+        {
+            get => _executionFinished;
+            set => SetProperty(ref _executionFinished, value);
+        }
+
         private string _retrievalStatus;
         public string RetrievalStatus
         {
@@ -32,14 +39,20 @@ namespace DicomEditor.ViewModel
         public ICommand CancelRetrievalCommand { get; }
 
         private readonly IImportService _importService;
-        private readonly List<Series> _selectedSeriesList;
+        private readonly List<Series> _seriesList;
+        private readonly string _path;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public RetrievalDialogViewModel(IImportService importService, List<Series> selectedSeriesList) {
-            _importService = importService;
-            _selectedSeriesList = selectedSeriesList;
-            CancelRetrievalCommand = new RelayCommand(o => CancelRetrieval());
-            
+        public RetrievalDialogViewModel(IImportService importService, List<Series> seriesList) : this(importService)
+        {
+            _seriesList = seriesList;
+            _path = null;
+        }
+
+        public RetrievalDialogViewModel(IImportService importService, string path) : this(importService)
+        {
+            _path = path;
+            _seriesList = null;
         }
 
         public RetrievalDialogViewModel() : this(new ImportService(new SettingsService(), new Cache()), new List<Series>())
@@ -52,7 +65,14 @@ namespace DicomEditor.ViewModel
 
         public void Execute()
         {
-            Retrieve();
+            if(_seriesList is not null)
+            {
+                Retrieve();
+            }
+            else
+            {
+                Import();
+            }
         }
 
         private void CancelRetrieval()
@@ -60,12 +80,19 @@ namespace DicomEditor.ViewModel
             _cancellationTokenSource.Cancel();
         }
 
+        private RetrievalDialogViewModel(IImportService importService)
+        {
+            _importService = importService;
+            CancelRetrievalCommand = new RelayCommand(o => CancelRetrieval());
+            ExecutionFinished = false;
+        }
+
         private async void Retrieve()
         {
             int totalCount = 0;
             int tempCount = 0;
 
-            foreach (Series series in _selectedSeriesList)
+            foreach (Series series in _seriesList)
             {
                 totalCount += series.NumberOfInstances;
             }
@@ -83,7 +110,8 @@ namespace DicomEditor.ViewModel
 
             try
             {
-                await _importService.RetrieveAsync(_selectedSeriesList, progress, _cancellationTokenSource.Token);
+                await _importService.RetrieveAsync(_seriesList, progress, _cancellationTokenSource.Token);
+                ExecutionFinished = true;
                 RetrievalStatus = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
@@ -94,6 +122,45 @@ namespace DicomEditor.ViewModel
             or DicomRequestTimedOutException
             or AggregateException
             or ArgumentException)
+            {
+                RetrievalStatus = e.Message;
+            }
+        }
+
+        private async void Import()
+        {
+            int totalCount = 0;
+            int tempCount = 0;
+            Progress<int> progress = null;
+
+            if (File.Exists(_path))
+            {
+                totalCount = 1;
+            }
+            else if(Directory.Exists(_path))
+            {
+                totalCount = Directory.GetFiles(_path, "*.dcm", SearchOption.TopDirectoryOnly).Length;
+            }
+
+            if (totalCount > 0)
+            {
+                progress = new Progress<int>(progressCount =>
+                {
+                    tempCount++;
+                    RetrievalProgress = tempCount * 100 / totalCount;
+
+                });
+            }
+
+            try
+            {
+                await _importService.LocalImportAsync(_path, progress, _cancellationTokenSource.Token);
+                ExecutionFinished = true;
+                RetrievalStatus = "Completed";
+            }
+            catch (Exception e) when (e is FileFormatException
+            or FileNotFoundException
+            or DirectoryNotFoundException)
             {
                 RetrievalStatus = e.Message;
             }

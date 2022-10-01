@@ -92,9 +92,23 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _selectedSeriesList, value);
         }
 
+        public string _localImportPath;
+        public string LocalImportPath
+        {
+            get => _localImportPath;
+            set
+            {
+                SetProperty(ref _localImportPath, value);
+                _importService.LocalImportPath = value;
+            }
+        }
+
         public ICommand QueryCommand { get; }
 
         public ICommand RetrieveCommand { get; }
+
+        public ICommand LocalImportCommand { get; }
+
 
         public ImportViewModel(IImportService importService, IDialogService dialogService)
         {
@@ -115,12 +129,18 @@ namespace DicomEditor.ViewModel
                 }
             }, CanUseRetrieveCommand);
 
+            LocalImportCommand = new RelayCommand(o =>
+            {
+                _dialogService.ShowDialog<RetrievalDialogViewModel>("Import in progress", importService, LocalImportPath);
+            }, CanUseLocalImportCommand);
+
             PatientID = _importService.PatientID;
             PatientName = _importService.PatientName;
             AccessionNumber = _importService.AccessionNumber;
             StudyID = _importService.StudyID;
             Modality = _importService.Modality;
             QueryResult = _importService.QueryResult;
+            LocalImportPath = _importService.LocalImportPath;
             SelectedSeriesList = new();
         }
 
@@ -166,6 +186,15 @@ namespace DicomEditor.ViewModel
         private bool CanUseRetrieveCommand(object o)
         {
             if (SelectedSeriesList is null || SelectedSeriesList.Count <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseLocalImportCommand(object o)
+        {
+            if (LocalImportPath is null || LocalImportPath.Length <= 0)
             {
                 return false;
             }

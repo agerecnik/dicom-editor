@@ -18,6 +18,13 @@ namespace DicomEditor.ViewModel
 {
     public class QueryDialogViewModel : ViewModelBase, IDialogViewModel
     {
+        private bool _executionFinished;
+        public bool ExecutionFinished
+        {
+            get => _executionFinished;
+            set => SetProperty(ref _executionFinished, value);
+        }
+
         private string _queryStatus;
         public string QueryStatus
         {
@@ -33,6 +40,7 @@ namespace DicomEditor.ViewModel
         {
             _importService = importService;
             CancelQueryCommand = new RelayCommand(o => CancelQuery());
+            ExecutionFinished = false;
         }
 
         public QueryDialogViewModel() : this(new ImportService(new SettingsService(), new Cache()))
@@ -58,6 +66,7 @@ namespace DicomEditor.ViewModel
             try
             {
                 await _importService.QueryAsync(_cancellationTokenSource.Token);
+                ExecutionFinished = true;
                 QueryStatus = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException

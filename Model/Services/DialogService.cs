@@ -38,9 +38,11 @@ namespace DicomEditor.Model.Services
             viewModel.Execute();
 
             dialog.Content = content;
-            
-            
-            dialog.ShowDialog();
+
+            if (!viewModel.ExecutionFinished)
+            {
+                dialog.ShowDialog();
+            }
         }
     }
 }

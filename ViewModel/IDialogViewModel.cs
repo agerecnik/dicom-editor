@@ -8,6 +8,7 @@ namespace DicomEditor.ViewModel
 {
     public interface IDialogViewModel
     {
+        public bool ExecutionFinished { get; set; }
         public void Execute();
     }
 }

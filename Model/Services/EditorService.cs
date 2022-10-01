@@ -35,7 +35,7 @@ namespace DicomEditor.Model.Services
             return DatasetTree.CreateTree(dataset);
         }
 
-        public async Task StoreAsync(Series series, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task StoreAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.StoreServer).Host;
             int serverPort = 0;
@@ -47,16 +47,19 @@ namespace DicomEditor.Model.Services
             string appAET = _settingsService.DicomEditorAET;
 
             List<DicomDataset> instances = new();
-            foreach (Instance instance in series.Instances)
+            foreach (Series series in seriesList)
             {
-                if(_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                foreach (Instance instance in series.Instances)
                 {
-                    instances.Add(ds);
+                    if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                    {
+                        instances.Add(ds);
+                    }
+                    // TODO: throw exception if instance does not exist?
                 }
-                // TODO: throw exception if instance does not exist?
-            }
 
-            await DicomStoreService.StoreAsync(serverHost, serverPort, serverAET, appAET, instances, progress, cancellationToken);
+                await DicomStoreService.StoreAsync(serverHost, serverPort, serverAET, appAET, instances, progress, cancellationToken);
+            }
         }
     }
 }
