@@ -1,18 +1,12 @@
 ﻿using DicomEditor.Commands;
-using DicomEditor.Model;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
+using DicomEditor.Services;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using FellowOakDicom.Network;
+using DicomEditor.Interfaces;
 
 namespace DicomEditor.ViewModel
 {
@@ -43,7 +37,7 @@ namespace DicomEditor.ViewModel
             ExecutionFinished = false;
         }
 
-        public QueryDialogViewModel() : this(new ImportService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()))
+        public QueryDialogViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

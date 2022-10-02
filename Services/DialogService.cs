@@ -1,16 +1,12 @@
-﻿using DicomEditor.Model.Interfaces;
+﻿using DicomEditor.Interfaces;
 using DicomEditor.View;
-using DicomEditor.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
-namespace DicomEditor.Model.Services
+namespace DicomEditor.Services
 {
-    public  class DialogService : IDialogService
+    public class DialogService : IDialogService
     {
         private static readonly Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
 

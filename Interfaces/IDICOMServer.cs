@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DicomEditor.Model.Interfaces.ISettingsService;
-
-namespace DicomEditor.Model
+﻿namespace DicomEditor.Interfaces
 {
     public interface IDICOMServer
     {

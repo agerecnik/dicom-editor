@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using FellowOakDicom;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DicomEditor.Model.EditorModel.Tree;
 using System.Threading;
+using DicomEditor.Model;
 
-namespace DicomEditor.Model.Interfaces
+namespace DicomEditor.Interfaces
 {
     public interface IEditorService
     {

@@ -1,7 +1,5 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Model;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,10 +8,11 @@ using System.Windows;
 using System.Windows.Input;
 using FellowOakDicom.Network;
 using System.IO;
+using DicomEditor.Interfaces;
 
 namespace DicomEditor.ViewModel
 {
-    public class RetrievalDialogViewModel : ViewModelBase, IDialogViewModel
+    public class ImportDialogViewModel : ViewModelBase, IDialogViewModel
     {
         private bool _executionFinished;
         public  bool ExecutionFinished
@@ -22,40 +21,40 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _executionFinished, value);
         }
 
-        private string _retrievalStatus;
-        public string RetrievalStatus
+        private string _status;
+        public string Status
         {
-            get => _retrievalStatus;
-            set => SetProperty(ref _retrievalStatus, value);
+            get => _status;
+            set => SetProperty(ref _status, value);
         }
 
-        private int _retrievalProgress;
-        public int RetrievalProgress
+        private int _progress;
+        public int Progress
         {
-            get => _retrievalProgress;
-            set => SetProperty(ref _retrievalProgress, value);
+            get => _progress;
+            set => SetProperty(ref _progress, value);
         }
 
-        public ICommand CancelRetrievalCommand { get; }
+        public ICommand CancelCommand { get; }
 
         private readonly IImportService _importService;
         private readonly List<Series> _seriesList;
         private readonly string _path;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public RetrievalDialogViewModel(IImportService importService, List<Series> seriesList) : this(importService)
+        public ImportDialogViewModel(IImportService importService, List<Series> seriesList) : this(importService)
         {
             _seriesList = seriesList;
             _path = null;
         }
 
-        public RetrievalDialogViewModel(IImportService importService, string path) : this(importService)
+        public ImportDialogViewModel(IImportService importService, string path) : this(importService)
         {
             _path = path;
             _seriesList = null;
         }
 
-        public RetrievalDialogViewModel() : this(new ImportService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new List<Series>())
+        public ImportDialogViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -71,19 +70,19 @@ namespace DicomEditor.ViewModel
             }
             else
             {
-                Import();
+                LocalImport();
             }
         }
 
-        private void CancelRetrieval()
+        private void Cancel()
         {
             _cancellationTokenSource.Cancel();
         }
 
-        private RetrievalDialogViewModel(IImportService importService)
+        private ImportDialogViewModel(IImportService importService)
         {
             _importService = importService;
-            CancelRetrievalCommand = new RelayCommand(o => CancelRetrieval());
+            CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
         }
 
@@ -103,7 +102,7 @@ namespace DicomEditor.ViewModel
                 progress = new Progress<int>(progressCount =>
                 {
                     tempCount++;
-                    RetrievalProgress = tempCount * 100 / totalCount;
+                    Progress = tempCount * 100 / totalCount;
 
                 });
             }
@@ -112,7 +111,7 @@ namespace DicomEditor.ViewModel
             {
                 await _importService.RetrieveAsync(_seriesList, progress, _cancellationTokenSource.Token);
                 ExecutionFinished = true;
-                RetrievalStatus = "Completed";
+                Status = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
             or DicomAssociationAbortedException
@@ -123,11 +122,11 @@ namespace DicomEditor.ViewModel
             or AggregateException
             or ArgumentException)
             {
-                RetrievalStatus = e.Message;
+                Status = e.Message;
             }
         }
 
-        private async void Import()
+        private async void LocalImport()
         {
             int totalCount = 0;
             int tempCount = 0;
@@ -147,7 +146,7 @@ namespace DicomEditor.ViewModel
                 progress = new Progress<int>(progressCount =>
                 {
                     tempCount++;
-                    RetrievalProgress = tempCount * 100 / totalCount;
+                    Progress = tempCount * 100 / totalCount;
 
                 });
             }
@@ -156,13 +155,13 @@ namespace DicomEditor.ViewModel
             {
                 await _importService.LocalImportAsync(_path, progress, _cancellationTokenSource.Token);
                 ExecutionFinished = true;
-                RetrievalStatus = "Completed";
+                Status = "Completed";
             }
             catch (Exception e) when (e is FileFormatException
             or FileNotFoundException
             or DirectoryNotFoundException)
             {
-                RetrievalStatus = e.Message;
+                Status = e.Message;
             }
         }
     }

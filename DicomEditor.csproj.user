@@ -19,7 +19,7 @@
     <Compile Update="View\QueryDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\RetrievalDialog.xaml.cs">
+    <Compile Update="View\ImportDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SettingsView.xaml.cs">
@@ -33,7 +33,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="MainWindow.xaml">
+    <Page Update="View\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\SearchFieldTheme.xaml">
@@ -51,7 +51,7 @@
     <Page Update="View\QueryDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\RetrievalDialog.xaml">
+    <Page Update="View\ImportDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SettingsView.xaml">

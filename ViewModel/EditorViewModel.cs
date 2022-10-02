@@ -1,18 +1,12 @@
 ﻿using DicomEditor.Commands;
+using DicomEditor.Interfaces;
 using DicomEditor.Model;
 using DicomEditor.Model.EditorModel.Tree;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
-using FellowOakDicom;
+using DicomEditor.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -90,7 +84,7 @@ namespace DicomEditor.ViewModel
             }, CanUseStoreCommand);
         }
 
-        public EditorViewModel() : this(new EditorService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new DialogService())
+        public EditorViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

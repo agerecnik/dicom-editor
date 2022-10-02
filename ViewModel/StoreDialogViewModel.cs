@@ -1,15 +1,12 @@
 ﻿using DicomEditor.Commands;
+using DicomEditor.Interfaces;
 using DicomEditor.Model;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
+using DicomEditor.Services;
 using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -24,21 +21,21 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _executionFinished, value);
         }
 
-        private string _storeStatus;
-        public string StoreStatus
+        private string _status;
+        public string Status
         {
-            get => _storeStatus;
-            set => SetProperty(ref _storeStatus, value);
+            get => _status;
+            set => SetProperty(ref _status, value);
         }
 
-        private int _storeProgress;
-        public int StoreProgress
+        private int _progress;
+        public int Progress
         {
-            get => _storeProgress;
-            set => SetProperty(ref _storeProgress, value);
+            get => _progress;
+            set => SetProperty(ref _progress, value);
         }
 
-        public ICommand CancelStoreCommand { get; }
+        public ICommand CancelCommand { get; }
 
         private readonly IEditorService _editorService;
         private readonly List<Series> _seriesList;
@@ -48,11 +45,11 @@ namespace DicomEditor.ViewModel
         {
             _editorService = editorService;
             _seriesList = seriesList;
-            CancelStoreCommand = new RelayCommand(o => CancelStore());
+            CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
         }
 
-        public StoreDialogViewModel() : this(new EditorService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new List<Series>())
+        public StoreDialogViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -65,7 +62,7 @@ namespace DicomEditor.ViewModel
             Store();
         }
 
-        private void CancelStore()
+        private void Cancel()
         {
             _cancellationTokenSource.Cancel();
         }
@@ -86,7 +83,7 @@ namespace DicomEditor.ViewModel
                 progress = new Progress<int>(progressCount =>
                 {
                     tempCount++;
-                    StoreProgress = tempCount * 100 / totalCount;
+                    Progress = tempCount * 100 / totalCount;
 
                 });
             }
@@ -95,7 +92,7 @@ namespace DicomEditor.ViewModel
             {
                 await _editorService.StoreAsync(_seriesList, progress, _cancellationTokenSource.Token);
                 ExecutionFinished = true;
-                StoreStatus = "Completed";
+                Status = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
             or DicomAssociationAbortedException
@@ -105,7 +102,7 @@ namespace DicomEditor.ViewModel
             or DicomRequestTimedOutException
             or AggregateException)
             {
-                StoreStatus = e.Message;
+                Status = e.Message;
             }
         }
     }

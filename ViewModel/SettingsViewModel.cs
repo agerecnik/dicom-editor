@@ -1,13 +1,11 @@
 ﻿using DicomEditor.Commands;
-using DicomEditor.Model;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
+using DicomEditor.Interfaces;
+using DicomEditor.Services;
 using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using static DicomEditor.Model.IDICOMServer;
-using static DicomEditor.Model.Interfaces.ISettingsService;
+using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.ViewModel
 {
@@ -56,7 +54,7 @@ namespace DicomEditor.ViewModel
             
         }
 
-        public SettingsViewModel() : this(new SettingsService(new DICOMService()))
+        public SettingsViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

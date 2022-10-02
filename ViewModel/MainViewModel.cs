@@ -1,12 +1,8 @@
 ﻿using DicomEditor.Commands;
-using DicomEditor.Model.Interfaces;
+using DicomEditor.Interfaces;
+using DicomEditor.Services;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -45,6 +41,14 @@ namespace DicomEditor.ViewModel
             {
                 CurrentView = new SettingsViewModel(settingsService);
             });
+        }
+
+        public MainViewModel()
+        {
+            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            {
+                throw new Exception("Use only for design mode");
+            }
         }
     }
 }

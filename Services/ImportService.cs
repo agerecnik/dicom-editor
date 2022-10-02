@@ -1,4 +1,5 @@
-﻿using DicomEditor.Model.Interfaces;
+﻿using DicomEditor.Interfaces;
+using DicomEditor.Model;
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static DicomEditor.Model.IDICOMServer;
+using static DicomEditor.Interfaces.IDICOMServer;
 
-namespace DicomEditor.Model.Services
+namespace DicomEditor.Services
 {
     public class ImportService : IImportService
     {
@@ -71,7 +72,7 @@ namespace DicomEditor.Model.Services
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {
-                    string instanceUID = dataset?.GetSingleValueOrDefault<string>(DicomTag.SOPInstanceUID, "");
+                    string instanceUID = dataset?.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
                     Instance instance = new(instanceUID, series.SeriesUID);
                     instances.Add(instance);
                     retrievedInstances.Add(instanceUID, dataset);
@@ -93,16 +94,16 @@ namespace DicomEditor.Model.Services
             string[] filePaths;
             if (File.Exists(path))
             {
-                if(Path.GetExtension(path) != ".dcm")
+                if (Path.GetExtension(path) != ".dcm")
                 {
                     throw new FileFormatException("File format must be .dcm: " + path);
                 }
-                filePaths = new string[] {path};
+                filePaths = new string[] { path };
             }
-            else if(Directory.Exists(path))
+            else if (Directory.Exists(path))
             {
                 filePaths = Directory.GetFiles(path, "*.dcm", SearchOption.TopDirectoryOnly);
-                if(filePaths.Length == 0)
+                if (filePaths.Length == 0)
                 {
                     throw new FileNotFoundException("There are no .dcm files in " + path);
                 }
@@ -116,7 +117,7 @@ namespace DicomEditor.Model.Services
             Dictionary<string, Series> importedSeries = new();
             Dictionary<string, DicomDataset> importedInstances = new();
 
-            foreach(string filePath in filePaths)
+            foreach (string filePath in filePaths)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -126,7 +127,7 @@ namespace DicomEditor.Model.Services
                 var file = await DicomFile.OpenAsync(filePath);
                 DicomDataset dataset = file.Dataset;
 
-                string instanceUID = dataset.GetSingleValueOrDefault<string>(DicomTag.SOPInstanceUID, "");
+                string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
                 // TODO: tryAdd?
                 importedInstances.Add(instanceUID, dataset);
 
@@ -137,28 +138,28 @@ namespace DicomEditor.Model.Services
                 }
             }
 
-            foreach(DicomDataset dataset in importedInstances.Values)
+            foreach (DicomDataset dataset in importedInstances.Values)
             {
-                string instanceUID = dataset.GetSingleValueOrDefault<string>(DicomTag.SOPInstanceUID, "");
-                string seriesUID = dataset.GetSingleValueOrDefault<string>(DicomTag.SeriesInstanceUID, "");
+                string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
+                string seriesUID = dataset.GetSingleValueOrDefault(DicomTag.SeriesInstanceUID, "");
 
                 Instance instance = new(instanceUID, seriesUID);
                 Series series;
                 if (!importedSeries.TryGetValue(seriesUID, out series))
                 {
-                    string seriesDescription = dataset.GetSingleValueOrDefault<string>(DicomTag.SeriesDescription, "");
-                    DateTime seriesDate = dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesDate, new DateTime());
-                    DateTime seriesTime = dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesTime, new DateTime());
+                    string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
+                    DateTime seriesDate = dataset.GetSingleValueOrDefault(DicomTag.SeriesDate, new DateTime());
+                    DateTime seriesTime = dataset.GetSingleValueOrDefault(DicomTag.SeriesTime, new DateTime());
                     DateTime seriesDateTime = seriesDate;
                     seriesDateTime.AddHours(seriesTime.Hour);
                     seriesDateTime.AddMinutes(seriesTime.Minute);
-                    string modality = dataset.GetSingleValueOrDefault<string>(DicomTag.Modality, "");
-                    string studyUID = dataset.GetSingleValueOrDefault<string>(DicomTag.StudyInstanceUID, "");
+                    string modality = dataset.GetSingleValueOrDefault(DicomTag.Modality, "");
+                    string studyUID = dataset.GetSingleValueOrDefault(DicomTag.StudyInstanceUID, "");
 
                     int numberOfInstances = 0;
                     foreach (DicomDataset ds in importedInstances.Values)
                     {
-                        if (ds.GetSingleValueOrDefault<string>(DicomTag.SeriesInstanceUID, "") == seriesUID)
+                        if (ds.GetSingleValueOrDefault(DicomTag.SeriesInstanceUID, "") == seriesUID)
                         {
                             numberOfInstances++;
                         }

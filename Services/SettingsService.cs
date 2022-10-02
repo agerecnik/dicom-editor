@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Threading;
 using System.Threading.Tasks;
-using DicomEditor.Model.Interfaces;
-using static DicomEditor.Model.IDICOMServer;
-using static DicomEditor.Model.Interfaces.ISettingsService;
+using DicomEditor.Interfaces;
+using static DicomEditor.Interfaces.IDICOMServer;
 
-namespace DicomEditor.Model.Services
+namespace DicomEditor.Services
 {
     public class SettingsService : ISettingsService
     {
@@ -58,15 +56,17 @@ namespace DicomEditor.Model.Services
             UpdateVerificationStatus(server, VerificationStatus.InProgress);
             try
             {
-                bool successful = await _DICOMService.VerifyAsync(server.Host, Int32.Parse(server.Port), server.AET, DicomEditorAET);
-                if(successful)
+                bool successful = await _DICOMService.VerifyAsync(server.Host, int.Parse(server.Port), server.AET, DicomEditorAET);
+                if (successful)
                 {
                     UpdateVerificationStatus(server, VerificationStatus.Successful);
-                } else
+                }
+                else
                 {
                     UpdateVerificationStatus(server, VerificationStatus.Failed);
                 }
-            } catch(AggregateException)
+            }
+            catch (AggregateException)
             {
                 UpdateVerificationStatus(server, VerificationStatus.Failed);
             }

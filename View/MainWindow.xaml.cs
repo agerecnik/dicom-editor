@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Input;
 
-namespace DicomEditor
+namespace DicomEditor.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

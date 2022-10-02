@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DicomEditor.View"
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:StoreDialogViewModel, IsDesignTimeCreatable=True}"
@@ -48,11 +47,11 @@
 
         <Grid>
 
-            <ProgressBar x:Name="StoreProgress"
+            <ProgressBar x:Name="Progress"
                          Grid.Row="0"
                          Height="25"
                          Margin="10,10,10,0"
-                         Value="{Binding StoreProgress}"/>
+                         Value="{Binding Progress}"/>
 
             <TextBlock x:Name="Status"
                        Grid.Column="0"
@@ -64,7 +63,7 @@
                        TextWrapping="Wrap"
                        Foreground="DarkGray"
                        Background="#353340"
-                       Text="{Binding StoreStatus, NotifyOnTargetUpdated=True}"
+                       Text="{Binding Status, NotifyOnTargetUpdated=True}"
                        TargetUpdated="Status_TargetUpdated"/>
 
         </Grid>
@@ -74,7 +73,7 @@
                 Width="80"
                 Margin="10,0,10,10"
                 Content="Cancel"
-                Command="{Binding CancelStoreCommand}"
+                Command="{Binding CancelCommand}"
                 Click="Button_Click">
 
         </Button>

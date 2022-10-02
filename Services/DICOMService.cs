@@ -1,15 +1,14 @@
-﻿using DicomEditor.Model.Interfaces;
+﻿using DicomEditor.Interfaces;
+using DicomEditor.Model;
 using FellowOakDicom;
 using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DicomEditor.Model.Services
+namespace DicomEditor.Services
 {
     public class DICOMService : IDICOMService
     {
@@ -32,10 +31,10 @@ namespace DicomEditor.Model.Services
                 {
                     studyUIDs.Add(studyUID);
 
-                    string patientIDResult = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.PatientID, "");
-                    string patientNameResult = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.PatientName, "");
-                    string dateOfBirth = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.PatientBirthDate, "");
-                    string sex = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.PatientSex, "");
+                    string patientIDResult = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientID, "");
+                    string patientNameResult = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientName, "");
+                    string dateOfBirth = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientBirthDate, "");
+                    string sex = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientSex, "");
 
                     if (!patients.ContainsKey(patientIDResult))
                     {
@@ -43,10 +42,10 @@ namespace DicomEditor.Model.Services
                         patients.Add(patientIDResult, patient);
                     }
 
-                    string accessionNumberStudy = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.AccessionNumber, "");
-                    string studyDescription = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.StudyDescription, "");
-                    DateTime studyDate = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.StudyDate, new DateTime());
-                    DateTime studyTime = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.StudyTime, new DateTime());
+                    string accessionNumberStudy = response.Dataset?.GetSingleValueOrDefault(DicomTag.AccessionNumber, "");
+                    string studyDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.StudyDescription, "");
+                    DateTime studyDate = response.Dataset.GetSingleValueOrDefault(DicomTag.StudyDate, new DateTime());
+                    DateTime studyTime = response.Dataset.GetSingleValueOrDefault(DicomTag.StudyTime, new DateTime());
                     string modalitiesInStudy = response.Dataset.TryGetString(DicomTag.ModalitiesInStudy, out var dummy) ? dummy : string.Empty;
                     DateTime studyDateTime = studyDate;
                     studyDateTime.AddHours(studyTime.Hour);
@@ -74,18 +73,18 @@ namespace DicomEditor.Model.Services
                         string seriesInstanceUID = response.Dataset?.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
                         if (seriesInstanceUID is not null and not "")
                         {
-                            string patientIDResult = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.PatientID, "");
-                            string seriesDescription = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.SeriesDescription, "");
-                            string modality = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.Modality, "");
+                            string patientIDResult = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientID, "");
+                            string seriesDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
+                            string modality = response.Dataset?.GetSingleValueOrDefault(DicomTag.Modality, "");
 
                             DateTime seriesDate;
                             DateTime seriesTime;
                             int numberOfInstances;
                             if (response.Dataset is not null)
                             {
-                                seriesDate = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesDate, new DateTime());
-                                seriesTime = response.Dataset.GetSingleValueOrDefault<DateTime>(DicomTag.SeriesTime, new DateTime());
-                                numberOfInstances = response.Dataset.GetSingleValueOrDefault<int>(DicomTag.NumberOfSeriesRelatedInstances, 0);
+                                seriesDate = response.Dataset.GetSingleValueOrDefault(DicomTag.SeriesDate, new DateTime());
+                                seriesTime = response.Dataset.GetSingleValueOrDefault(DicomTag.SeriesTime, new DateTime());
+                                numberOfInstances = response.Dataset.GetSingleValueOrDefault(DicomTag.NumberOfSeriesRelatedInstances, 0);
                             }
                             else
                             {
@@ -117,7 +116,7 @@ namespace DicomEditor.Model.Services
             List<DicomDataset> retrievedSeries = new();
 
             int progressCounter = 0;
-            client.OnCStoreRequest += (DicomCStoreRequest req) =>
+            client.OnCStoreRequest += (req) =>
             {
                 retrievedSeries.Add(req.Dataset);
                 if (progress != null)

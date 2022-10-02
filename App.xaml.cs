@@ -1,15 +1,9 @@
-﻿using DicomEditor.Model;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
+﻿using DicomEditor.Interfaces;
+using DicomEditor.Services;
 using DicomEditor.View;
 using DicomEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace DicomEditor
@@ -23,7 +17,7 @@ namespace DicomEditor
         {
             Services = ConfigureServices();
             DialogService.RegisterDialog<QueryDialog, QueryDialogViewModel>();
-            DialogService.RegisterDialog<RetrievalDialog, RetrievalDialogViewModel>();
+            DialogService.RegisterDialog<ImportDialog, ImportDialogViewModel>();
             DialogService.RegisterDialog<StoreDialog, StoreDialogViewModel>();
         }
 

@@ -1,16 +1,14 @@
-﻿using DicomEditor.Model.EditorModel.Tree;
-using DicomEditor.Model.Interfaces;
+﻿using DicomEditor.Interfaces;
+using DicomEditor.Model;
+using DicomEditor.Model.EditorModel.Tree;
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static DicomEditor.Model.IDICOMServer;
+using static DicomEditor.Interfaces.IDICOMServer;
 
-namespace DicomEditor.Model.Services
+namespace DicomEditor.Services
 {
     public class EditorService : IEditorService
     {

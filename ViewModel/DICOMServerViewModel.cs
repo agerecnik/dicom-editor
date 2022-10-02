@@ -1,11 +1,5 @@
-﻿using DicomEditor.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DicomEditor.Model.IDICOMServer;
-using static DicomEditor.Model.Interfaces.ISettingsService;
+﻿using DicomEditor.Interfaces;
+using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.ViewModel
 {

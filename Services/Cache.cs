@@ -1,13 +1,9 @@
-﻿using DicomEditor.Model.Interfaces;
+﻿using DicomEditor.Interfaces;
+using DicomEditor.Model;
 using FellowOakDicom;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DicomEditor.Model.Services
+namespace DicomEditor.Services
 {
     public class Cache : ICache
     {

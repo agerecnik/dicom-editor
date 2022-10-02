@@ -1,15 +1,10 @@
 ﻿using DicomEditor.Commands;
+using DicomEditor.Interfaces;
 using DicomEditor.Model;
-using DicomEditor.Model.Interfaces;
-using DicomEditor.Model.Services;
-using FellowOakDicom;
+using DicomEditor.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -125,13 +120,13 @@ namespace DicomEditor.ViewModel
             {
                 if (SelectedSeriesList is not null && SelectedSeriesList.Count > 0)
                 {
-                    _dialogService.ShowDialog<RetrievalDialogViewModel>("Retrieval in progress", importService, SelectedSeriesList);
+                    _dialogService.ShowDialog<ImportDialogViewModel>("Retrieval in progress", importService, SelectedSeriesList);
                 }
             }, CanUseRetrieveCommand);
 
             LocalImportCommand = new RelayCommand(o =>
             {
-                _dialogService.ShowDialog<RetrievalDialogViewModel>("Import in progress", importService, LocalImportPath);
+                _dialogService.ShowDialog<ImportDialogViewModel>("Import in progress", importService, LocalImportPath);
             }, CanUseLocalImportCommand);
 
             PatientID = _importService.PatientID;
@@ -144,7 +139,7 @@ namespace DicomEditor.ViewModel
             SelectedSeriesList = new();
         }
 
-        public ImportViewModel() : this(new ImportService(new SettingsService(new DICOMService()), new Cache(), new DICOMService()), new DialogService())
+        public ImportViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {

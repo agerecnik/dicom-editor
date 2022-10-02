@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
-             xmlns:local="clr-namespace:DicomEditor.Model"
+             xmlns:model="clr-namespace:DicomEditor.Model"
              xmlns:theme="clr-namespace:DicomEditor.Theme"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:ImportViewModel, IsDesignTimeCreatable=True}"
@@ -279,7 +279,7 @@
                   SelectedItemChanged="TreeView_SelectedItemChanged">
 
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:Patient}" ItemsSource="{Binding Studies.Values}">
+                <HierarchicalDataTemplate DataType="{x:Type model:Patient}" ItemsSource="{Binding Studies.Values}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition MinWidth="250"/>
@@ -294,7 +294,7 @@
                         <TextBlock Text="{Binding Sex}" Grid.Column="3"/>
                     </Grid>
                 </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:Study}" ItemsSource="{Binding Series.Values}">
+                <HierarchicalDataTemplate DataType="{x:Type model:Study}" ItemsSource="{Binding Series.Values}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition MinWidth="250"/>
@@ -309,7 +309,7 @@
                         <TextBlock Text="{Binding Modalities}" Grid.Column="3"/>
                     </Grid>
                 </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type local:Series}">
+                <DataTemplate DataType="{x:Type model:Series}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition MinWidth="250"/>

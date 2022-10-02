@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DicomEditor.Model.IDICOMServer;
+﻿using System.Threading.Tasks;
+using static DicomEditor.Interfaces.IDICOMServer;
 
-namespace DicomEditor.Model.Interfaces
+namespace DicomEditor.Interfaces
 {
     public delegate void UpdatedVerificationStatusHandler(ServerType type);
     public delegate void SettingsSavedHandler();
