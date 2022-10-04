@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace DicomEditor.Model.EditorModel.Tree
+namespace DicomEditor.Interfaces
 {
     public interface ITreeModel
     {

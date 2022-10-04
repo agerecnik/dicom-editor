@@ -19,13 +19,13 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _executionFinished, value);
         }
 
-        private string _queryStatus;
-        public string QueryStatus
+        private string _status;
+        public string Status
         {
-            get => _queryStatus;
-            set => SetProperty(ref _queryStatus, value);
+            get => _status;
+            set => SetProperty(ref _status, value);
         }
-        public ICommand CancelQueryCommand { get; }
+        public ICommand CancelCommand { get; }
 
         private readonly IImportService _importService;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -33,7 +33,7 @@ namespace DicomEditor.ViewModel
         public QueryDialogViewModel(IImportService importService)
         {
             _importService = importService;
-            CancelQueryCommand = new RelayCommand(o => CancelQuery());
+            CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
         }
 
@@ -50,7 +50,7 @@ namespace DicomEditor.ViewModel
             StartQuery();
         }
 
-        private void CancelQuery()
+        private void Cancel()
         {
             _cancellationTokenSource.Cancel();
         }
@@ -61,7 +61,7 @@ namespace DicomEditor.ViewModel
             {
                 await _importService.QueryAsync(_cancellationTokenSource.Token);
                 ExecutionFinished = true;
-                QueryStatus = "Completed";
+                Status = "Completed";
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
             or DicomAssociationAbortedException
@@ -71,7 +71,7 @@ namespace DicomEditor.ViewModel
             or DicomRequestTimedOutException
             or AggregateException)
             {
-                QueryStatus = e.Message;
+                Status = e.Message;
             }
         }
     }

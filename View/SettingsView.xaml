@@ -45,7 +45,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server AET"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding QueryRetrieveServer.AET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="0"
@@ -55,7 +55,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Host"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding QueryRetrieveServer.Host, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="0"
@@ -65,7 +65,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Port"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding QueryRetrieveServer.Port, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <Label Grid.Column="1"
@@ -82,7 +82,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server AET"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding StoreServer.AET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="1"
@@ -92,7 +92,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server Host"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding StoreServer.Host, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <TextBox Grid.Column="1"
@@ -102,7 +102,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server Port"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding StoreServer.Port, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <Label Grid.Column="2"
@@ -119,7 +119,7 @@
                  Margin="10"
                  MaxWidth="200"
                  theme:ThemeProperties.SearchFieldName="Dicom Editor AET"
-                 Style="{StaticResource SearchFieldTheme}"
+                 Style="{StaticResource TextBoxStyle}"
                  Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         <Button Grid.Column="0"
@@ -130,7 +130,8 @@
                 Margin="10,10,10,10"
                 Content="Verify"
                 Command="{Binding VerifyCommand}"
-                CommandParameter="{Binding QueryRetrieveServer}">
+                CommandParameter="{Binding QueryRetrieveServer}"
+                Style="{StaticResource ButtonStyle}">
         </Button>
 
         <Label Grid.Column="0"
@@ -149,7 +150,9 @@
                 Margin="10,10,10,10"
                 Content="Verify"
                 Command="{Binding VerifyCommand}"
-                CommandParameter="{Binding StoreServer}">
+                CommandParameter="{Binding StoreServer}"
+                Style="{StaticResource ButtonStyle}">
+            
         </Button>
 
         <Label Grid.Column="1"
@@ -166,7 +169,8 @@
                 Margin="10,10,10,10"
                 Content="Save Settings"
                 VerticalAlignment="Bottom"
-                Command="{Binding SaveSettingsCommand}">
+                Command="{Binding SaveSettingsCommand}"
+                Style="{StaticResource ButtonStyle}">
 
         </Button>
     </Grid>

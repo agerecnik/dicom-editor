@@ -17,8 +17,8 @@ namespace DicomEditor.ViewModel
         private IEditorService _editorService;
         private IDialogService _dialogService;
 
-        private ObservableCollection<Series> _loadedSeriesList;
-        public ObservableCollection<Series> LoadedSeriesList
+        private ICollection<Series> _loadedSeriesList;
+        public ICollection<Series> LoadedSeriesList
         {
             get => _loadedSeriesList;
             set
@@ -54,8 +54,8 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private DatasetTree _selectedInstanceAttributes;
-        public DatasetTree SelectedInstanceAttributes
+        private ITreeModel _selectedInstanceAttributes;
+        public ITreeModel SelectedInstanceAttributes
         {
             get => _selectedInstanceAttributes;
             set
@@ -79,7 +79,6 @@ namespace DicomEditor.ViewModel
                 if (SelectedSeries is not null)
                 {
                     _dialogService.ShowDialog<StoreDialogViewModel>("Store in progress", editorService, new List<Series> { SelectedSeries });
-                    // await _editorService.StoreAsync(SelectedSeries, null, _cancellationTokenSource.Token);
                 }
             }, CanUseStoreCommand);
         }

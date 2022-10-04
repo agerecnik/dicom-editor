@@ -12,7 +12,7 @@ namespace DicomEditor.Model
         public string PatientName { get; }
         public string DateOfBirth { get; }
         public string Sex { get; }
-        public Dictionary<string, Study> Studies { get; }
+        public IDictionary<string, Study> Studies { get; }
 
         public Patient(string patientID, string patientName, string dateOfBirth, string sex)
         {
@@ -20,7 +20,7 @@ namespace DicomEditor.Model
             PatientName = patientName;
             DateOfBirth = dateOfBirth;
             Sex = sex;
-            Studies = new();
+            Studies = new Dictionary<string, Study>();
         }
     }
 }

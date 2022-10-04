@@ -1,4 +1,5 @@
-﻿using FellowOakDicom;
+﻿using DicomEditor.Interfaces;
+using FellowOakDicom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace DicomEditor.Model.EditorModel.Tree
             return tree;
 		}
 
-        private static void ReadDataset(DicomDataset dataset, DatasetModel datasetModel)
+        private static void ReadDataset(DicomDataset dataset, IDatasetModel datasetModel)
         {
-            List<DicomItem> items = dataset.ToList();
+            IList<DicomItem> items = dataset.ToList();
             foreach (DicomItem item in items)
             {
                 bool test;
@@ -39,7 +40,7 @@ namespace DicomEditor.Model.EditorModel.Tree
                 test = dataset.TryGetString(tag, out str);
                 if (test)
                 {
-                    DatasetModel attribute = new(tag.ToString(), item.ValueRepresentation.ToString(), name, str);
+                    IDatasetModel attribute = new DatasetModel(tag.ToString(), item.ValueRepresentation.ToString(), name, str);
                     datasetModel.NestedDatasets.Add(attribute);
                     continue;
                 }
@@ -48,12 +49,12 @@ namespace DicomEditor.Model.EditorModel.Tree
                 test = dataset.TryGetSequence(tag, out seq);
                 if (test)
                 {
-                    DatasetModel sequenceModel = new(tag.ToString(), item.ValueRepresentation.ToString(), name, "");
+                    IDatasetModel sequenceModel = new DatasetModel(tag.ToString(), item.ValueRepresentation.ToString(), name, "");
                     datasetModel.NestedDatasets.Add(sequenceModel);
                     int counter = 0;
                     foreach (DicomDataset sequenceItem in seq.Items)
                     {
-                        DatasetModel nestedDatasetModel = new("", "", "Item " + counter, "");
+                        IDatasetModel nestedDatasetModel = new DatasetModel("", "", "Item " + counter, "");
                         ReadDataset(sequenceItem, nestedDatasetModel);
                         sequenceModel.NestedDatasets.Add(nestedDatasetModel);
                         counter++;
@@ -62,7 +63,7 @@ namespace DicomEditor.Model.EditorModel.Tree
             }
         }
 
-		public DatasetModel Root { get; private set; }
+		public IDatasetModel Root { get; private set; }
 
 		public DatasetTree()
 		{
@@ -73,12 +74,12 @@ namespace DicomEditor.Model.EditorModel.Tree
 		{
 			if (parent == null)
 				parent = Root;
-			return (parent as DatasetModel).NestedDatasets;
+			return (parent as IDatasetModel).NestedDatasets;
 		}
 
 		public bool HasChildren(object parent)
 		{
-			return (parent as DatasetModel).NestedDatasets.Count > 0;
+			return (parent as IDatasetModel).NestedDatasets.Count > 0;
 		}
 	}
 }

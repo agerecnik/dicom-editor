@@ -23,19 +23,19 @@ namespace DicomEditor.Services
             _DICOMService = DICOMService;
         }
 
-        public List<Series> GetLoadedSeries()
+        public IList<Series> GetLoadedSeries()
         {
             return _cache.LoadedSeries;
         }
 
-        public DatasetTree GetInstance(string instanceUID)
+        public ITreeModel GetInstance(string instanceUID)
         {
             DicomDataset dataset = new();
             _cache.LoadedInstances.TryGetValue(instanceUID, out dataset);
             return DatasetTree.CreateTree(dataset);
         }
 
-        public async Task StoreAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.StoreServer).Host;
             int serverPort = 0;

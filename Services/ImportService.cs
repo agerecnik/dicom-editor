@@ -22,7 +22,7 @@ namespace DicomEditor.Services
         public string AccessionNumber { get; set; }
         public string StudyID { get; set; }
         public string Modality { get; set; }
-        public Dictionary<string, Patient> QueryResult { get; set; }
+        public IDictionary<string, Patient> QueryResult { get; set; }
         public string LocalImportPath { get; set; }
 
         public ImportService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
@@ -47,7 +47,7 @@ namespace DicomEditor.Services
             QueryResult = await _DICOMService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
         }
 
-        public async Task RetrieveAsync(List<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task RetrieveAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.QueryRetrieveServer).Host;
             int serverPort = 0;
@@ -68,7 +68,7 @@ namespace DicomEditor.Services
                     break;
                 }
 
-                List<DicomDataset> retrievedDataset = await _DICOMService.RetrieveAsync(serverHost, serverPort, serverAET, appAET, series, progress, cancellationToken);
+                IList<DicomDataset> retrievedDataset = await _DICOMService.RetrieveAsync(serverHost, serverPort, serverAET, appAET, series, progress, cancellationToken);
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {
@@ -144,8 +144,7 @@ namespace DicomEditor.Services
                 string seriesUID = dataset.GetSingleValueOrDefault(DicomTag.SeriesInstanceUID, "");
 
                 Instance instance = new(instanceUID, seriesUID);
-                Series series;
-                if (!importedSeries.TryGetValue(seriesUID, out series))
+                if (!importedSeries.TryGetValue(seriesUID, out Series series))
                 {
                     string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
                     DateTime seriesDate = dataset.GetSingleValueOrDefault(DicomTag.SeriesDate, new DateTime());
@@ -181,7 +180,7 @@ namespace DicomEditor.Services
 
         private void HandleSettingsSaved()
         {
-            QueryResult = new();
+            QueryResult = new Dictionary<string, Patient>();
         }
     }
 }

@@ -38,10 +38,10 @@ namespace DicomEditor.ViewModel
         public ICommand CancelCommand { get; }
 
         private readonly IEditorService _editorService;
-        private readonly List<Series> _seriesList;
+        private readonly IList<Series> _seriesList;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public StoreDialogViewModel(IEditorService editorService, List<Series> seriesList)
+        public StoreDialogViewModel(IEditorService editorService, IList<Series> seriesList)
         {
             _editorService = editorService;
             _seriesList = seriesList;

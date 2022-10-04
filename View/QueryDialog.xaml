@@ -40,7 +40,7 @@
                        TextWrapping="Wrap"
                        Foreground="DarkGray"
                        Background="#353340"
-                       Text="{Binding QueryStatus, NotifyOnTargetUpdated=True}"
+                       Text="{Binding Status, NotifyOnTargetUpdated=True}"
                        TargetUpdated="Status_TargetUpdated"/>
             
         </Grid>
@@ -51,7 +51,9 @@
                 Width="80"
                 Margin="10,0,10,10"
                 Content="Cancel"
-                Command="{Binding CancelQueryCommand}" Click="Button_Click">
+                Command="{Binding CancelCommand}"
+                Click="Button_Click"
+                Style="{StaticResource ButtonStyle}">
 
         </Button>
     </Grid>

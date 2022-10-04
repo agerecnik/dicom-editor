@@ -9,7 +9,8 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Theme/SearchFieldTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="Theme/ButtonStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:ImportViewModel}">

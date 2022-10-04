@@ -33,10 +33,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Theme\ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Theme\SearchFieldTheme.xaml">
+    <Page Update="Theme\TextBoxStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\DialogWindow.xaml">

@@ -3,7 +3,7 @@
                     xmlns:theme="clr-namespace:DicomEditor.Theme">
 
     <Style TargetType="{x:Type TextBox}"
-           x:Key="SearchFieldTheme">
+           x:Key="TextBoxStyle">
 
         <Setter Property="Template">
 

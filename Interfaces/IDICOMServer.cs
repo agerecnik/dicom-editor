@@ -2,12 +2,12 @@
 {
     public interface IDICOMServer
     {
-        enum ServerType
+        public enum ServerType
         {
             QueryRetrieveServer,
             StoreServer
         }
-        enum VerificationStatus
+        public enum VerificationStatus
         {
             Successful,
             Failed,

@@ -74,7 +74,8 @@
                 Margin="10,0,10,10"
                 Content="Cancel"
                 Command="{Binding CancelCommand}"
-                Click="Button_Click">
+                Click="Button_Click"
+                Style="{StaticResource ButtonStyle}">
 
         </Button>
 

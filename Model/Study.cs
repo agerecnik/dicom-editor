@@ -13,7 +13,7 @@ namespace DicomEditor.Model
         public string StudyDescription { get; }
         public DateTime StudyDateTime { get; }
         public string Modalities { get; }
-        public Dictionary<string, Series> Series { get; }
+        public IDictionary<string, Series> Series { get; }
 
         public Study(string studyUID, string accessionNumber, string studyDescription, DateTime studyDateTime, string modalities)
         {
@@ -22,7 +22,7 @@ namespace DicomEditor.Model
             StudyDescription = studyDescription;
             StudyDateTime = studyDateTime;
             Modalities = modalities;
-            Series = new();
+            Series = new Dictionary<string, Series>();
         }
     }
 }

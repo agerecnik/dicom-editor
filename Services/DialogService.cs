@@ -3,12 +3,13 @@ using DicomEditor.View;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using static DicomEditor.Interfaces.IDialogViewModel;
 
 namespace DicomEditor.Services
 {
     public class DialogService : IDialogService
     {
-        private static readonly Dictionary<Type, Type> _mappings = new Dictionary<Type, Type>();
+        private static readonly Dictionary<Type, Type> _mappings = new();
 
         public static void RegisterDialog<TView, TViewModel>()
         {
@@ -23,8 +24,10 @@ namespace DicomEditor.Services
 
         private static void ShowDialogInternal(string title, Type type, Type vmType, params object[] vmParameters)
         {
-            var dialog = new DialogWindow();
-            dialog.Title = title;
+            var dialog = new DialogWindow
+            {
+                Title = title
+            };
 
             var content = Activator.CreateInstance(type);
             var vm = Activator.CreateInstance(vmType, vmParameters);

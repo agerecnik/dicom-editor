@@ -15,7 +15,7 @@ namespace DicomEditor.Model
         public string Modality { get; }
         public int NumberOfInstances { get; }
         public string StudyUID { get; }
-        public ObservableCollection<Instance> Instances { get; }
+        public ICollection<Instance> Instances { get; }
 
         public Series(string seriesUID, string seriesDescription, DateTime seriesDateTime, string modality, int numberOfInstances, string studyUID, List<Instance> instances)
         {

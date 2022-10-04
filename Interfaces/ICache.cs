@@ -10,7 +10,7 @@ namespace DicomEditor.Interfaces
 {
     public interface ICache
     {
-        public List<Series> LoadedSeries { get; set; }
-        public Dictionary<string, DicomDataset> LoadedInstances { get; set; }
+        public IList<Series> LoadedSeries { get; set; }
+        public IDictionary<string, DicomDataset> LoadedInstances { get; set; }
     }
 }

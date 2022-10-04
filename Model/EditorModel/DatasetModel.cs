@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using DicomEditor.Interfaces;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace DicomEditor.Model.EditorModel
 {
-    public class DatasetModel
+    public class DatasetModel : IDatasetModel
     {
-        private readonly ObservableCollection<DatasetModel> _nestedDatasets = new ObservableCollection<DatasetModel>();
-        public ObservableCollection<DatasetModel> NestedDatasets
-        {
-            get { return _nestedDatasets; }
-        }
-
         public string Tag { get; set; }
         public string ValueRepresentation { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
+        public ICollection<IDatasetModel> NestedDatasets { get; set; }
 
         public DatasetModel(string tag, string vr, string name, string value)
         {
@@ -22,6 +18,7 @@ namespace DicomEditor.Model.EditorModel
             ValueRepresentation = vr;
             Name = name;
             Value = value;
+            NestedDatasets = new ObservableCollection<IDatasetModel>();
         }
     }
 }

@@ -176,7 +176,8 @@
                     Height="30"
                     Margin="10,0,0,10"
                     Content="Store selected series"
-                    Command="{Binding StoreCommand}">
+                    Command="{Binding StoreCommand}"
+                    Style="{StaticResource ButtonStyle}">
 
             </Button>
             

@@ -12,7 +12,7 @@ namespace DicomEditor.Services
 {
     public class DICOMService : IDICOMService
     {
-        public async Task<Dictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patientID, string patientName, string accessionNumber, string studyID, string modality, CancellationToken cancellationToken)
+        public async Task<IDictionary<string, Patient>> QueryAsync(string serverHost, int serverPort, string serverAET, string appAET, string patientID, string patientName, string accessionNumber, string studyID, string modality, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             client.NegotiateAsyncOps();
@@ -22,7 +22,7 @@ namespace DicomEditor.Services
             var request = CreateStudyRequest(patientID, patientName, accessionNumber, studyID, modality);
 
             Dictionary<string, Patient> patients = new();
-            var studyUIDs = new List<string>();
+            List<string> studyUIDs = new();
             request.OnResponseReceived += (req, response) =>
             {
                 DebugStudyResponse(response);
@@ -105,11 +105,10 @@ namespace DicomEditor.Services
                     await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
                 }
             }
-
             return patients;
         }
 
-        public async Task<List<DicomDataset>> RetrieveAsync(string serverHost, int serverPort, string serverAET, string appAET, Series series, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task<IList<DicomDataset>> RetrieveAsync(string serverHost, int serverPort, string serverAET, string appAET, Series series, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             var cGetRequest = CreateCGetBySeriesUID(series.StudyUID, series.SeriesUID);
@@ -127,7 +126,7 @@ namespace DicomEditor.Services
                 return Task.FromResult(new DicomCStoreResponse(req, DicomStatus.Success));
             };
 
-            HashSet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID);
+            ISet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID);
             foreach (string sopClassUID in sopClassUIDs)
             {
                 var pc = DicomPresentationContext.GetScpRolePresentationContext(
@@ -144,7 +143,7 @@ namespace DicomEditor.Services
             return retrievedSeries;
         }
 
-        public async Task StoreAsync(string serverHost, int serverPort, string serverAET, string appAET, List<DicomDataset> series, IProgress<int> progress, CancellationToken cancellationToken)
+        public async Task StoreAsync(string serverHost, int serverPort, string serverAET, string appAET, IList<DicomDataset> series, IProgress<int> progress, CancellationToken cancellationToken)
         {
             var client = DicomClientFactory.Create(serverHost, serverPort, false, appAET, serverAET);
             client.NegotiateAsyncOps();
@@ -257,7 +256,7 @@ namespace DicomEditor.Services
             return request;
         }
 
-        private async Task<HashSet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesUID)
+        private async Task<ISet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesUID)
         {
             HashSet<string> sopClassUIDs = new();
             if (seriesUID is not null and not "")

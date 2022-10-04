@@ -38,11 +38,11 @@ namespace DicomEditor.ViewModel
         public ICommand CancelCommand { get; }
 
         private readonly IImportService _importService;
-        private readonly List<Series> _seriesList;
+        private readonly IList<Series> _seriesList;
         private readonly string _path;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public ImportDialogViewModel(IImportService importService, List<Series> seriesList) : this(importService)
+        public ImportDialogViewModel(IImportService importService, IList<Series> seriesList) : this(importService)
         {
             _seriesList = seriesList;
             _path = null;

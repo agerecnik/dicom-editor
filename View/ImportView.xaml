@@ -231,7 +231,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Patient ID"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding PatientID, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
             <TextBox Grid.Column="1"
@@ -240,7 +240,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Patient Name"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding PatientName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
             <TextBox Grid.Column="2"
@@ -249,7 +249,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Accession Number"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding AccessionNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
             <TextBox Grid.Column="3"
@@ -258,7 +258,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Study ID"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding StudyID, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
             <TextBox Grid.Column="4"
@@ -267,7 +267,7 @@
                      Margin="10"
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Modality"
-                     Style="{StaticResource SearchFieldTheme}"
+                     Style="{StaticResource TextBoxStyle}"
                      Text="{Binding Modality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
         </Grid>
@@ -332,17 +332,17 @@
         <Grid Grid.Row="2">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="100" MaxWidth="200"/>
-                <ColumnDefinition MinWidth="100" MaxWidth="200"/>
-                <ColumnDefinition MinWidth="100" MaxWidth="400"/>
-                <ColumnDefinition MinWidth="100" MaxWidth="200"/>
+                <ColumnDefinition MinWidth="50" MaxWidth="150"/>
+                <ColumnDefinition MinWidth="50" MaxWidth="150"/>
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0"
                     Height="30"
                     Margin="10,10,10,10"
                     Content="Query"
-                    Command="{Binding QueryCommand}">
+                    Command="{Binding QueryCommand}"
+                    Style="{StaticResource ButtonStyle}">
 
             </Button>
 
@@ -350,26 +350,35 @@
                     Height="30"
                     Margin="10,10,10,10"
                     Content="Retrieve"
-                    Command="{Binding RetrieveCommand}">
+                    Command="{Binding RetrieveCommand}"
+                    Style="{StaticResource ButtonStyle}">
 
             </Button>
 
-            <TextBox Grid.Column="2"
-                     VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Margin="100 10 10 10"
-                     MaxWidth="400"
-                     theme:ThemeProperties.SearchFieldName="Local Import Path"
-                     Style="{StaticResource SearchFieldTheme}"
-                     Text="{Binding LocalImportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid Grid.Column="2"
+                  HorizontalAlignment="Right">
 
-            <Button Grid.Column="3"
-                    Height="30"
-                    Margin="10,10,10,10"
-                    Content="Import"
-                    Command="{Binding LocalImportCommand}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
 
-            </Button>
+                <TextBox Grid.Column="0"
+                         Margin="10 10 10 10"
+                         theme:ThemeProperties.SearchFieldName="Local Import Path"
+                         Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding LocalImportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Button Grid.Column="1"
+                        Height="30"
+                        Margin="10,10,10,10"
+                        Content="Import"
+                        Command="{Binding LocalImportCommand}"
+                        Style="{StaticResource ButtonStyle}">
+
+                </Button>
+
+            </Grid>
 
         </Grid>
 

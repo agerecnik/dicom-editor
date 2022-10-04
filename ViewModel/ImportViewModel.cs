@@ -70,8 +70,8 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private Dictionary<string, Patient> _queryResult;
-        public Dictionary<string, Patient> QueryResult
+        private IDictionary<string, Patient> _queryResult;
+        public IDictionary<string, Patient> QueryResult
         {
             get => _queryResult;
             set
@@ -80,8 +80,8 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private List<Series> _selectedSeriesList;
-        public List<Series> SelectedSeriesList
+        private IList<Series> _selectedSeriesList;
+        public IList<Series> SelectedSeriesList
         {
             get => _selectedSeriesList;
             set => SetProperty(ref _selectedSeriesList, value);
@@ -136,7 +136,7 @@ namespace DicomEditor.ViewModel
             Modality = _importService.Modality;
             QueryResult = _importService.QueryResult;
             LocalImportPath = _importService.LocalImportPath;
-            SelectedSeriesList = new();
+            SelectedSeriesList = new List<Series>();
         }
 
         public ImportViewModel()
