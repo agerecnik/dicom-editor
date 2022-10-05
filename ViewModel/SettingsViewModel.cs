@@ -1,6 +1,5 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
-using DicomEditor.Services;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -13,9 +12,9 @@ namespace DicomEditor.ViewModel
     {
         private ISettingsService _settingsService;
 
-        public DICOMServerViewModel QueryRetrieveServer { get; set; }
+        public IDICOMServer QueryRetrieveServer { get; set; }
 
-        public DICOMServerViewModel StoreServer { get; set; }
+        public IDICOMServer StoreServer { get; set; }
 
         private string _dicomEditorAET;
         public string DicomEditorAET
@@ -38,20 +37,15 @@ namespace DicomEditor.ViewModel
             _settingsService.UpdatedVerificationStatusEvent += new UpdatedVerificationStatusHandler(HandleUpdatedVerificationStatus);
 
             IDICOMServer qrServer = _settingsService.GetServer(ServerType.QueryRetrieveServer);
-            QueryRetrieveServer = new(qrServer.Type, qrServer.AET, qrServer.Host, qrServer.Port, qrServer.Status);
+            QueryRetrieveServer = new DICOMServerViewModel(qrServer.Type, qrServer.AET, qrServer.Host, qrServer.Port, qrServer.Status);
 
             IDICOMServer stServer = _settingsService.GetServer(ServerType.StoreServer);
-            StoreServer = new(stServer.Type, stServer.AET, stServer.Host, stServer.Port, stServer.Status);
+            StoreServer = new DICOMServerViewModel(stServer.Type, stServer.AET, stServer.Host, stServer.Port, stServer.Status);
 
             DicomEditorAET = _settingsService.DicomEditorAET;
 
-            SaveSettingsCommand = new RelayCommand(o =>
-            {
-                SaveSettings();
-            });
-
+            SaveSettingsCommand = new RelayCommand(SaveSettings, CanUseSaveSettingsCommand);
             VerifyCommand = new RelayCommand(Verify, CanUseVerifyCommand);
-            
         }
 
         public SettingsViewModel()
@@ -62,7 +56,7 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private void SaveSettings()
+        private void SaveSettings(object o)
         {
             _settingsService.SetServer(QueryRetrieveServer);
             _settingsService.SetServer(StoreServer);
@@ -71,7 +65,7 @@ namespace DicomEditor.ViewModel
 
         private async void Verify(object o)
         {
-            SaveSettings();
+            SaveSettings(o);
             IDICOMServer server = (IDICOMServer)o;
             await _settingsService.VerifyAsync(server.Type);
         }
@@ -79,7 +73,24 @@ namespace DicomEditor.ViewModel
         private bool CanUseVerifyCommand(object o)
         {
             IDICOMServer server = (IDICOMServer)o;
-            if(server == null || server.Status == VerificationStatus.InProgress)
+            if(server is null || server.Status is VerificationStatus.InProgress
+                || server.AET is null || server.AET is ""
+                || server.Host is null || server.Host is ""
+                || server.Port is null || server.Port is "")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseSaveSettingsCommand(object o)
+        {
+            if (QueryRetrieveServer.AET is null || QueryRetrieveServer.AET is ""
+                || QueryRetrieveServer.Host is null || QueryRetrieveServer.Host is ""
+                || QueryRetrieveServer.Port is null || QueryRetrieveServer.Port is ""
+                || StoreServer.AET is null || StoreServer.AET is ""
+                || StoreServer.Host is null || StoreServer.Host is ""
+                || StoreServer.Port is null || StoreServer.Port is "")
             {
                 return false;
             }

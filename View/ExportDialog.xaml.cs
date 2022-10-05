@@ -7,9 +7,9 @@ namespace DicomEditor.View
     /// <summary>
     /// Interaction logic for StoreDialog.xaml
     /// </summary>
-    public partial class StoreDialog : UserControl
+    public partial class ExportDialog : UserControl
     {
-        public StoreDialog()
+        public ExportDialog()
         {
             InitializeComponent();
         }

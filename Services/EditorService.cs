@@ -4,6 +4,7 @@ using DicomEditor.Model.EditorModel.Tree;
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using static DicomEditor.Interfaces.IDICOMServer;
@@ -15,6 +16,8 @@ namespace DicomEditor.Services
         private readonly ISettingsService _settingsService;
         private readonly ICache _cache;
         private readonly IDICOMService _DICOMService;
+
+        public string LocalExportPath { get; set; }
 
         public EditorService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
         {
@@ -59,6 +62,55 @@ namespace DicomEditor.Services
                 }
 
                 await _DICOMService.StoreAsync(serverHost, serverPort, serverAET, appAET, instances, progress, cancellationToken);
+            }
+        }
+
+        public async Task LocalExportAsync(IList<Series> seriesList, string path, IProgress<int> progress, CancellationToken cancellationToken)
+        {
+            if (File.Exists(path))
+            {
+                throw new DirectoryNotFoundException("Invalid directory path: " + path);
+            }
+
+            Directory.CreateDirectory(path);
+
+            int progressCounter = 0;
+
+            foreach (Series series in seriesList)
+            {
+                foreach (Instance instance in series.Instances)
+                {
+                    if(cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                    {
+                        string filePath = path;
+                        if (path[^1] is '\\')
+                        {
+                            string fileName = progressCounter + ".dcm";
+                            filePath += fileName;
+                        }
+                        else
+                        {
+                            string fileName = @"\" + progressCounter + ".dcm";
+                            filePath += fileName;
+                        }
+
+                        DicomFile file = new(ds);
+                        await file.SaveAsync(filePath, FellowOakDicom.IO.Writer.DicomWriteOptions.Default);
+
+                    }
+                    // TODO: throw exception if instance does not exist?
+
+                    if (progress != null)
+                    {
+                        progressCounter++;
+                        progress.Report(progressCounter);
+                    }
+                }
             }
         }
     }

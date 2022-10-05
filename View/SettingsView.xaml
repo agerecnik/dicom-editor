@@ -46,7 +46,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server AET"
                      Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding QueryRetrieveServer.AET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding QueryRetrieveServer.AET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBox Grid.Column="0"
                  Grid.Row="2"
@@ -56,7 +56,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Host"
                      Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding QueryRetrieveServer.Host, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding QueryRetrieveServer.Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBox Grid.Column="0"
                  Grid.Row="3"
@@ -66,7 +66,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Port"
                      Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding QueryRetrieveServer.Port, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding QueryRetrieveServer.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Label Grid.Column="1"
                Grid.Row="0"
@@ -83,7 +83,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server AET"
                      Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding StoreServer.AET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding StoreServer.AET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBox Grid.Column="1"
                  Grid.Row="2"
@@ -93,7 +93,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server Host"
                      Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding StoreServer.Host, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding StoreServer.Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBox Grid.Column="1"
                  Grid.Row="3"
@@ -103,7 +103,7 @@
                      MaxWidth="200"
                      theme:ThemeProperties.SearchFieldName="Store Server Port"
                      Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding StoreServer.Port, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                     Text="{Binding StoreServer.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Label Grid.Column="2"
                Grid.Row="0"
@@ -120,7 +120,7 @@
                  MaxWidth="200"
                  theme:ThemeProperties.SearchFieldName="Dicom Editor AET"
                  Style="{StaticResource TextBoxStyle}"
-                 Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+                 Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <Button Grid.Column="0"
                 Grid.Row="4"

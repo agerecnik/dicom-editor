@@ -18,7 +18,7 @@ namespace DicomEditor
             Services = ConfigureServices();
             DialogService.RegisterDialog<QueryDialog, QueryDialogViewModel>();
             DialogService.RegisterDialog<ImportDialog, ImportDialogViewModel>();
-            DialogService.RegisterDialog<StoreDialog, StoreDialogViewModel>();
+            DialogService.RegisterDialog<ExportDialog, ExportDialogViewModel>();
         }
 
         public new static App Current => (App)Application.Current;

@@ -28,7 +28,7 @@
     <Compile Update="Theme\Spinner.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\StoreDialog.xaml.cs">
+    <Compile Update="View\ExportDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -63,7 +63,7 @@
     <Page Update="Theme\Spinner.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\StoreDialog.xaml">
+    <Page Update="View\ExportDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

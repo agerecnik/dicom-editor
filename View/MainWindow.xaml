@@ -81,6 +81,10 @@
                                         TargetName="MenuToggleButtonBorder"
                                         Value="{StaticResource MenuToggleButtonMouseOver}"/>
 
+                                <Setter Property="Cursor"
+                                        TargetName="MenuToggleButtonBorder"
+                                        Value="Hand"/>
+
                             </Trigger>
 
                             <Trigger Property="IsChecked"
@@ -146,6 +150,10 @@
                                     <Setter Property="BorderBrush"
                                             TargetName="MenuRadioButtonBorder"
                                             Value="#404D5B"/>
+
+                                    <Setter Property="Cursor"
+                                            TargetName="MenuRadioButtonBorder"
+                                            Value="Hand"/>
                                 </Trigger>
 
                                 <Trigger Property="IsChecked"

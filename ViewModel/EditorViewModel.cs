@@ -1,8 +1,6 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
-using DicomEditor.Model.EditorModel.Tree;
-using DicomEditor.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -67,20 +65,30 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private string _localExportPath;
+        public string LocalExportPath
+        {
+            get => _localExportPath;
+            set
+            {
+                SetProperty(ref _localExportPath, value);
+                _editorService.LocalExportPath = value;
+            }
+        }
+
         public ICommand StoreCommand { get; }
+        public ICommand LocalExportCommand { get; }
+
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
             _editorService = editorService;
             _dialogService = dialogService;
 
-            StoreCommand = new RelayCommand(o =>
-            {
-                if (SelectedSeries is not null)
-                {
-                    _dialogService.ShowDialog<StoreDialogViewModel>("Store in progress", editorService, new List<Series> { SelectedSeries });
-                }
-            }, CanUseStoreCommand);
+            StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
+            LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
+
+            LocalExportPath = _editorService.LocalExportPath;
         }
 
         public EditorViewModel()
@@ -101,9 +109,31 @@ namespace DicomEditor.ViewModel
             SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID);
         }
 
+        private void Store()
+        {
+            if (SelectedSeries is not null)
+            {
+                _dialogService.ShowDialog<ExportDialogViewModel>("Store in progress", _editorService, new List<Series> { SelectedSeries });
+            }
+        }
+
+        private void LocalExport()
+        {
+            _dialogService.ShowDialog<ExportDialogViewModel>("Local export in progress", _editorService, new List<Series> { SelectedSeries }, LocalExportPath);
+        }
+
         private bool CanUseStoreCommand(object o)
         {
             if (SelectedSeries is null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseLocalExportCommand(object o)
+        {
+            if (SelectedSeries is null || LocalExportPath is null || LocalExportPath.Length <= 0)
             {
                 return false;
             }

@@ -7,13 +7,13 @@
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:QueryDialogViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="125" d:DesignWidth="250"
+             d:DesignHeight="140" d:DesignWidth="250"
              Background="#272537">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="0.4*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">

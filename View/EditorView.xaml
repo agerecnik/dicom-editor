@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              xmlns:tree="clr-namespace:DicomEditor.Model.EditorModel.Tree"
+             xmlns:theme="clr-namespace:DicomEditor.Theme"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:EditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -139,7 +140,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="0.2*" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
 
             <ListView Grid.Row="0"
@@ -158,7 +159,7 @@
             </ListView>
 
             <ListView Grid.Row="1"
-                      Margin="10,5,5,10"
+                      Margin="10,5,5,5"
                       Background="#353340"
                       BorderBrush="#353340"
                       IsSynchronizedWithCurrentItem="True"
@@ -174,7 +175,8 @@
 
             <Button Grid.Row="2"
                     Height="30"
-                    Margin="10,0,0,10"
+                    MaxWidth="200"
+                    Margin="10,5,5,10"
                     Content="Store selected series"
                     Command="{Binding StoreCommand}"
                     Style="{StaticResource ButtonStyle}">
@@ -183,25 +185,59 @@
             
         </Grid>
 
-        <tree:TreeList x:Name="_tree"
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <tree:TreeList x:Name="_tree"
                        Grid.Column="1"
+                       Grid.RowSpan="2"    
                        Model="{Binding SelectedInstanceAttributes, Mode=TwoWay}"
                        Background="#353340"
                        BorderBrush="#353340"
-                       Margin="5,10,10,10">
-            <tree:TreeList.View>
-                <GridView>
-                    <GridView.Columns>
+                       Margin="5,10,10,5">
+                <tree:TreeList.View>
+                    <GridView>
+                        <GridView.Columns>
 
-                        <GridViewColumn Header="Tag" Width="200" CellTemplate="{StaticResource tagCell}"/>
-                        <GridViewColumn Header="Name" Width="200" CellTemplate="{StaticResource nameCell}"/>
-                        <GridViewColumn Header="Value Representation" Width="200" CellTemplate="{StaticResource valueRepresentationCell}"/>
-                        <GridViewColumn Header="Value" Width="200" CellTemplate="{StaticResource valueCell}"/>
+                            <GridViewColumn Header="Tag" Width="200" CellTemplate="{StaticResource tagCell}"/>
+                            <GridViewColumn Header="Name" Width="200" CellTemplate="{StaticResource nameCell}"/>
+                            <GridViewColumn Header="Value Representation" Width="200" CellTemplate="{StaticResource valueRepresentationCell}"/>
+                            <GridViewColumn Header="Value" Width="200" CellTemplate="{StaticResource valueCell}"/>
 
-                    </GridView.Columns>
-                </GridView>
-            </tree:TreeList.View>
-        </tree:TreeList>
+                        </GridView.Columns>
+                    </GridView>
+                </tree:TreeList.View>
+            </tree:TreeList>
+
+            <Grid Grid.Row="2"
+                  HorizontalAlignment="Right">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Margin="5,5,0,10"
+                         theme:ThemeProperties.SearchFieldName="Local Export Path"
+                         Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding LocalExportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Button Grid.Column="1"
+                        Height="30"
+                        Margin="10,5,10,10"
+                        Content="Export selected series"
+                        Command="{Binding LocalExportCommand}"
+                        Style="{StaticResource ButtonStyle}">
+
+                </Button>
+
+            </Grid>
+            
+        </Grid>
 
     </Grid>
 </UserControl>

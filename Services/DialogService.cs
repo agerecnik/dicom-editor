@@ -37,6 +37,7 @@ namespace DicomEditor.Services
             viewModel.Execute();
 
             dialog.Content = content;
+            dialog.Closing += viewModel.OnClosing;
 
             if (!viewModel.ExecutionFinished)
             {

@@ -5,6 +5,7 @@ using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -156,6 +157,7 @@ namespace DicomEditor.Services
                 {
                     break;
                 }
+                
                 DicomFile file = new DicomFile(instance);
                 var request = new DicomCStoreRequest(file, DicomPriority.Medium);
                 request.OnResponseReceived += (req, response) =>

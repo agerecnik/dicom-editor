@@ -1,7 +1,6 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
-using DicomEditor.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -99,9 +98,7 @@ namespace DicomEditor.ViewModel
         }
 
         public ICommand QueryCommand { get; }
-
         public ICommand RetrieveCommand { get; }
-
         public ICommand LocalImportCommand { get; }
 
 
@@ -110,24 +107,9 @@ namespace DicomEditor.ViewModel
             _importService = importService;
             _dialogService = dialogService;
 
-            QueryCommand = new RelayCommand(o =>
-            {
-                _dialogService.ShowDialog<QueryDialogViewModel>("Query in progress", importService);
-                QueryResult = _importService.QueryResult;
-            });
-
-            RetrieveCommand = new RelayCommand(o =>
-            {
-                if (SelectedSeriesList is not null && SelectedSeriesList.Count > 0)
-                {
-                    _dialogService.ShowDialog<ImportDialogViewModel>("Retrieval in progress", importService, SelectedSeriesList);
-                }
-            }, CanUseRetrieveCommand);
-
-            LocalImportCommand = new RelayCommand(o =>
-            {
-                _dialogService.ShowDialog<ImportDialogViewModel>("Import in progress", importService, LocalImportPath);
-            }, CanUseLocalImportCommand);
+            QueryCommand = new RelayCommand(o => Query());
+            RetrieveCommand = new RelayCommand(o => Retrieve(), CanUseRetrieveCommand);
+            LocalImportCommand = new RelayCommand(o => LocalImport(), CanUseLocalImportCommand);
 
             PatientID = _importService.PatientID;
             PatientName = _importService.PatientName;
@@ -176,6 +158,25 @@ namespace DicomEditor.ViewModel
             }
 
             SelectedSeriesList = seriesList;
+        }
+
+        private void Query()
+        {
+            _dialogService.ShowDialog<QueryDialogViewModel>("Query in progress", _importService);
+            QueryResult = _importService.QueryResult;
+        }
+
+        private void Retrieve()
+        {
+            if (SelectedSeriesList is not null && SelectedSeriesList.Count > 0)
+            {
+                _dialogService.ShowDialog<ImportDialogViewModel>("Retrieval in progress", _importService, SelectedSeriesList);
+            }
+        }
+
+        private void LocalImport()
+        {
+            _dialogService.ShowDialog<ImportDialogViewModel>("Import in progress", _importService, LocalImportPath);
         }
 
         private bool CanUseRetrieveCommand(object o)

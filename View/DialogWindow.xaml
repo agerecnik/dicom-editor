@@ -6,8 +6,8 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        WindowStyle="None"
-        Title="DialogWindow" Height="125" Width="250">
+        WindowStyle="SingleBorderWindow"
+        Title="DialogWindow" Height="140" Width="250">
     <Grid>
         
     </Grid>

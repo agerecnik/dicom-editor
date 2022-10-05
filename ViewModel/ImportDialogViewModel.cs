@@ -74,9 +74,9 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private void Cancel()
+        public void OnClosing(object sender, CancelEventArgs e)
         {
-            _cancellationTokenSource.Cancel();
+            Cancel();
         }
 
         private ImportDialogViewModel(IImportService importService)
@@ -84,6 +84,11 @@ namespace DicomEditor.ViewModel
             _importService = importService;
             CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
+        }
+
+        private void Cancel()
+        {
+            _cancellationTokenSource.Cancel();
         }
 
         private async void Retrieve()
@@ -159,7 +164,13 @@ namespace DicomEditor.ViewModel
             }
             catch (Exception e) when (e is FileFormatException
             or FileNotFoundException
-            or DirectoryNotFoundException)
+            or DirectoryNotFoundException
+            or ArgumentException
+            or ArgumentNullException
+            or ArgumentOutOfRangeException
+            or UnauthorizedAccessException
+            or PathTooLongException
+            or IOException)
             {
                 Status = e.Message;
             }

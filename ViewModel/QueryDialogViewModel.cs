@@ -1,5 +1,4 @@
 ﻿using DicomEditor.Commands;
-using DicomEditor.Services;
 using System;
 using System.ComponentModel;
 using System.Threading;
@@ -50,6 +49,11 @@ namespace DicomEditor.ViewModel
             StartQuery();
         }
 
+        public void OnClosing(object sender, CancelEventArgs e)
+        {
+            Cancel();
+        }
+
         private void Cancel()
         {
             _cancellationTokenSource.Cancel();
@@ -69,7 +73,8 @@ namespace DicomEditor.ViewModel
             or DicomAssociationRequestTimedOutException
             or DicomNetworkException
             or DicomRequestTimedOutException
-            or AggregateException)
+            or AggregateException
+            or ArgumentException)
             {
                 Status = e.Message;
             }

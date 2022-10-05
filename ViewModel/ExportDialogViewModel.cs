@@ -1,18 +1,18 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
-using DicomEditor.Services;
 using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
 namespace DicomEditor.ViewModel
 {
-    public class StoreDialogViewModel : ViewModelBase, IDialogViewModel
+    public class ExportDialogViewModel : ViewModelBase, IDialogViewModel
     {
         private bool _executionFinished;
         public bool ExecutionFinished
@@ -39,17 +39,24 @@ namespace DicomEditor.ViewModel
 
         private readonly IEditorService _editorService;
         private readonly IList<Series> _seriesList;
+        private readonly string _path;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public StoreDialogViewModel(IEditorService editorService, IList<Series> seriesList)
+        public ExportDialogViewModel(IEditorService editorService, IList<Series> seriesList)
         {
             _editorService = editorService;
             _seriesList = seriesList;
+            _path = null;
             CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
         }
 
-        public StoreDialogViewModel()
+        public ExportDialogViewModel(IEditorService editorService, IList<Series> seriesList, string path) : this(editorService, seriesList)
+        {
+            _path = path;
+        }
+
+        public ExportDialogViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -59,7 +66,19 @@ namespace DicomEditor.ViewModel
 
         public void Execute()
         {
-            Store();
+            if (_path is null)
+            {
+                Store();
+            }
+            else
+            {
+                LocalExport();
+            }
+        }
+
+        public void OnClosing(object sender, CancelEventArgs e)
+        {
+            Cancel();
         }
 
         private void Cancel()
@@ -68,6 +87,47 @@ namespace DicomEditor.ViewModel
         }
 
         private async void Store()
+        {
+            try
+            {
+                await _editorService.StoreAsync(_seriesList, CreateProgress(), _cancellationTokenSource.Token);
+                ExecutionFinished = true;
+                Status = "Completed";
+            }
+            catch (Exception e) when (e is ConnectionClosedPrematurelyException
+            or DicomAssociationAbortedException
+            or DicomAssociationRejectedException
+            or DicomAssociationRequestTimedOutException
+            or DicomNetworkException
+            or DicomRequestTimedOutException
+            or AggregateException
+            or ArgumentException)
+            {
+                Status = e.Message;
+            }
+        }
+
+        private async void LocalExport()
+        {
+            try
+            {
+                await _editorService.LocalExportAsync(_seriesList, _path, CreateProgress(), _cancellationTokenSource.Token);
+                ExecutionFinished = true;
+                Status = "Completed";
+            }
+            catch (Exception e) when (e is UnauthorizedAccessException
+            or DirectoryNotFoundException
+            or IOException
+            or ArgumentException
+            or ArgumentNullException
+            or PathTooLongException
+            or NotSupportedException)
+            {
+                Status = e.Message;
+            }
+        }
+
+        private IProgress<int> CreateProgress()
         {
             int totalCount = 0;
             int tempCount = 0;
@@ -88,22 +148,7 @@ namespace DicomEditor.ViewModel
                 });
             }
 
-            try
-            {
-                await _editorService.StoreAsync(_seriesList, progress, _cancellationTokenSource.Token);
-                ExecutionFinished = true;
-                Status = "Completed";
-            }
-            catch (Exception e) when (e is ConnectionClosedPrematurelyException
-            or DicomAssociationAbortedException
-            or DicomAssociationRejectedException
-            or DicomAssociationRequestTimedOutException
-            or DicomNetworkException
-            or DicomRequestTimedOutException
-            or AggregateException)
-            {
-                Status = e.Message;
-            }
+            return progress;
         }
     }
 }

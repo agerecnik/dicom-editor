@@ -201,9 +201,9 @@
         
         <Grid.RowDefinitions>
 
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="50"/>
 
         </Grid.RowDefinitions>
 
@@ -274,7 +274,7 @@
 
         <TreeView x:Name="QueryResultTreeView"
                   Grid.Row="1"
-                  Margin="10,10,10,10"
+                  Margin="10,0,10,0"
                   ItemsSource="{Binding QueryResult.Values}"
                   SelectedItemChanged="TreeView_SelectedItemChanged">
 
@@ -364,7 +364,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"
-                         Margin="10 10 10 10"
+                         Margin="10,10,10,10"
                          theme:ThemeProperties.SearchFieldName="Local Import Path"
                          Style="{StaticResource TextBoxStyle}"
                          Text="{Binding LocalImportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

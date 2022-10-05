@@ -1,6 +1,5 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
-using DicomEditor.Services;
 using System;
 using System.ComponentModel;
 using System.Windows;
