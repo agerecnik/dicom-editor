@@ -96,7 +96,7 @@
             </Setter>
         </Style>
         
-        <Style x:Key="{x:Type TreeViewItem}"
+        <Style x:Key="TreeViewItemStyle"
                TargetType="{x:Type TreeViewItem}">
             <Setter Property="Background"
                     Value="Transparent" />
@@ -134,11 +134,14 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <ToggleButton x:Name="Expander"
+                                          Grid.Column="0"
+                                          Grid.Row="0"
                                           Style="{StaticResource ExpandCollapseToggleStyle}"
                                           ClickMode="Press"
                                           IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"/>
                             <Border x:Name="Bd"
                                     Grid.Column="1"
+                                    Grid.Row="0"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
@@ -276,7 +279,8 @@
                   Grid.Row="1"
                   Margin="10,0,10,0"
                   ItemsSource="{Binding QueryResult.Values}"
-                  SelectedItemChanged="TreeView_SelectedItemChanged">
+                  SelectedItemChanged="TreeView_SelectedItemChanged"
+                  ItemContainerStyle="{StaticResource TreeViewItemStyle}">
 
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type model:Patient}" ItemsSource="{Binding Studies.Values}">
@@ -285,7 +289,7 @@
                             <ColumnDefinition MinWidth="250"/>
                             <ColumnDefinition MinWidth="250"/>
                             <ColumnDefinition MinWidth="250"/>
-                            <ColumnDefinition MinWidth="250"/>
+                            <ColumnDefinition MinWidth="50"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding PatientID}" Grid.Column="0"/>
@@ -300,7 +304,7 @@
                             <ColumnDefinition MinWidth="250"/>
                             <ColumnDefinition MinWidth="250"/>
                             <ColumnDefinition MinWidth="250"/>
-                            <ColumnDefinition MinWidth="250"/>
+                            <ColumnDefinition MinWidth="50"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding AccessionNumber}" Grid.Column="0"/>
@@ -314,7 +318,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition MinWidth="250"/>
                             <ColumnDefinition MinWidth="250"/>
-                            <ColumnDefinition MinWidth="250"/>
+                            <ColumnDefinition MinWidth="50"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding SeriesDescription}" Grid.Column="0"/>
