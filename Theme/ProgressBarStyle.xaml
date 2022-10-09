@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="ProgressBarStyle"
+           TargetType="{x:Type ProgressBar}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                    <Grid MinHeight="14" MinWidth="200">
+                        <Border Name="PART_Track" 
+                                CornerRadius="0" 
+                                Background="{StaticResource ProgressBackgroundColor}"
+                                BorderBrush="{StaticResource ProgressBackgroundColor}"
+                                BorderThickness="1" />
+                        <Border Name="PART_Indicator" 
+                                CornerRadius="0" 
+                                Background="{StaticResource ProgressDoneColor}" 
+                                BorderBrush="{StaticResource ProgressDoneColor}" 
+                                BorderThickness="1" 
+                                HorizontalAlignment="Left" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>

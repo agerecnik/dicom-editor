@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:QueryDialogViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="140" d:DesignWidth="250"
-             Background="#272537">
+             Background="{StaticResource WindowBackgroundColor}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +20,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            
+
             <theme:Spinner x:Name="Spinner"
                            Grid.Column="0"
                            EllipseSize="10"
@@ -29,7 +29,6 @@
                            Margin="10,10,10,10"
                            Height="30"
                            Width="30"/>
-            
             <TextBlock x:Name="Status"
                        Grid.Column="0"
                        HorizontalAlignment="Center"
@@ -38,13 +37,11 @@
                        Visibility="Collapsed"
                        FontSize="11"
                        TextWrapping="Wrap"
-                       Foreground="DarkGray"
-                       Background="#353340"
+                       Foreground="{StaticResource TextColor}"
+                       Background="{StaticResource ElementBackgroundColor}"
                        Text="{Binding Status, NotifyOnTargetUpdated=True}"
                        TargetUpdated="Status_TargetUpdated"/>
-            
         </Grid>
-        
 
         <Button Grid.Row="1"
                 Height="25"
@@ -53,8 +50,6 @@
                 Content="Cancel"
                 Command="{Binding CancelCommand}"
                 Click="Button_Click"
-                Style="{StaticResource ButtonStyle}">
-
-        </Button>
+                Style="{StaticResource ButtonStyle}" />
     </Grid>
 </UserControl>

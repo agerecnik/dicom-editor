@@ -10,33 +10,23 @@
         Title="MainWindow" Height="800" Width="1200">
 
     <Window.Resources>
-
-        <!--Toggle button style template-->
         <ImageBrush x:Key="MenuToggleButtonMouseOver"
                     ImageSource="../Assets/toggle_button_MouseOver.png"/>
 
-        <!--Text font style-->
-        <Style x:Key="FontStyle" TargetType="TextBlock">
-
+        <Style x:Key="FontStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="FontFamily"
                     Value="../Assets/Roboto-Light.ttf #Roboto"/>
-
             <Setter Property="VerticalAlignment"
                     Value="Center"/>
-
             <Setter Property="HorizontalAlignment"
                     Value="Left"/>
-
             <Setter Property="Foreground"
                     Value="White"/>
-
             <Setter Property="FontSize"
                     Value="20"/>
-
         </Style>
 
-        <!--Tooltip style template-->
-        <Style x:Key="ToolTipStyle" TargetType="ToolTip">
+        <Style x:Key="ToolTipStyle" TargetType="{x:Type ToolTip}">
 
             <Setter Property="Placement" Value="Right"/>
             <Setter Property="Height" Value="40"/>
@@ -56,73 +46,51 @@
         </Style>
 
         <Style x:Key="MenuToggleButtonStyle" TargetType="{x:Type ToggleButton}">
-
             <Setter Property="Template">
-                
                 <Setter.Value>
-                    
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        
                         <Border x:Name="MenuToggleButtonBorder"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}"
                                 SnapsToDevicePixels="True"/>
-
                         <ControlTemplate.Triggers>
-
                             <Trigger Property="IsMouseOver"
                                      Value="True">
-
                                 <Setter Property="Background"
                                         TargetName="MenuToggleButtonBorder"
                                         Value="{StaticResource MenuToggleButtonMouseOver}"/>
-
                                 <Setter Property="BorderBrush"
                                         TargetName="MenuToggleButtonBorder"
                                         Value="{StaticResource MenuToggleButtonMouseOver}"/>
-
                                 <Setter Property="Cursor"
                                         TargetName="MenuToggleButtonBorder"
                                         Value="Hand"/>
-
                             </Trigger>
 
                             <Trigger Property="IsChecked"
                                      Value="True">
-
                                 <Setter Property="Background"
                                         TargetName="MenuToggleButtonBorder"
                                         Value="{StaticResource MenuToggleButtonMouseOver}"/>
-
                                 <Setter Property="BorderBrush"
                                         TargetName="MenuToggleButtonBorder"
                                         Value="{StaticResource MenuToggleButtonMouseOver}"/>
-
                             </Trigger>
 
                         </ControlTemplate.Triggers>
-
                     </ControlTemplate>
-                    
                 </Setter.Value>
-                
             </Setter>
-
         </Style>
 
-        <!--Menu radio button style template-->
         <Style BasedOn="{StaticResource {x:Type ToggleButton}}"
                TargetType="{x:Type RadioButton}"
                x:Key="MenuRadioButtonStyle">
 
             <Style.Setters>
-
                 <Setter Property="Template">
-
                     <Setter.Value>
-
-                        <ControlTemplate TargetType="RadioButton">
-
+                        <ControlTemplate TargetType="{x:Type RadioButton}">
                             <Border x:Name="MenuRadioButtonBorder"
                                     Height="50"
                                     BorderBrush="{TemplateBinding BorderBrush}"
@@ -131,82 +99,54 @@
                                     Padding="{TemplateBinding Padding}"
                                     SnapsToDevicePixels="True"
                                     MouseEnter="MenuRadioButton_MouseEnter">
-
                                 <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
                             </Border>
-
                             <ControlTemplate.Triggers>
-
                                 <Trigger Property="IsMouseOver"
                                          Value="True">
-
                                     <Setter Property="Background"
                                             TargetName="MenuRadioButtonBorder"
                                             Value="#404D5B"/>
-
                                     <Setter Property="BorderBrush"
                                             TargetName="MenuRadioButtonBorder"
                                             Value="#404D5B"/>
-
                                     <Setter Property="Cursor"
                                             TargetName="MenuRadioButtonBorder"
                                             Value="Hand"/>
                                 </Trigger>
-
                                 <Trigger Property="IsChecked"
                                          Value="True">
-
                                     <Setter Property="Background"
                                             TargetName="MenuRadioButtonBorder"
                                             Value="#404D5B"/>
-
-
                                     <Setter Property="BorderBrush"
                                             TargetName="MenuRadioButtonBorder"
                                             Value="#404D5B"/>
                                 </Trigger>
-
                             </ControlTemplate.Triggers>
-
                         </ControlTemplate>
-
                     </Setter.Value>
-
                 </Setter>
-
             </Style.Setters>
-
         </Style>
-
     </Window.Resources>
-    
-    <!--Background color-->
-    <Grid Background="Black">
 
-        <!--View Panel-->
+    <Grid Background="Black">
         <Grid x:Name="ViewPanel"
               PreviewMouseLeftButtonDown="ViewPanel_PreviewMouseLeftButtonDown"
               Margin="64,0,0,0">
-
             <ContentControl x:Name="CurrentView" Content="{Binding CurrentView}"/>
-
         </Grid>
 
-        <!--Navigation Panel-->
         <Grid x:Name="NavigationPanel"
               HorizontalAlignment="Left"
               Width="65"
               Background="#2E333A">
 
             <StackPanel x:Name="st_panel">
-
-                <!--Grid for the menu toggle button-->
                 <Grid Height="90">
-
-                    <!--Menu title text-->
                     <TextBlock Grid.Row="1"
                                Grid.Column="0"
                                Margin="73,-20,0,0"
@@ -217,19 +157,14 @@
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                Style="{StaticResource FontStyle}">
-
                         <TextBlock.Effect>
-
                             <DropShadowEffect BlurRadius="10"
                                               ShadowDepth="1"
                                               Direction="-90"
                                               Color="White"/>
-
                         </TextBlock.Effect>
-
                     </TextBlock>
 
-                    <!--Toggle button-->
                     <ToggleButton x:Name="MenuToggleButton"
                                   Grid.Column="0"
                                   VerticalAlignment="Center"
@@ -241,24 +176,14 @@
                                   Style="{StaticResource MenuToggleButtonStyle}"
                                   Unchecked="MenuToggleButton_Unchecked"
                                   Checked="MenuToggleButton_Checked">
-
-                        <!--Toggle button background image-->
                         <ToggleButton.Background>
-
                             <ImageBrush ImageSource="../Assets/toggle_button_default.png"
                                         Stretch="None"/>
-
                         </ToggleButton.Background>
-
-                        <!--Toggle button checked/unchecked events -->
                         <ToggleButton.Triggers>
-
                             <EventTrigger RoutedEvent="ToggleButton.Unchecked">
-
                                 <BeginStoryboard>
-
                                     <Storyboard x:Name="HideStackPanel">
-
                                         <DoubleAnimation
                                             Storyboard.TargetName="NavigationPanel"
                                             Storyboard.TargetProperty="Width"
@@ -266,43 +191,28 @@
                                             From="230" To="65"
                                             Duration="0:0:0.2"/>
                                     </Storyboard>
-
                                 </BeginStoryboard>
-
                             </EventTrigger>
-
                             <EventTrigger RoutedEvent="ToggleButton.Checked">
-
                                 <BeginStoryboard>
-
                                     <Storyboard x:Name="ShowStackPanel">
-
                                         <DoubleAnimation
                                             Storyboard.TargetName="NavigationPanel"
                                             Storyboard.TargetProperty="Width"
                                             BeginTime="0:0:0"
                                             From="65" To="230"
                                             Duration="0:0:0.3"/>
-
                                     </Storyboard>
-
                                 </BeginStoryboard>
-
                             </EventTrigger>
-
                         </ToggleButton.Triggers>
-
                     </ToggleButton>
-
                 </Grid>
 
-                <!--Menu radio buttons-->
                 <StackPanel Grid.Row="0"
                             Grid.Column="1">
-
                     <ItemsControl>
 
-                        <!--Import DICOM-->
                         <RadioButton Style="{StaticResource MenuRadioButtonStyle}"
                                      HorizontalAlignment="Left"
                                      Margin="0,0,0,15"
@@ -310,103 +220,69 @@
                                      BorderBrush="Transparent"
                                      IsChecked="True"
                                      Command="{Binding ImportViewCommand}">
-
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
-
                                 <Image Source="../Assets/img_import.png"
                                        Stretch="None"
                                        Margin="15,0,0,0"/>
-
                                 <TextBlock Text="Import DICOM"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource FontStyle}"/>
-
                             </StackPanel>
-
-                            <!--Tooltip-->
                             <RadioButton.ToolTip>
-
                                 <ToolTip x:Name="ImportToolTip"
                                          Content="Import"
                                          Style="{StaticResource ToolTipStyle}"/>
-
                             </RadioButton.ToolTip>
-
                         </RadioButton>
 
-                        <!--Editor-->
                         <RadioButton Style="{StaticResource MenuRadioButtonStyle}"
                                      HorizontalAlignment="Left"
                                      Margin="0,0,0,15"
                                      Background="Transparent"
                                      BorderBrush="Transparent"
                                      Command="{Binding EditorViewCommand}">
-
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
-
                                 <Image Source="../Assets/img_editor.png"
                                        Stretch="None"
                                        Margin="15,0,0,0"/>
-
                                 <TextBlock Text="Editor"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource FontStyle}"/>
-
                             </StackPanel>
 
-                            <!--Tooltip-->
                             <RadioButton.ToolTip>
-
                                 <ToolTip x:Name="EditorToolTip"
                                          Content="Editor"
                                          Style="{StaticResource ToolTipStyle}"/>
-
                             </RadioButton.ToolTip>
-
                         </RadioButton>
 
-                        <!--Settings-->
                         <RadioButton Style="{StaticResource MenuRadioButtonStyle}"
                                      HorizontalAlignment="Left"
                                      Margin="0,0,0,15"
                                      Background="Transparent"
                                      BorderBrush="Transparent"
                                      Command="{Binding SettingsViewCommand}">
-
                             <StackPanel Orientation="Horizontal"
                                         Width="230">
-
                                 <Image Source="../Assets/img_setting.png"
                                        Stretch="None"
                                        Margin="15,0,0,0"/>
-
                                 <TextBlock Text="Settings"
                                            Margin="25,0,0,0"
                                            Style="{StaticResource FontStyle}"/>
-
                             </StackPanel>
-
-                            <!--Tooltip-->
                             <RadioButton.ToolTip>
-
                                 <ToolTip x:Name="SettingsToolTip"
                                          Content="Settings"
                                          Style="{StaticResource ToolTipStyle}"/>
-
                             </RadioButton.ToolTip>
-
                         </RadioButton>
-
                     </ItemsControl>
-
                 </StackPanel>
-
             </StackPanel>
-
         </Grid>
-
     </Grid>
-
 </Window>

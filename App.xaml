@@ -9,8 +9,14 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/Colors.xaml"/>
                 <ResourceDictionary Source="Theme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="Theme/ExpandCollapseToggleStyle.xaml"/>
+                <ResourceDictionary Source="Theme/TreeViewStyle.xaml"/>
+                <ResourceDictionary Source="Theme/TreeListStyle.xaml"/>
+                <ResourceDictionary Source="Theme/ListViewStyle.xaml"/>
+                <ResourceDictionary Source="Theme/ProgressBarStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:ImportViewModel}">

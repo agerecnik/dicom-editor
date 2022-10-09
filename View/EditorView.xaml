@@ -9,10 +9,9 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:EditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="#272537">
+             Background="{StaticResource WindowBackgroundColor}">
 
     <UserControl.Resources>
-
         <DataTemplate x:Key="tagCell">
             <StackPanel Orientation="Horizontal">
                 <tree:RowExpander/>
@@ -37,199 +36,6 @@
                 <TextBlock Text="{Binding Value}" />
             </StackPanel>
         </DataTemplate>
-
-        <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
-            <Setter Property="Focusable" Value="False" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Grid Width="20"
-                              Height="20"
-                              Background="Transparent">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CheckStates">
-                                    <VisualState x:Name="Checked">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                                                           Storyboard.TargetName="Collapsed">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{x:Static Visibility.Hidden}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
-                                                                           Storyboard.TargetName="Expanded">
-                                                <DiscreteObjectKeyFrame KeyTime="0"
-                                                                        Value="{x:Static Visibility.Visible}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Unchecked" />
-                                    <VisualState x:Name="Indeterminate" />
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                            <Path x:Name="Collapsed"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Margin="1,1,1,1"
-                                  Data="M 4 0 L 8 4 L 4 8 Z">
-                                <Path.Fill>
-                                    <SolidColorBrush Color="DarkGray" />
-                                </Path.Fill>
-                            </Path>
-                            <Path x:Name="Expanded"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Margin="1,1,1,1"
-                                  Data="M 0 4 L 8 4 L 4 8 Z"
-                                  Visibility="Hidden">
-                                <Path.Fill>
-                                    <SolidColorBrush Color="DarkGray" />
-                                </Path.Fill>
-                            </Path>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <tree:LevelToIndentConverter x:Key="LevelToIndentConverter"/>
-        <tree:CanExpandConverter x:Key="CanExpandConverter"/>
-
-        <Style TargetType="{x:Type tree:RowExpander}">
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type tree:RowExpander}">
-                        <ToggleButton x:Name="Expander" 
-									  Style="{StaticResource ExpandCollapseToggleStyle}" 
-									  Margin="{Binding Node.Level, Converter={StaticResource LevelToIndentConverter},RelativeSource={RelativeSource AncestorType={x:Type tree:TreeListItem}}}"
-									  IsChecked="{Binding Node.IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type tree:TreeListItem}}}"
-									  Visibility="{Binding Node.IsExpandable, Converter={StaticResource CanExpandConverter},RelativeSource={RelativeSource AncestorType={x:Type tree:TreeListItem}}}"
-									  ClickMode="Press"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#FFC5CBF9" />
-        <SolidColorBrush x:Key="SelectedForegroundBrush" Color="Black" />
-        
-        <Style x:Key="TreeListItemStyle" TargetType="{x:Type tree:TreeListItem}">
-            <Setter Property="SnapsToDevicePixels" Value="true"/>
-            <Setter Property="OverridesDefaultStyle" Value="true"/>
-            <Setter Property="Foreground" Value="DarkGray"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type tree:TreeListItem}">
-                        <Border Name="Border" Padding="2" SnapsToDevicePixels="true" Background="Transparent">
-                            <GridViewRowPresenter HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" 
-										          VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" 
-										          SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
-                                <Setter Property="Foreground" Value="{StaticResource SelectedForegroundBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
-                                <Setter Property="Foreground" Value="{StaticResource SelectedForegroundBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="GridViewColumnHeaderGripper"
-               TargetType="{x:Type Thumb}">
-            <Setter Property="Width"
-                    Value="18" />
-            <Setter Property="Background"
-                    Value="DarkGray" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Border Padding="{TemplateBinding Padding}"
-                                Background="Transparent">
-                            <Rectangle HorizontalAlignment="Center"
-                                       Width="1"
-                                       Fill="{TemplateBinding Background}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="BorderBrush"
-                    Value="DarkGray"/>
-        </Style>
-
-        <Style x:Key="TreeListGridViewColumnHeaderStyle"
-               TargetType="{x:Type GridViewColumnHeader}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                        <Grid>
-                            <Border BorderThickness="0,0,0,3"
-                                    BorderBrush="DarkGray"
-                                    Background="Transparent">
-                                <TextBlock x:Name="ContentHeader"
-                                           Text="{TemplateBinding Content}"
-                                           Padding="5,5,5,5" Width="{TemplateBinding Width}"
-                                           TextAlignment="Center" />
-                            </Border>
-                            <Thumb x:Name="PART_HeaderGripper"
-                                   HorizontalAlignment="Right"
-                                   Margin="0,0,-9,0"
-                                   Style="{StaticResource GridViewColumnHeaderGripper}" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="OverridesDefaultStyle"
-                    Value="True" />
-            <Setter Property="Foreground"
-                    Value="DarkGray" />
-            <Setter Property="FontFamily"
-                    Value="../Assets/Roboto-Light.ttf #Roboto" />
-            <Setter Property="FontSize"
-                    Value="12" />
-            <Setter Property="Width"
-                    Value="Auto" />
-        </Style>
-
-        <Style x:Key="ListViewItemStyle" TargetType="{x:Type ListViewItem}">
-            <Setter Property="SnapsToDevicePixels" Value="true"/>
-            <Setter Property="OverridesDefaultStyle" Value="true"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border Name="Border" Padding="2" SnapsToDevicePixels="true" Background="Transparent">
-                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ListViewItemLabelStyle" TargetType="{x:Type Label}">
-            <Setter Property="Foreground" Value="DarkGray"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Value="True">
-                    <Setter Property="Foreground" Value="Black" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Value="True">
-                    <Setter Property="Foreground" Value="Black" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
     </UserControl.Resources>
 
     <Grid>
@@ -244,17 +50,14 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-
             <ListView Grid.Row="0"
                       Margin="10,10,5,5"
-                      Background="#353340"
-                      BorderBrush="#353340"
                       IsSynchronizedWithCurrentItem="True"
                       x:Name="LoadedSeriesListView"
                       ItemsSource="{Binding LoadedSeriesList}"
                       SelectedItem="{Binding SelectedSeries}"
-                      ItemContainerStyle="{StaticResource ListViewItemStyle}">
-                
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding SeriesDescription}"
@@ -262,17 +65,14 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
             <ListView Grid.Row="1"
                       Margin="10,5,5,5"
-                      Background="#353340"
-                      BorderBrush="#353340"
                       IsSynchronizedWithCurrentItem="True"
                       x:Name="SelectedSeriesView"
                       ItemsSource="{Binding ElementName=LoadedSeriesListView, Path=SelectedItem.Instances}"
                       SelectedItem="{Binding SelectedInstance}"
-                      ItemContainerStyle="{StaticResource ListViewItemStyle}">
-
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Label Content="{Binding InstanceUID}"
@@ -280,7 +80,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
             <Button Grid.Row="2"
                     Height="30"
                     MaxWidth="200"
@@ -288,9 +87,7 @@
                     Content="Store selected series"
                     Command="{Binding StoreCommand}"
                     Style="{StaticResource ButtonStyle}">
-
             </Button>
-            
         </Grid>
 
         <Grid Grid.Column="1">
@@ -299,12 +96,13 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-            <tree:TreeList x:Name="_tree"
+            <tree:TreeList x:Name="tree"
                            Grid.Column="1"
                            Grid.RowSpan="2"    
                            Model="{Binding SelectedInstanceAttributes, Mode=TwoWay}"
                            Background="#353340"
                            BorderBrush="#353340"
+                           BorderThickness="0"
                            Margin="5,10,10,5"
                            ItemContainerStyle="{StaticResource TreeListItemStyle}">
                 <tree:TreeList.View>
@@ -325,7 +123,6 @@
 
             <Grid Grid.Row="2"
                   HorizontalAlignment="Right">
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="400"/>
                     <ColumnDefinition Width="200"/>
@@ -336,19 +133,14 @@
                          theme:ThemeProperties.SearchFieldName="Local Export Path"
                          Style="{StaticResource TextBoxStyle}"
                          Text="{Binding LocalExportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
                 <Button Grid.Column="1"
                         Height="30"
                         Margin="10,5,10,10"
                         Content="Export selected series"
                         Command="{Binding LocalExportCommand}"
                         Style="{StaticResource ButtonStyle}">
-
                 </Button>
-
             </Grid>
-            
         </Grid>
-
     </Grid>
 </UserControl>

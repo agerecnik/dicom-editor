@@ -36,6 +36,24 @@
     <Page Update="Theme\ButtonStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\Colors.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\ExpandCollapseToggleStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\ListViewStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\ProgressBarStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\TreeListStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Theme\TreeViewStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

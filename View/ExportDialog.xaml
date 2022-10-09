@@ -7,52 +7,22 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:ExportDialogViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="140" d:DesignWidth="250"
-             Background="#272537">
-    
-    <UserControl.Resources>
-
-        <Style x:Key="{x:Type ProgressBar}"
-               TargetType="{x:Type ProgressBar}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ProgressBar}">
-                        <Grid MinHeight="14" MinWidth="200">
-                            <Border 
-                                Name="PART_Track" 
-                                CornerRadius="0" 
-                                Background="#1a1824"
-                                BorderBrush="#1a1824"
-                                BorderThickness="1" />
-                            <Border 
-                                Name="PART_Indicator" 
-                                CornerRadius="0" 
-                                Background="#504c70" 
-                                BorderBrush="#504c70" 
-                                BorderThickness="1" 
-                                HorizontalAlignment="Left" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-    </UserControl.Resources>
+             Background="{StaticResource WindowBackgroundColor}">
 
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="0.6*"/>
             <RowDefinition Height="0.4*"/>
         </Grid.RowDefinitions>
 
         <Grid>
-
             <ProgressBar x:Name="Progress"
                          Grid.Row="0"
                          Height="25"
                          Margin="10,10,10,0"
-                         Value="{Binding Progress}"/>
-
+                         Value="{Binding Progress}"
+                         Style="{StaticResource ProgressBarStyle}"/>
+            
             <TextBlock x:Name="Status"
                        Grid.Column="0"
                        HorizontalAlignment="Center"
@@ -61,11 +31,10 @@
                        Visibility="Collapsed"
                        FontSize="11"
                        TextWrapping="Wrap"
-                       Foreground="DarkGray"
-                       Background="#353340"
+                       Foreground="{StaticResource TextColor}"
+                       Background="{StaticResource ElementBackgroundColor}"
                        Text="{Binding Status, NotifyOnTargetUpdated=True}"
                        TargetUpdated="Status_TargetUpdated"/>
-
         </Grid>
 
         <Button Grid.Row="1"
@@ -75,9 +44,6 @@
                 Content="Cancel"
                 Command="{Binding CancelCommand}"
                 Click="Button_Click"
-                Style="{StaticResource ButtonStyle}">
-
-        </Button>
-
+                Style="{StaticResource ButtonStyle}" />
     </Grid>
 </UserControl>
