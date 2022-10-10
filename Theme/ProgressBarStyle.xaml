@@ -6,7 +6,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ProgressBar}">
-                    <Grid MinHeight="14" MinWidth="200">
+                    <Grid>
                         <Border Name="PART_Track" 
                                 CornerRadius="0" 
                                 Background="{StaticResource ProgressBackgroundColor}"

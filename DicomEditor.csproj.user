@@ -48,6 +48,9 @@
     <Page Update="Theme\ProgressBarStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\ScrollbarStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\TreeListStyle.xaml">
       <SubType>Designer</SubType>
     </Page>

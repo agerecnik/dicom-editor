@@ -56,7 +56,6 @@
                       x:Name="LoadedSeriesListView"
                       ItemsSource="{Binding LoadedSeriesList}"
                       SelectedItem="{Binding SelectedSeries}"
-                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
                       Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -71,7 +70,6 @@
                       x:Name="SelectedSeriesView"
                       ItemsSource="{Binding ElementName=LoadedSeriesListView, Path=SelectedItem.Instances}"
                       SelectedItem="{Binding SelectedInstance}"
-                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
                       Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -100,8 +98,8 @@
                            Grid.Column="1"
                            Grid.RowSpan="2"    
                            Model="{Binding SelectedInstanceAttributes, Mode=TwoWay}"
-                           Background="#353340"
-                           BorderBrush="#353340"
+                           Background="{StaticResource ElementBackgroundColor}"
+                           BorderBrush="{StaticResource ElementBackgroundColor}"
                            BorderThickness="0"
                            Margin="5,10,10,5"
                            ItemContainerStyle="{StaticResource TreeListItemStyle}">

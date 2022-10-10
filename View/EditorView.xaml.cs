@@ -18,7 +18,7 @@ namespace DicomEditor.View
 
         private void Toggle_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var node in _tree.SelectedNodes)
+            foreach (var node in tree.SelectedNodes)
                 if (node.IsExpandable)
                     node.IsExpanded = !node.IsExpanded;
         }

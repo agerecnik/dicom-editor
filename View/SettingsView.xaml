@@ -8,26 +8,21 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="#272537">
+             Background="{StaticResource WindowBackgroundColor}">
     <Grid>
-
         <Grid.RowDefinitions>
-
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
-
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-
         </Grid.ColumnDefinitions>
 
         <Label Grid.Column="0"
@@ -35,83 +30,75 @@
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Center"
                Foreground="White"
-               Content="Query/Retrieve Server"/>
-        
-        <TextBox x:Name="test"
-            Grid.Column="0"
+               Content="Query/Retrieve Server" />
+        <TextBox Grid.Column="0"
                  Grid.Row="1"
-                     VerticalContentAlignment="Center"
-                     VerticalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Query/Retrieve Server AET"
-                     Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding QueryRetrieveServer.AET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
+                 VerticalContentAlignment="Center"
+                 VerticalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Query/Retrieve Server AET"
+                 Style="{StaticResource TextBoxStyle}"
+                 Text="{Binding QueryRetrieveServer.AET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox Grid.Column="0"
                  Grid.Row="2"
-                     VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Host"
-                     Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding QueryRetrieveServer.Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
+                 VerticalContentAlignment="Center"
+                 HorizontalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Host"
+                 Style="{StaticResource TextBoxStyle}"
+                 Text="{Binding QueryRetrieveServer.Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox Grid.Column="0"
                  Grid.Row="3"
-                     VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Port"
-                     Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding QueryRetrieveServer.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 VerticalContentAlignment="Center"
+                 HorizontalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Query/Retrieve Server Port"
+                 Style="{StaticResource TextBoxStyle}"
+                 Text="{Binding QueryRetrieveServer.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Grid.Column="1"
                Grid.Row="0"
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Center"
                Foreground="White"
-               Content="Store Server"/>
-        
+               Content="Store Server" />
         <TextBox Grid.Column="1"
                  Grid.Row="1"
-                     VerticalContentAlignment="Center"
-                     VerticalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Store Server AET"
-                     Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding StoreServer.AET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
+                 VerticalContentAlignment="Center"
+                 VerticalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Store Server AET"
+                 Style="{StaticResource TextBoxStyle}"
+                 Text="{Binding StoreServer.AET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox Grid.Column="1"
                  Grid.Row="2"
-                     VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Store Server Host"
-                     Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding StoreServer.Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
+                 VerticalContentAlignment="Center"
+                 HorizontalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Store Server Host"
+                 Style="{StaticResource TextBoxStyle}"
+                 Text="{Binding StoreServer.Host, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox Grid.Column="1"
                  Grid.Row="3"
-                     VerticalContentAlignment="Center"
-                     HorizontalAlignment="Stretch"
-                     Margin="10"
-                     MaxWidth="200"
-                     theme:ThemeProperties.SearchFieldName="Store Server Port"
-                     Style="{StaticResource TextBoxStyle}"
-                     Text="{Binding StoreServer.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 VerticalContentAlignment="Center"
+                 HorizontalAlignment="Stretch"
+                 Margin="10"
+                 MaxWidth="200"
+                 theme:ThemeProperties.SearchFieldName="Store Server Port"
+                 Style="{StaticResource TextBoxStyle}"
+                 Text="{Binding StoreServer.Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Grid.Column="2"
                Grid.Row="0"
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Center"
                Foreground="White"
-               Content="Dicom Editor"/>
-        
+               Content="Dicom Editor" />
         <TextBox Grid.Column="2"
                  Grid.Row="1"
                  VerticalContentAlignment="Center"
@@ -120,7 +107,7 @@
                  MaxWidth="200"
                  theme:ThemeProperties.SearchFieldName="Dicom Editor AET"
                  Style="{StaticResource TextBoxStyle}"
-                 Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button Grid.Column="0"
                 Grid.Row="4"
@@ -131,16 +118,12 @@
                 Content="Verify"
                 Command="{Binding VerifyCommand}"
                 CommandParameter="{Binding QueryRetrieveServer}"
-                Style="{StaticResource ButtonStyle}">
-        </Button>
-
+                Style="{StaticResource ButtonStyle}" />
         <Label Grid.Column="0"
                Grid.Row="4"
                HorizontalAlignment="Right"
                Margin="10,10,10,10"
-               Content="{Binding QueryRetrieveServer.Status}">
-
-        </Label>
+               Content="{Binding QueryRetrieveServer.Status}" />
 
         <Button Grid.Column="1"
                 Grid.Row="4"
@@ -151,17 +134,12 @@
                 Content="Verify"
                 Command="{Binding VerifyCommand}"
                 CommandParameter="{Binding StoreServer}"
-                Style="{StaticResource ButtonStyle}">
-            
-        </Button>
-
+                Style="{StaticResource ButtonStyle}" />
         <Label Grid.Column="1"
                Grid.Row="4"
                HorizontalAlignment="Right"
                Margin="10,10,10,10"
-               Content="{Binding StoreServer.Status}">
-            
-        </Label>
+               Content="{Binding StoreServer.Status}" />
 
         <Button Grid.Column="0"
                 Grid.Row="5"
@@ -170,8 +148,6 @@
                 Content="Save Settings"
                 VerticalAlignment="Bottom"
                 Command="{Binding SaveSettingsCommand}"
-                Style="{StaticResource ButtonStyle}">
-
-        </Button>
+                Style="{StaticResource ButtonStyle}" />
     </Grid>
 </UserControl>

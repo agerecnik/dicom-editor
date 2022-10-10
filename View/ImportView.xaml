@@ -79,7 +79,6 @@
                   Margin="10,0,10,0"
                   ItemsSource="{Binding QueryResult.Values}"
                   SelectedItemChanged="TreeView_SelectedItemChanged"
-                  ItemContainerStyle="{StaticResource TreeViewItemStyle}"
                   Style="{StaticResource TreeViewStyle}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type model:Patient}"
