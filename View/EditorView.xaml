@@ -98,11 +98,8 @@
                            Grid.Column="1"
                            Grid.RowSpan="2"    
                            Model="{Binding SelectedInstanceAttributes, Mode=TwoWay}"
-                           Background="{StaticResource ElementBackgroundColor}"
-                           BorderBrush="{StaticResource ElementBackgroundColor}"
-                           BorderThickness="0"
                            Margin="5,10,10,5"
-                           ItemContainerStyle="{StaticResource TreeListItemStyle}">
+                           Style="{StaticResource TreeListStyle}">
                 <tree:TreeList.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
                         <GridView.Columns>
