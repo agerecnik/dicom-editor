@@ -3,35 +3,56 @@
 
     <Style TargetType="{x:Type Button}"
            x:Key="ButtonStyle">
-        <Setter Property="Background" Value="#1a1824" />
-        <Setter Property="Foreground" Value="DarkGray" />
-        <Setter Property="FontSize" Value="15" />
-        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Background"
+                Value="#1a1824" />
+        <Setter Property="Foreground"
+                Value="DarkGray" />
+        <Setter Property="FontFamily"
+                Value="../Assets/Roboto-Light.ttf #Roboto" />
+        <Setter Property="FontSize"
+                Value="14" />
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border CornerRadius="3" Background="{TemplateBinding Background}">
+                    <Border CornerRadius="3"
+                            Background="{TemplateBinding Background}">
                         <Grid>
-                            <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" />
+                            <ContentPresenter x:Name="MyContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,0,0" />
                         </Grid>
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#504c70" />
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="Cursor" Value="Hand"/>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="#504c70" />
+                            <Setter Property="Foreground"
+                                    Value="White" />
+                            <Setter Property="Cursor"
+                                    Value="Hand"/>
                         </Trigger>
 
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#1a1824" />
-                            <Setter Property="Foreground" Value="White" />
+                        <Trigger Property="IsPressed"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="#1a1824" />
+                            <Setter Property="Foreground"
+                                    Value="White" />
                         </Trigger>
 
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="#3f3d4a" />
-                            <Setter Property="Foreground" Value="#a3a3a3" />
+                        <Trigger Property="IsEnabled"
+                                 Value="False">
+                            <Setter Property="Background"
+                                    Value="#3f3d4a" />
+                            <Setter Property="Foreground"
+                                    Value="#a3a3a3" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

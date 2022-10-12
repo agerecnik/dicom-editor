@@ -10,10 +10,9 @@ namespace DicomEditor.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
-        private ISettingsService _settingsService;
+        private readonly ISettingsService _settingsService;
 
         public IDICOMServer QueryRetrieveServer { get; set; }
-
         public IDICOMServer StoreServer { get; set; }
 
         private string _dicomEditorAET;
@@ -27,7 +26,6 @@ namespace DicomEditor.ViewModel
         }
 
         public ICommand SaveSettingsCommand { get; }
-
         public ICommand VerifyCommand { get; }
 
         public SettingsViewModel(ISettingsService settingsService)
@@ -44,8 +42,8 @@ namespace DicomEditor.ViewModel
 
             DicomEditorAET = _settingsService.DicomEditorAET;
 
-            SaveSettingsCommand = new RelayCommand(SaveSettings, CanUseSaveSettingsCommand);
-            VerifyCommand = new RelayCommand(Verify, CanUseVerifyCommand);
+            SaveSettingsCommand = new RelayCommand(SaveSettings, CanUseSaveSettingsOrVerifyCommand);
+            VerifyCommand = new RelayCommand(Verify, CanUseSaveSettingsOrVerifyCommand);
         }
 
         public SettingsViewModel()
@@ -70,27 +68,15 @@ namespace DicomEditor.ViewModel
             await _settingsService.VerifyAsync(server.Type);
         }
 
-        private bool CanUseVerifyCommand(object o)
-        {
-            IDICOMServer server = (IDICOMServer)o;
-            if(server is null || server.Status is VerificationStatus.InProgress
-                || server.AET is null || server.AET is ""
-                || server.Host is null || server.Host is ""
-                || server.Port is null || server.Port is "")
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private bool CanUseSaveSettingsCommand(object o)
+        private bool CanUseSaveSettingsOrVerifyCommand(object o)
         {
             if (QueryRetrieveServer.AET is null || QueryRetrieveServer.AET is ""
                 || QueryRetrieveServer.Host is null || QueryRetrieveServer.Host is ""
                 || QueryRetrieveServer.Port is null || QueryRetrieveServer.Port is ""
                 || StoreServer.AET is null || StoreServer.AET is ""
                 || StoreServer.Host is null || StoreServer.Host is ""
-                || StoreServer.Port is null || StoreServer.Port is "")
+                || StoreServer.Port is null || StoreServer.Port is ""
+                || DicomEditorAET is null || DicomEditorAET is "")
             {
                 return false;
             }

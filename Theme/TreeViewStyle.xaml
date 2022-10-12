@@ -13,6 +13,10 @@
                 Value="1,0,0,0" />
         <Setter Property="Foreground"
                 Value="{StaticResource TextColor}" />
+        <Setter Property="FontFamily"
+                Value="../Assets/Roboto-Light.ttf #Roboto" />
+        <Setter Property="FontSize"
+                Value="12" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">

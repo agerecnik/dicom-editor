@@ -9,8 +9,29 @@
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{StaticResource WindowBackgroundColor}">
+    
+    <UserControl.Resources>
+
+        <Style x:Key="VerificationStatusStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Foreground"
+                    Value="{StaticResource TextColor}" />
+            <Setter Property="IsReadOnly"
+                    Value="True" />
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Setter Property="FontFamily"
+                    Value="../Assets/Roboto-Light.ttf #Roboto" />
+        </Style>
+        
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
@@ -108,40 +129,42 @@
                  Style="{StaticResource TextBoxStyle}"
                  Text="{Binding DicomEditorAET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+        <TextBox Grid.Column="0"
+                 Grid.Row="4"
+                 Margin="10,10,10,10"
+                 HorizontalAlignment="Center"
+                 Text="{Binding QueryRetrieveServer.Status}"
+                 Style="{StaticResource VerificationStatusStyle}"
+                 TextChanged="TextBox_TextChanged" />
         <Button Grid.Column="0"
-                Grid.Row="4"
+                Grid.Row="5"
                 Height="30"
-                Width="100"
-                HorizontalAlignment="Left"
+                MaxWidth="100"
                 Margin="10,10,10,10"
                 Content="Verify"
                 Command="{Binding VerifyCommand}"
                 CommandParameter="{Binding QueryRetrieveServer}"
                 Style="{StaticResource ButtonStyle}" />
-        <Label Grid.Column="0"
-               Grid.Row="4"
-               HorizontalAlignment="Right"
-               Margin="10,10,10,10"
-               Content="{Binding QueryRetrieveServer.Status}" />
 
+        <TextBox Grid.Column="1"
+                 Grid.Row="4"
+                 Margin="10,10,10,10"
+                 HorizontalAlignment="Center"
+                 Text="{Binding StoreServer.Status}"
+                 Style="{StaticResource VerificationStatusStyle}"
+                 TextChanged="TextBox_TextChanged" />
         <Button Grid.Column="1"
-                Grid.Row="4"
+                Grid.Row="5"
                 Height="30"
-                Width="100"
-                HorizontalAlignment="Left"
+                MaxWidth="100"
                 Margin="10,10,10,10"
                 Content="Verify"
                 Command="{Binding VerifyCommand}"
                 CommandParameter="{Binding StoreServer}"
                 Style="{StaticResource ButtonStyle}" />
-        <Label Grid.Column="1"
-               Grid.Row="4"
-               HorizontalAlignment="Right"
-               Margin="10,10,10,10"
-               Content="{Binding StoreServer.Status}" />
 
         <Button Grid.Column="2"
-                Grid.Row="4"
+                Grid.Row="5"
                 Height="30"
                 MaxWidth="150"
                 Margin="10,10,10,10"
