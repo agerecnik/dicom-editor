@@ -40,6 +40,10 @@ namespace DicomEditor.Services
 
         public void SetAttributeValue(string instanceUID, IDatasetModel attribute, string value)
         {
+            if(attribute.Tag is null)
+            {
+                throw new ApplicationException("Invalid attribute/attribute does not exist");
+            }
             if (_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset instance))
             {
                 Stack<IDatasetModel> attributes = new();

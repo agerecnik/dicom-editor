@@ -167,7 +167,7 @@ namespace DicomEditor.ViewModel
 
         private bool CanUseModifyAttributeValueCommand(object o)
         {
-            if(SelectedAttribute is null)
+            if(SelectedAttribute is null || SelectedAttribute.Tag is null)
             {
                 return false;
             }
