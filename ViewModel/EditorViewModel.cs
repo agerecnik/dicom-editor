@@ -1,10 +1,12 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
+using FellowOakDicom;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -65,6 +67,30 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private IDatasetModel _selectedAttribute;
+        public IDatasetModel SelectedAttribute
+        {
+            get => _selectedAttribute;
+            set
+            {
+                SetProperty(ref _selectedAttribute, value);
+                if(value is not null)
+                {
+                    SelectedAttributeValue = value.Value;
+                }
+            }
+        }
+
+        private string _selectedAttributeValue;
+        public string SelectedAttributeValue
+        {
+            get => _selectedAttributeValue;
+            set
+            {
+                SetProperty(ref _selectedAttributeValue, value);
+            }
+        }
+
         private string _localExportPath;
         public string LocalExportPath
         {
@@ -78,6 +104,7 @@ namespace DicomEditor.ViewModel
 
         public ICommand StoreCommand { get; }
         public ICommand LocalExportCommand { get; }
+        public ICommand ModifyAttributeValueCommand { get; }
 
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
@@ -87,6 +114,7 @@ namespace DicomEditor.ViewModel
 
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
+            ModifyAttributeValueCommand = new RelayCommand(o => ModifyAttributeValue(), CanUseModifyAttributeValueCommand);
 
             LocalExportPath = _editorService.LocalExportPath;
         }
@@ -108,6 +136,21 @@ namespace DicomEditor.ViewModel
         {
             SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID);
         }
+        
+        private void ModifyAttributeValue()
+        {
+            try
+            {
+                _editorService.SetAttributeValue(SelectedInstance.InstanceUID, SelectedAttribute, SelectedAttributeValue);
+                UpdateListOfAttributes();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException)
+            {
+                // TODO: display error dialog
+            }
+        }
 
         private void Store()
         {
@@ -120,6 +163,15 @@ namespace DicomEditor.ViewModel
         private void LocalExport()
         {
             _dialogService.ShowDialog<ExportDialogViewModel>("Local export in progress", _editorService, new List<Series> { SelectedSeries }, LocalExportPath);
+        }
+
+        private bool CanUseModifyAttributeValueCommand(object o)
+        {
+            if(SelectedAttribute is null)
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool CanUseStoreCommand(object o)

@@ -93,13 +93,14 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
+                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <tree:TreeList x:Name="tree"
                            Grid.Column="1"
                            Grid.RowSpan="2"    
                            Model="{Binding SelectedInstanceAttributes, Mode=TwoWay}"
                            Margin="5,10,10,5"
-                           Style="{StaticResource TreeListStyle}">
+                           Style="{StaticResource TreeListStyle}" SelectionChanged="tree_SelectionChanged">
                 <tree:TreeList.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
                         <GridView.Columns>
@@ -117,6 +118,27 @@
             </tree:TreeList>
 
             <Grid Grid.Row="2"
+                  HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Margin="5,5,0,10"
+                         theme:ThemeProperties.SearchFieldName="Attribute Value"
+                         Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding SelectedAttributeValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="1"
+                        Height="30"
+                        Margin="10,5,10,10"
+                        Content="Modify"
+                        Command="{Binding ModifyAttributeValueCommand}"
+                        Style="{StaticResource ButtonStyle}">
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="3"
                   HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="400"/>

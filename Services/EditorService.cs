@@ -4,6 +4,7 @@ using DicomEditor.Model.EditorModel.Tree;
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,9 +34,33 @@ namespace DicomEditor.Services
 
         public ITreeModel GetInstance(string instanceUID)
         {
-            DicomDataset dataset = new();
-            _cache.LoadedInstances.TryGetValue(instanceUID, out dataset);
+            _cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset);
             return DatasetTree.CreateTree(dataset);
+        }
+
+        public void SetAttributeValue(string instanceUID, IDatasetModel attribute, string value)
+        {
+            if (_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset instance))
+            {
+                Stack<IDatasetModel> attributes = new();
+                while (attribute is not null)
+                {
+                    attributes.Push(attribute);
+                    attribute = attribute.ParentDataset;
+                }
+
+                while(attributes.Count > 1)
+                {
+                    attribute = attributes.Pop();
+                    DicomSequence sequence = instance.GetSequence(attribute.Tag);
+                    attribute = attributes.Pop();
+                    int itemIndex = int.Parse(attribute.Value);
+                    instance = sequence.Items[itemIndex];
+                }
+
+                DicomTag lastTag = attributes.Pop().Tag;
+                instance.AddOrUpdate<string>(lastTag, value);
+            }
         }
 
         public async Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)

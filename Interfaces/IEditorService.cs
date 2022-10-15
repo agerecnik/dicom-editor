@@ -13,6 +13,7 @@ namespace DicomEditor.Interfaces
 
         public IList<Series> GetLoadedSeries();
         public ITreeModel GetInstance(string instanceUID);
+        public void SetAttributeValue(string instanceUID, IDatasetModel attribute, string value);
         public Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
         public Task LocalExportAsync(IList<Series> seriesList, string path, IProgress<int> progress, CancellationToken cancellationToken);
 

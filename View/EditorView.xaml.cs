@@ -1,5 +1,8 @@
-﻿using DicomEditor.ViewModel;
+﻿using DicomEditor.Interfaces;
+using DicomEditor.Model.EditorModel.Tree;
+using DicomEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -21,6 +24,16 @@ namespace DicomEditor.View
             foreach (var node in tree.SelectedNodes)
                 if (node.IsExpandable)
                     node.IsExpanded = !node.IsExpanded;
+        }
+
+        private void tree_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var vm = (EditorViewModel)DataContext;
+            TreeNode node = (TreeNode)tree.SelectedItem;
+            if(node is not null)
+            {
+                vm.SelectedAttribute = (IDatasetModel)node.Tag;
+            }
         }
     }
 }

@@ -234,6 +234,7 @@ namespace DicomEditor.Services
             request.Dataset.AddOrUpdate(DicomTag.PatientID, "");
             request.Dataset.AddOrUpdate(DicomTag.StudyInstanceUID, studyInstanceUID);
             request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, "");
+            request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesDescription, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesDate, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesTime, "");
@@ -243,7 +244,7 @@ namespace DicomEditor.Services
             return request;
         }
 
-        private DicomCFindRequest CreateImageRequestBySeriesUID(string seriesInstanceUID)
+        private DicomCFindRequest CreateInstanceRequestBySeriesUID(string seriesInstanceUID)
         {
             var request = new DicomCFindRequest(DicomQueryRetrieveLevel.Image);
 
@@ -254,6 +255,7 @@ namespace DicomEditor.Services
 
             // add the dicom tags that contain the filter criterias
             request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, seriesInstanceUID);
+            request.Dataset.AddOrUpdate(DicomTag.InstanceNumber, "");
 
             return request;
         }
@@ -263,7 +265,7 @@ namespace DicomEditor.Services
             HashSet<string> sopClassUIDs = new();
             if (seriesUID is not null and not "")
             {
-                var request = CreateImageRequestBySeriesUID(seriesUID);
+                var request = CreateInstanceRequestBySeriesUID(seriesUID);
                 request.OnResponseReceived += (req, response) =>
                 {
                     string sopClassUID = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.SOPClassUID, null);
