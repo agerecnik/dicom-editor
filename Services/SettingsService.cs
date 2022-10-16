@@ -9,7 +9,6 @@ namespace DicomEditor.Services
 {
     public class SettingsService : ISettingsService
     {
-        public event UpdatedVerificationStatusHandler UpdatedVerificationStatusEvent;
         public event SettingsSavedHandler SettingsSavedEvent;
 
         private readonly IDictionary<ServerType, IDICOMServer> _servers;
@@ -53,22 +52,22 @@ namespace DicomEditor.Services
         public async Task VerifyAsync(ServerType type)
         {
             IDICOMServer server = _servers[type];
-            UpdateVerificationStatus(server, VerificationStatus.InProgress);
+            server.Status = VerificationStatus.InProgress;
             try
             {
                 bool successful = await _DICOMService.VerifyAsync(server.Host, int.Parse(server.Port), server.AET, DicomEditorAET);
                 if (successful)
                 {
-                    UpdateVerificationStatus(server, VerificationStatus.Successful);
+                    server.Status = VerificationStatus.Successful;
                 }
                 else
                 {
-                    UpdateVerificationStatus(server, VerificationStatus.Failed);
+                    server.Status = VerificationStatus.Failed;
                 }
             }
             catch (AggregateException)
             {
-                UpdateVerificationStatus(server, VerificationStatus.Failed);
+                server.Status = VerificationStatus.Failed;
             }
         }
 
@@ -79,19 +78,16 @@ namespace DicomEditor.Services
             configuration.AppSettings.Settings[key].Value = value;
             configuration.Save(ConfigurationSaveMode.Minimal, true);
             ConfigurationManager.RefreshSection("appSettings");
-            SettingsSavedEvent();
 
+            if(SettingsSavedEvent is not null)
+            {
+                SettingsSavedEvent();
+            }
         }
 
         private string GetSetting(string key)
         {
             return ConfigurationManager.AppSettings[key];
-        }
-
-        private void UpdateVerificationStatus(IDICOMServer server, VerificationStatus status)
-        {
-            server.Status = status;
-            UpdatedVerificationStatusEvent(server.Type);
         }
     }
 

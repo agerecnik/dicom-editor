@@ -32,8 +32,6 @@ namespace DicomEditor.ViewModel
         {
             _settingsService = settingsService;
 
-            _settingsService.UpdatedVerificationStatusEvent += new UpdatedVerificationStatusHandler(HandleUpdatedVerificationStatus);
-
             IDICOMServer qrServer = _settingsService.GetServer(ServerType.QueryRetrieveServer);
             QueryRetrieveServer = new DICOMServerViewModel(qrServer.Type, qrServer.AET, qrServer.Host, qrServer.Port, qrServer.Status);
 
@@ -66,6 +64,14 @@ namespace DicomEditor.ViewModel
             SaveSettings(o);
             IDICOMServer server = (IDICOMServer)o;
             await _settingsService.VerifyAsync(server.Type);
+            if (server.Type == ServerType.QueryRetrieveServer)
+            {
+                QueryRetrieveServer.Status = _settingsService.GetServer(server.Type).Status;
+            }
+            else if (server.Type == ServerType.StoreServer)
+            {
+                StoreServer.Status = _settingsService.GetServer(server.Type).Status;
+            }
         }
 
         private bool CanUseSaveSettingsOrVerifyCommand(object o)
@@ -83,16 +89,16 @@ namespace DicomEditor.ViewModel
             return true;
         }
 
-        private void HandleUpdatedVerificationStatus(ServerType type)
-        {
-            if(type == ServerType.QueryRetrieveServer)
-            {
-                QueryRetrieveServer.Status = _settingsService.GetServer(type).Status;
-            } else if(type == ServerType.StoreServer)
-            {
-                StoreServer.Status = _settingsService.GetServer(type).Status;
-            }
-            CommandManager.InvalidateRequerySuggested();
-        }
+        //private void HandleUpdatedVerificationStatus(ServerType type)
+        //{
+        //    if(type == ServerType.QueryRetrieveServer)
+        //    {
+        //        QueryRetrieveServer.Status = _settingsService.GetServer(type).Status;
+        //    } else if(type == ServerType.StoreServer)
+        //    {
+        //        StoreServer.Status = _settingsService.GetServer(type).Status;
+        //    }
+        //    CommandManager.InvalidateRequerySuggested();
+        //}
     }
 }

@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DicomEditor.Model.EditorModel.Tree;
 using System.Threading;
 using DicomEditor.Model;
 
 namespace DicomEditor.Interfaces
 {
-    public delegate void LoadedInstancesChangedHandler();
-
     public interface IEditorService
     {
-        event LoadedInstancesChangedHandler LoadedInstancesChangedEvent;
         public string LocalExportPath { get; set; }
 
         public IDictionary<string, Series> GetLoadedSeries();

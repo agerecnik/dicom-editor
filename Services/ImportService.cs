@@ -28,7 +28,7 @@ namespace DicomEditor.Services
         public ImportService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
         {
             _settingsService = settingsService;
-            _settingsService.SettingsSavedEvent += new SettingsSavedHandler(HandleSettingsSaved);
+            _settingsService.SettingsSavedEvent += HandleSettingsSaved;
             _cache = cache;
             _DICOMService = DICOMService;
         }

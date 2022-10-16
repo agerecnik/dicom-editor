@@ -116,13 +116,10 @@ namespace DicomEditor.ViewModel
         public ICommand LocalExportCommand { get; }
         public ICommand ModifyAttributeValueCommand { get; }
 
-
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
             _editorService = editorService;
             _dialogService = dialogService;
-
-            _editorService.LoadedInstancesChangedEvent += new LoadedInstancesChangedHandler(HandleLoadedInstancesChanged);
 
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
@@ -157,12 +154,13 @@ namespace DicomEditor.ViewModel
                 instances = new List<Instance>(SelectedSeries.Instances);
             } else
             {
-                instances = new List<Instance>() { SelectedInstance};
+                instances = new List<Instance>() { SelectedInstance };
             }
 
             try
             {
                 _editorService.SetAttributeValue(instances, SelectedAttribute, SelectedAttributeValue);
+                UpdateListOfAttributes();
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
             }
@@ -216,11 +214,6 @@ namespace DicomEditor.ViewModel
                 return false;
             }
             return true;
-        }
-
-        private void HandleLoadedInstancesChanged()
-        {
-            UpdateListOfAttributes();
         }
     }
 }

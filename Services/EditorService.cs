@@ -14,8 +14,6 @@ namespace DicomEditor.Services
 {
     public class EditorService : IEditorService
     {
-        public event LoadedInstancesChangedHandler LoadedInstancesChangedEvent;
-
         private readonly ISettingsService _settingsService;
         private readonly ICache _cache;
         private readonly IDICOMService _DICOMService;
@@ -83,7 +81,6 @@ namespace DicomEditor.Services
                     throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
                 }
             }
-            LoadedInstancesChangedEvent();
         }
 
         public async Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
