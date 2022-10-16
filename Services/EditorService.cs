@@ -14,6 +14,8 @@ namespace DicomEditor.Services
 {
     public class EditorService : IEditorService
     {
+        public event LoadedInstancesChangedHandler LoadedInstancesChangedEvent;
+
         private readonly ISettingsService _settingsService;
         private readonly ICache _cache;
         private readonly IDICOMService _DICOMService;
@@ -27,44 +29,61 @@ namespace DicomEditor.Services
             _DICOMService = DICOMService;
         }
 
-        public IList<Series> GetLoadedSeries()
+        public IDictionary<string, Series> GetLoadedSeries()
         {
             return _cache.LoadedSeries;
         }
 
         public ITreeModel GetInstance(string instanceUID)
         {
-            _cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset);
-            return DatasetTree.CreateTree(dataset);
+            if(_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset))
+            {
+                return DatasetTree.CreateTree(dataset);
+            }
+            else
+            {
+                throw new ArgumentException("Instance with the following UID does not exist: " + instanceUID);
+            }
         }
 
-        public void SetAttributeValue(string instanceUID, IDatasetModel attribute, string value)
+        public void SetAttributeValue(IList<Instance> instances, IDatasetModel attribute, string value)
         {
             if(attribute.Tag is null)
             {
-                throw new ApplicationException("Invalid attribute/attribute does not exist");
+                throw new ArgumentException("Invalid attribute tag");
             }
-            if (_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset instance))
+            if (attribute.ValueRepresentation is "SQ")
             {
-                Stack<IDatasetModel> attributes = new();
-                while (attribute is not null)
-                {
-                    attributes.Push(attribute);
-                    attribute = attribute.ParentDataset;
-                }
-
-                while(attributes.Count > 1)
-                {
-                    attribute = attributes.Pop();
-                    DicomSequence sequence = instance.GetSequence(attribute.Tag);
-                    attribute = attributes.Pop();
-                    int itemIndex = int.Parse(attribute.Value);
-                    instance = sequence.Items[itemIndex];
-                }
-
-                DicomTag lastTag = attributes.Pop().Tag;
-                instance.AddOrUpdate<string>(lastTag, value);
+                throw new InvalidOperationException("Cannot assign value to sequence");
             }
+
+            List<IDatasetModel> attributes = new();
+            while (attribute is not null)
+            {
+                attributes.Insert(0, attribute);
+                attribute = attribute.ParentDataset;
+            }
+
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    for (int i = 0; i < attributes.Count - 2; i += 2)
+                    {
+                        DicomSequence sequence = ds.GetSequence(attributes[i].Tag);
+                        int itemIndex = int.Parse(attributes[i + 1].Value);
+                        ds = sequence.Items[itemIndex];
+                    }
+
+                    DicomTag lastTag = attributes[^1].Tag;
+                    ds.AddOrUpdate<string>(lastTag, value);
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+            LoadedInstancesChangedEvent();
         }
 
         public async Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
@@ -87,7 +106,10 @@ namespace DicomEditor.Services
                     {
                         instances.Add(ds);
                     }
-                    // TODO: throw exception if instance does not exist?
+                    else
+                    {
+                        throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    }
                 }
 
                 await _DICOMService.StoreAsync(serverHost, serverPort, serverAET, appAET, instances, progress, cancellationToken);
@@ -132,7 +154,10 @@ namespace DicomEditor.Services
                         await file.SaveAsync(filePath, FellowOakDicom.IO.Writer.DicomWriteOptions.Default);
 
                     }
-                    // TODO: throw exception if instance does not exist?
+                    else
+                    {
+                        throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    }
 
                     if (progress != null)
                     {

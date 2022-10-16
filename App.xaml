@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="Theme/Colors.xaml"/>
                 <ResourceDictionary Source="Theme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="Theme/CheckBoxStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ExpandCollapseToggleStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ScrollBarStyle.xaml"/>
                 <ResourceDictionary Source="Theme/TreeViewStyle.xaml"/>

@@ -7,8 +7,8 @@ namespace DicomEditor.Services
 {
     public class Cache : ICache
     {
-        private IList<Series> _loadedSeries;
-        public IList<Series> LoadedSeries
+        private IDictionary<string, Series> _loadedSeries;
+        public IDictionary<string, Series> LoadedSeries
         {
             get => _loadedSeries;
             set
@@ -29,7 +29,7 @@ namespace DicomEditor.Services
 
         public Cache()
         {
-            LoadedSeries = new List<Series>();
+            LoadedSeries = new Dictionary<string, Series>();
         }
 
     }

@@ -7,15 +7,17 @@ using DicomEditor.Model;
 
 namespace DicomEditor.Interfaces
 {
+    public delegate void LoadedInstancesChangedHandler();
+
     public interface IEditorService
     {
+        event LoadedInstancesChangedHandler LoadedInstancesChangedEvent;
         public string LocalExportPath { get; set; }
 
-        public IList<Series> GetLoadedSeries();
+        public IDictionary<string, Series> GetLoadedSeries();
         public ITreeModel GetInstance(string instanceUID);
-        public void SetAttributeValue(string instanceUID, IDatasetModel attribute, string value);
+        public void SetAttributeValue(IList<Instance> instances, IDatasetModel attribute, string value);
         public Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
         public Task LocalExportAsync(IList<Series> seriesList, string path, IProgress<int> progress, CancellationToken cancellationToken);
-
     }
 }

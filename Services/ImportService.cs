@@ -58,7 +58,7 @@ namespace DicomEditor.Services
             string serverAET = _settingsService.GetServer(ServerType.QueryRetrieveServer).AET;
             string appAET = _settingsService.DicomEditorAET;
 
-            List<Series> retrievedSeries = new();
+            Dictionary<string, Series> retrievedSeries = new();
             Dictionary<string, DicomDataset> retrievedInstances = new();
 
             foreach (Series series in seriesList)
@@ -82,7 +82,7 @@ namespace DicomEditor.Services
                 {
                     series.Instances.Add(instance);
                 }
-                retrievedSeries.Add(series);
+                retrievedSeries.Add(series.SeriesUID, series);
             }
 
             _cache.LoadedSeries = retrievedSeries;
@@ -174,7 +174,7 @@ namespace DicomEditor.Services
                 }
             }
 
-            _cache.LoadedSeries = importedSeries.Values.ToList();
+            _cache.LoadedSeries = importedSeries;
             _cache.LoadedInstances = importedInstances;
         }
 

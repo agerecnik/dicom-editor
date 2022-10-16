@@ -91,6 +91,16 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private bool _applyToAll;
+        public bool ApplyToAll
+        {
+            get => _applyToAll;
+            set
+            {
+                SetProperty(ref _applyToAll, value);
+            }
+        }
+
         private string _localExportPath;
         public string LocalExportPath
         {
@@ -112,6 +122,8 @@ namespace DicomEditor.ViewModel
             _editorService = editorService;
             _dialogService = dialogService;
 
+            _editorService.LoadedInstancesChangedEvent += new LoadedInstancesChangedHandler(HandleLoadedInstancesChanged);
+
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
             ModifyAttributeValueCommand = new RelayCommand(o => ModifyAttributeValue(), CanUseModifyAttributeValueCommand);
@@ -129,7 +141,7 @@ namespace DicomEditor.ViewModel
 
         public void UpdateLoadedSeriesList()
         {
-            LoadedSeriesList = new ObservableCollection<Series>(_editorService.GetLoadedSeries());
+            LoadedSeriesList = new ObservableCollection<Series>(_editorService.GetLoadedSeries().Values);
         }
 
         private void UpdateListOfAttributes()
@@ -139,14 +151,28 @@ namespace DicomEditor.ViewModel
         
         private void ModifyAttributeValue()
         {
+            List<Instance> instances;
+            if(ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            } else
+            {
+                instances = new List<Instance>() { SelectedInstance};
+            }
+
             try
             {
-                _editorService.SetAttributeValue(SelectedInstance.InstanceUID, SelectedAttribute, SelectedAttributeValue);
-                UpdateListOfAttributes();
+                _editorService.SetAttributeValue(instances, SelectedAttribute, SelectedAttributeValue);
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
             }
-            catch (Exception e) when (e is DicomValidationException)
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException)
             {
                 // TODO: display error dialog
             }
@@ -167,7 +193,7 @@ namespace DicomEditor.ViewModel
 
         private bool CanUseModifyAttributeValueCommand(object o)
         {
-            if(SelectedAttribute is null || SelectedAttribute.Tag is null)
+            if(SelectedAttribute is null || SelectedAttribute.Tag is null || SelectedAttribute.ValueRepresentation is "SQ")
             {
                 return false;
             }
@@ -190,6 +216,11 @@ namespace DicomEditor.ViewModel
                 return false;
             }
             return true;
+        }
+
+        private void HandleLoadedInstancesChanged()
+        {
+            UpdateListOfAttributes();
         }
     }
 }
