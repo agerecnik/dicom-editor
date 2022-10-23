@@ -8,8 +8,9 @@ namespace DicomEditor.Model
 {
     public class Instance
     {
-        public string InstanceUID { get; }
-        public string SeriesUID { get; }
+        public string InstanceUID { get; set; }
+        public string SeriesUID { get; set; }
+        //TODO: add instance number
 
         public Instance(string instanceUID, string seriesUID)
         {

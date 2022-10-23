@@ -9,7 +9,7 @@ namespace DicomEditor.Model
 {
     public class Series
     {
-        public string SeriesUID { get; }
+        public string SeriesUID { get; set; }
         public string SeriesDescription { get; }
         public DateTime SeriesDateTime { get; }
         public string Modality { get; }

@@ -69,7 +69,7 @@
                       IsSynchronizedWithCurrentItem="True"
                       x:Name="SelectedSeriesView"
                       ItemsSource="{Binding ElementName=LoadedSeriesListView, Path=SelectedItem.Instances}"
-                      SelectedItem="{Binding SelectedInstance}"
+                      SelectedItem="{Binding SelectedInstance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -99,9 +99,10 @@
             <tree:TreeList x:Name="tree"
                            Grid.Column="1"
                            Grid.RowSpan="2"    
-                           Model="{Binding SelectedInstanceAttributes, Mode=TwoWay}"
+                           Model="{Binding SelectedInstanceAttributes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            Margin="5,10,10,5"
-                           Style="{StaticResource TreeListStyle}" SelectionChanged="tree_SelectionChanged">
+                           Style="{StaticResource TreeListStyle}"
+                           SelectionChanged="tree_SelectionChanged">
                 <tree:TreeList.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
                         <GridView.Columns>
@@ -139,21 +140,45 @@
                 </Button>
             </Grid>
             
-            <Grid Grid.Row="3"
-                  HorizontalAlignment="Right">
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Grid.Column="2"
+                <Button Grid.Column="0"
+                        Height="30"
+                        MaxWidth="150"
+                        Margin="10,5,10,10"
+                        Content="Generate study UID"
+                        Command="{Binding GenerateStudyUIDCommand}"
+                        Style="{StaticResource ButtonStyle}" />
+
+                <Button Grid.Column="1"
+                        Height="30"
+                        MaxWidth="150"
+                        Margin="10,5,10,10"
+                        Content="Generate series UID"
+                        Command="{Binding GenerateSeriesUIDCommand}"
+                        Style="{StaticResource ButtonStyle}" />
+
+                <Button Grid.Column="2"
+                        Height="30"
+                        MaxWidth="150"
+                        Margin="10,5,10,10"
+                        Content="Generate instance UID"
+                        Command="{Binding GenerateInstanceUIDCommand}"
+                        Style="{StaticResource ButtonStyle}" />
+
+                <CheckBox Grid.Column="3"
                           VerticalAlignment="Center"
                           FlowDirection="RightToLeft"
                           Margin="10,5,10,10"
                           IsChecked="{Binding Path=ApplyToAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           Style="{StaticResource CheckBoxStyle}">
-                    Apply to entire selected series
+                    Apply to entire series
                 </CheckBox>
                 
             </Grid>
@@ -175,8 +200,7 @@
                         Margin="10,5,10,10"
                         Content="Export selected series"
                         Command="{Binding LocalExportCommand}"
-                        Style="{StaticResource ButtonStyle}">
-                </Button>
+                        Style="{StaticResource ButtonStyle}" />
             </Grid>
         </Grid>
     </Grid>

@@ -88,17 +88,5 @@ namespace DicomEditor.ViewModel
             }
             return true;
         }
-
-        //private void HandleUpdatedVerificationStatus(ServerType type)
-        //{
-        //    if(type == ServerType.QueryRetrieveServer)
-        //    {
-        //        QueryRetrieveServer.Status = _settingsService.GetServer(type).Status;
-        //    } else if(type == ServerType.StoreServer)
-        //    {
-        //        StoreServer.Status = _settingsService.GetServer(type).Status;
-        //    }
-        //    CommandManager.InvalidateRequerySuggested();
-        //}
     }
 }

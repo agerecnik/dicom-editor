@@ -75,6 +75,110 @@ namespace DicomEditor.Services
 
                     DicomTag lastTag = attributes[^1].Tag;
                     ds.AddOrUpdate<string>(lastTag, value);
+
+                    if (lastTag == DicomTag.SOPInstanceUID)
+                    {
+                        if (!_cache.LoadedInstances.TryAdd(value, ds))
+                        {
+                            ds.AddOrUpdate<string>(lastTag, instance.InstanceUID);
+                            throw new ArgumentException("Instance with the following UID already exists: " + instance.InstanceUID);
+                        }
+                        _cache.LoadedInstances.Remove(instance.InstanceUID);
+                        instance.InstanceUID = value;
+                    }
+                    else if (lastTag == DicomTag.SeriesInstanceUID)
+                    {
+                        if (_cache.LoadedSeries.TryGetValue(instance.SeriesUID, out Series series))
+                        {
+                            series.Instances.Remove(instance);
+                            if (!_cache.LoadedSeries.TryGetValue(value, out Series newSeries))
+                            {
+                                newSeries = new(value, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, new List<Instance>());
+                                _cache.LoadedSeries[value] = newSeries;
+                            }
+                            newSeries.Instances.Add(instance);
+                        }
+                        if (series.Instances.Count == 0)
+                        {
+                            _cache.LoadedSeries.Remove(series.SeriesUID);
+                        }
+                        instance.SeriesUID = value;
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
+
+        public void GenerateAndSetStudyUID(IList<Instance> instances)
+        {
+            // TODO: add option for root UID in settings service and add it to the automatically generated UID
+            // TODO: add check for empty or null root UID
+            string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    ds.AddOrUpdate<string>(DicomTag.StudyInstanceUID, generatedUID);
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
+
+        public void GenerateAndSetSeriesUID(IList<Instance> instances)
+        {
+            // TODO: add option for root UID in settings service and add it to the automatically generated UID
+            // TODO: add check for empty or null root UID
+            string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    ds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, generatedUID);
+                    if(_cache.LoadedSeries.TryGetValue(instance.SeriesUID, out Series series)) {
+                        series.Instances.Remove(instance);
+                        if(!_cache.LoadedSeries.TryGetValue(generatedUID, out Series newSeries))
+                        {
+                            newSeries = new(generatedUID, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, new List<Instance>());
+                            _cache.LoadedSeries[generatedUID] = newSeries;
+                        }
+                        newSeries.Instances.Add(instance);
+                    }
+                    if(series.Instances.Count == 0)
+                    {
+                        _cache.LoadedSeries.Remove(series.SeriesUID);
+                    }
+                    instance.SeriesUID = generatedUID;
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
+
+        public void GenerateAndSetInstanceUID(IList<Instance> instances)
+        {
+            foreach (Instance instance in instances)
+            {
+                // TODO: add option for root UID in settings service and add it to the automatically generated UID
+                // TODO: add check for empty or null root UID
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+                    ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, generatedUID);
+                    if (!_cache.LoadedInstances.TryAdd(generatedUID, ds))
+                    {
+                        ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, instance.InstanceUID);
+                        throw new ArgumentException("Instance with the following UID already exists: " + instance.InstanceUID);
+                    }
+                    _cache.LoadedInstances.Remove(instance.InstanceUID);
+                    instance.InstanceUID = generatedUID;
                 }
                 else
                 {

@@ -77,6 +77,9 @@ namespace DicomEditor.ViewModel
                 if(value is not null)
                 {
                     SelectedAttributeValue = value.Value;
+                } else
+                {
+                    SelectedAttributeValue = "";
                 }
             }
         }
@@ -115,6 +118,11 @@ namespace DicomEditor.ViewModel
         public ICommand StoreCommand { get; }
         public ICommand LocalExportCommand { get; }
         public ICommand ModifyAttributeValueCommand { get; }
+        public ICommand GenerateStudyUIDCommand { get; }
+        public ICommand GenerateSeriesUIDCommand { get; }
+        public ICommand GenerateInstanceUIDCommand { get; }
+
+
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
@@ -124,6 +132,9 @@ namespace DicomEditor.ViewModel
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
             ModifyAttributeValueCommand = new RelayCommand(o => ModifyAttributeValue(), CanUseModifyAttributeValueCommand);
+            GenerateStudyUIDCommand = new RelayCommand(o => GenerateStudyUID(), CanUseGenerateUIDCommand);
+            GenerateSeriesUIDCommand = new RelayCommand(o => GenerateSeriesUID(), CanUseGenerateUIDCommand);
+            GenerateInstanceUIDCommand = new RelayCommand(o => GenerateInstanceUID(), CanUseGenerateUIDCommand);
 
             LocalExportPath = _editorService.LocalExportPath;
         }
@@ -144,6 +155,7 @@ namespace DicomEditor.ViewModel
         private void UpdateListOfAttributes()
         {
             SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID);
+            SelectedAttribute = null;
         }
         
         private void ModifyAttributeValue()
@@ -170,7 +182,106 @@ namespace DicomEditor.ViewModel
             or DicomDataException
             or ArgumentNullException
             or FormatException
-            or OverflowException)
+            or OverflowException
+            or ArgumentException)
+            {
+                // TODO: display error dialog
+            }
+        }
+
+        private void GenerateStudyUID()
+        {
+            List<Instance> instances;
+            if (ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            }
+            else
+            {
+                instances = new List<Instance>() { SelectedInstance };
+            }
+
+            try
+            {
+                _editorService.GenerateAndSetStudyUID(instances);
+                UpdateListOfAttributes();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException
+            or ArgumentException)
+            {
+                // TODO: display error dialog
+            }
+        }
+
+        private void GenerateSeriesUID()
+        {
+            List<Instance> instances;
+            if (ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            }
+            else
+            {
+                instances = new List<Instance>() { SelectedInstance };
+            }
+
+            try
+            {
+                _editorService.GenerateAndSetSeriesUID(instances);
+                UpdateListOfAttributes();
+                UpdateLoadedSeriesList();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException
+            or ArgumentException)
+            {
+                // TODO: display error dialog
+            }
+        }
+
+        private void GenerateInstanceUID()
+        {
+            List<Instance> instances;
+            if (ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            }
+            else
+            {
+                instances = new List<Instance>() { SelectedInstance };
+            }
+
+            try
+            {
+                _editorService.GenerateAndSetInstanceUID(instances);
+                UpdateListOfAttributes();
+                UpdateLoadedSeriesList();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException
+            or ArgumentException)
             {
                 // TODO: display error dialog
             }
@@ -192,6 +303,15 @@ namespace DicomEditor.ViewModel
         private bool CanUseModifyAttributeValueCommand(object o)
         {
             if(SelectedAttribute is null || SelectedAttribute.Tag is null || SelectedAttribute.ValueRepresentation is "SQ")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseGenerateUIDCommand(object o)
+        {
+            if (SelectedSeries is null || SelectedInstance is null)
             {
                 return false;
             }
