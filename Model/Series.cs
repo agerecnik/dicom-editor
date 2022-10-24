@@ -10,12 +10,12 @@ namespace DicomEditor.Model
     public class Series
     {
         public string SeriesUID { get; set; }
-        public string SeriesDescription { get; }
-        public DateTime SeriesDateTime { get; }
-        public string Modality { get; }
-        public int NumberOfInstances { get; }
-        public string StudyUID { get; }
-        public ICollection<Instance> Instances { get; }
+        public string SeriesDescription { get; set; }
+        public DateTime SeriesDateTime { get; set; }
+        public string Modality { get; set; }
+        public int NumberOfInstances { get; set; }
+        public string StudyUID { get; set; }
+        public ICollection<Instance> Instances { get; set; }
 
         public Series(string seriesUID, string seriesDescription, DateTime seriesDateTime, string modality, int numberOfInstances, string studyUID, List<Instance> instances)
         {

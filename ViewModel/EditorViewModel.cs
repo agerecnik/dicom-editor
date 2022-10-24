@@ -3,10 +3,12 @@ using DicomEditor.Interfaces;
 using DicomEditor.Model;
 using FellowOakDicom;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -149,7 +151,8 @@ namespace DicomEditor.ViewModel
 
         public void UpdateLoadedSeriesList()
         {
-            LoadedSeriesList = new ObservableCollection<Series>(_editorService.GetLoadedSeries().Values);
+            ICollection<Series> series = _editorService.GetLoadedSeries().Values;
+            LoadedSeriesList = new ObservableCollection<Series>(series.OrderBy(x => x.SeriesDescription.Length).ThenBy(x => x.SeriesDescription));
         }
 
         private void UpdateListOfAttributes()
@@ -270,7 +273,6 @@ namespace DicomEditor.ViewModel
             {
                 _editorService.GenerateAndSetInstanceUID(instances);
                 UpdateListOfAttributes();
-                UpdateLoadedSeriesList();
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
             }

@@ -8,12 +8,12 @@ namespace DicomEditor.Model
 {
     public class Study
     {
-        public string StudyUID { get; }
-        public string AccessionNumber { get; }
-        public string StudyDescription { get; }
-        public DateTime StudyDateTime { get; }
-        public string Modalities { get; }
-        public IDictionary<string, Series> Series { get; }
+        public string StudyUID { get; set; }
+        public string AccessionNumber { get; set; }
+        public string StudyDescription { get; set; }
+        public DateTime StudyDateTime { get; set; }
+        public string Modalities { get; set; }
+        public IDictionary<string, Series> Series { get; set; }
 
         public Study(string studyUID, string accessionNumber, string studyDescription, DateTime studyDateTime, string modalities)
         {

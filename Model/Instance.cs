@@ -10,12 +10,13 @@ namespace DicomEditor.Model
     {
         public string InstanceUID { get; set; }
         public string SeriesUID { get; set; }
-        //TODO: add instance number
+        public string InstanceNumber { get; set; }
 
-        public Instance(string instanceUID, string seriesUID)
+        public Instance(string instanceUID, string seriesUID, string instanceNumber)
         {
             InstanceUID = instanceUID;
             SeriesUID = seriesUID;
+            InstanceNumber = instanceNumber;
         }
     }
 }

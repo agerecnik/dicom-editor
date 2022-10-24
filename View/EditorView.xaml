@@ -73,7 +73,7 @@
                       Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding InstanceUID}"
+                        <Label Content="{Binding InstanceNumber}"
                                Style="{StaticResource ListViewItemLabelStyle}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>

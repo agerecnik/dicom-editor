@@ -3,6 +3,7 @@ using DicomEditor.Model;
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -73,15 +74,13 @@ namespace DicomEditor.Services
                 foreach (DicomDataset dataset in retrievedDataset)
                 {
                     string instanceUID = dataset?.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
-                    Instance instance = new(instanceUID, series.SeriesUID);
+                    string instanceNumber = dataset?.GetSingleValueOrDefault(DicomTag.InstanceNumber, instanceUID);
+                    Instance instance = new(instanceUID, series.SeriesUID, instanceNumber);
                     instances.Add(instance);
                     retrievedInstances.Add(instanceUID, dataset);
                 }
-                instances = instances.OrderBy(x => x.InstanceUID.Length).ThenBy(x => x.InstanceUID).ToList();
-                foreach (Instance instance in instances)
-                {
-                    series.Instances.Add(instance);
-                }
+                ObservableCollection<Instance> orderedInstances = new (instances.OrderBy(x => x.InstanceNumber.Length).ThenBy(x => x.InstanceNumber));
+                series.Instances = orderedInstances;
                 retrievedSeries.Add(series.SeriesUID, series);
             }
 
@@ -142,8 +141,9 @@ namespace DicomEditor.Services
             {
                 string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
                 string seriesUID = dataset.GetSingleValueOrDefault(DicomTag.SeriesInstanceUID, "");
+                string instanceNumber = dataset.GetSingleValueOrDefault(DicomTag.InstanceNumber, instanceUID);
 
-                Instance instance = new(instanceUID, seriesUID);
+                Instance instance = new(instanceUID, seriesUID, instanceNumber);
                 if (!importedSeries.TryGetValue(seriesUID, out Series series))
                 {
                     string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");

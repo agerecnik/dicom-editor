@@ -74,35 +74,18 @@ namespace DicomEditor.Services
                     }
 
                     DicomTag lastTag = attributes[^1].Tag;
-                    ds.AddOrUpdate<string>(lastTag, value);
-
+                    
                     if (lastTag == DicomTag.SOPInstanceUID)
                     {
-                        if (!_cache.LoadedInstances.TryAdd(value, ds))
-                        {
-                            ds.AddOrUpdate<string>(lastTag, instance.InstanceUID);
-                            throw new ArgumentException("Instance with the following UID already exists: " + instance.InstanceUID);
-                        }
-                        _cache.LoadedInstances.Remove(instance.InstanceUID);
-                        instance.InstanceUID = value;
+                        UpdateInstanceUID(instance, value, ds);
                     }
                     else if (lastTag == DicomTag.SeriesInstanceUID)
                     {
-                        if (_cache.LoadedSeries.TryGetValue(instance.SeriesUID, out Series series))
-                        {
-                            series.Instances.Remove(instance);
-                            if (!_cache.LoadedSeries.TryGetValue(value, out Series newSeries))
-                            {
-                                newSeries = new(value, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, new List<Instance>());
-                                _cache.LoadedSeries[value] = newSeries;
-                            }
-                            newSeries.Instances.Add(instance);
-                        }
-                        if (series.Instances.Count == 0)
-                        {
-                            _cache.LoadedSeries.Remove(series.SeriesUID);
-                        }
-                        instance.SeriesUID = value;
+                        UpdateSeriesUID(instance, value, ds);
+                    }
+                    else
+                    {
+                        ds.AddOrUpdate<string>(lastTag, value);
                     }
                 }
                 else
@@ -139,21 +122,7 @@ namespace DicomEditor.Services
             {
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
                 {
-                    ds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, generatedUID);
-                    if(_cache.LoadedSeries.TryGetValue(instance.SeriesUID, out Series series)) {
-                        series.Instances.Remove(instance);
-                        if(!_cache.LoadedSeries.TryGetValue(generatedUID, out Series newSeries))
-                        {
-                            newSeries = new(generatedUID, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, new List<Instance>());
-                            _cache.LoadedSeries[generatedUID] = newSeries;
-                        }
-                        newSeries.Instances.Add(instance);
-                    }
-                    if(series.Instances.Count == 0)
-                    {
-                        _cache.LoadedSeries.Remove(series.SeriesUID);
-                    }
-                    instance.SeriesUID = generatedUID;
+                    UpdateSeriesUID(instance, generatedUID, ds);
                 }
                 else
                 {
@@ -171,14 +140,7 @@ namespace DicomEditor.Services
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
                 {
                     string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
-                    ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, generatedUID);
-                    if (!_cache.LoadedInstances.TryAdd(generatedUID, ds))
-                    {
-                        ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, instance.InstanceUID);
-                        throw new ArgumentException("Instance with the following UID already exists: " + instance.InstanceUID);
-                    }
-                    _cache.LoadedInstances.Remove(instance.InstanceUID);
-                    instance.InstanceUID = generatedUID;
+                    UpdateInstanceUID(instance, generatedUID, ds);
                 }
                 else
                 {
@@ -267,6 +229,38 @@ namespace DicomEditor.Services
                     }
                 }
             }
+        }
+
+        private void UpdateSeriesUID(Instance instance, string newUID, DicomDataset ds)
+        {
+            ds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, newUID);
+            if (_cache.LoadedSeries.TryGetValue(instance.SeriesUID, out Series series))
+            {
+                series.Instances.Remove(instance);
+                if (!_cache.LoadedSeries.TryGetValue(newUID, out Series newSeries))
+                {
+                    newSeries = new(newUID, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, new List<Instance>());
+                    _cache.LoadedSeries[newUID] = newSeries;
+                }
+                newSeries.Instances.Add(instance);
+            }
+            if (series.Instances.Count == 0)
+            {
+                _cache.LoadedSeries.Remove(series.SeriesUID);
+            }
+            instance.SeriesUID = newUID;
+        }
+
+        private void UpdateInstanceUID(Instance instance, string newUID, DicomDataset ds)
+        {
+            ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, newUID);
+            if (!_cache.LoadedInstances.TryAdd(newUID, ds))
+            {
+                ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, instance.InstanceUID);
+                throw new ArgumentException("Instance with the following UID already exists: " + newUID);
+            }
+            _cache.LoadedInstances.Remove(instance.InstanceUID);
+            instance.InstanceUID = newUID;
         }
     }
 }
