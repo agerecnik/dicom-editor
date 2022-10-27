@@ -151,8 +151,7 @@ namespace DicomEditor.ViewModel
 
         public void UpdateLoadedSeriesList()
         {
-            ICollection<Series> series = _editorService.GetLoadedSeries().Values;
-            LoadedSeriesList = new ObservableCollection<Series>(series.OrderBy(x => x.SeriesDescription.Length).ThenBy(x => x.SeriesDescription));
+            LoadedSeriesList = _editorService.GetLoadedSeries();
         }
 
         private void UpdateListOfAttributes()
@@ -174,8 +173,15 @@ namespace DicomEditor.ViewModel
 
             try
             {
+                DicomTag tag = SelectedAttribute.Tag;
                 _editorService.SetAttributeValue(instances, SelectedAttribute, SelectedAttributeValue);
-                UpdateListOfAttributes();
+                if(tag == DicomTag.SeriesInstanceUID)
+                {
+                    UpdateLoadedSeriesList();
+                } else
+                {
+                    UpdateListOfAttributes();
+                }
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
             }

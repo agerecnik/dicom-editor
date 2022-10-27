@@ -69,8 +69,8 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private IDictionary<string, Patient> _queryResult;
-        public IDictionary<string, Patient> QueryResult
+        private ICollection<Patient> _queryResult;
+        public ICollection<Patient> QueryResult
         {
             get => _queryResult;
             set

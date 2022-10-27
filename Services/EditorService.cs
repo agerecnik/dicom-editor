@@ -4,8 +4,10 @@ using DicomEditor.Model.EditorModel.Tree;
 using FellowOakDicom;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static DicomEditor.Interfaces.IDICOMServer;
@@ -27,9 +29,9 @@ namespace DicomEditor.Services
             _DICOMService = DICOMService;
         }
 
-        public IDictionary<string, Series> GetLoadedSeries()
+        public ICollection<Series> GetLoadedSeries()
         {
-            return _cache.LoadedSeries;
+            return new ObservableCollection<Series>(_cache.LoadedSeries.Values.OrderBy(x => x.SeriesDescription.Length).ThenBy(x => x.SeriesDescription));
         }
 
         public ITreeModel GetInstance(string instanceUID)

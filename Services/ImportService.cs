@@ -23,7 +23,7 @@ namespace DicomEditor.Services
         public string AccessionNumber { get; set; }
         public string StudyID { get; set; }
         public string Modality { get; set; }
-        public IDictionary<string, Patient> QueryResult { get; set; }
+        public ICollection<Patient> QueryResult { get; set; }
         public string LocalImportPath { get; set; }
 
         public ImportService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
@@ -45,7 +45,8 @@ namespace DicomEditor.Services
             string serverAET = _settingsService.GetServer(ServerType.QueryRetrieveServer).AET;
             string appAET = _settingsService.DicomEditorAET;
 
-            QueryResult = await _DICOMService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
+            var result = await _DICOMService.QueryAsync(serverHost, serverPort, serverAET, appAET, PatientID, PatientName, AccessionNumber, StudyID, Modality, cancellationToken);
+            QueryResult = result.Values;
         }
 
         public async Task RetrieveAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
@@ -180,7 +181,7 @@ namespace DicomEditor.Services
 
         private void HandleSettingsSaved()
         {
-            QueryResult = new Dictionary<string, Patient>();
+            QueryResult = new Collection<Patient>();
         }
     }
 }

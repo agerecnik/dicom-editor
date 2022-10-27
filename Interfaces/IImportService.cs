@@ -13,7 +13,7 @@ namespace DicomEditor.Interfaces
         public string AccessionNumber { get; set; }
         public string StudyID { get; set; }
         public string Modality { get; set; }
-        public IDictionary<string, Patient> QueryResult { get; set; }
+        public ICollection<Patient> QueryResult { get; set; }
         public string LocalImportPath { get; set; }
 
         public Task QueryAsync(CancellationToken cancellationToken);

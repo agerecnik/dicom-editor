@@ -10,7 +10,7 @@ namespace DicomEditor.Interfaces
     {
         public string LocalExportPath { get; set; }
 
-        public IDictionary<string, Series> GetLoadedSeries();
+        public ICollection<Series> GetLoadedSeries();
         public ITreeModel GetInstance(string instanceUID);
         public void SetAttributeValue(IList<Instance> instances, IDatasetModel attribute, string value);
         public void GenerateAndSetStudyUID(IList<Instance> instances);
