@@ -10,6 +10,7 @@ namespace DicomEditor.Interfaces
         event SettingsSavedHandler SettingsSavedEvent;
 
         public string DicomEditorAET { get; set; }
+        public string DicomRoot { get; set; }
 
         public void SetServer(IDICOMServer server);
         public IDICOMServer GetServer(ServerType type);

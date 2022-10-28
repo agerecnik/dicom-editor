@@ -25,6 +25,17 @@ namespace DicomEditor.Services
             }
         }
 
+        private string _dicomRoot;
+        public string DicomRoot
+        {
+            get => _dicomRoot;
+            set
+            {
+                _dicomRoot = value;
+                SetSetting("DicomRoot", value);
+            }
+        }
+
         public SettingsService(IDICOMService DICOMService)
         {
             _servers = new Dictionary<ServerType, IDICOMServer>
@@ -33,6 +44,7 @@ namespace DicomEditor.Services
                 { ServerType.StoreServer, new DICOMServer(ServerType.StoreServer, GetSetting(ServerType.StoreServer + "AET"), GetSetting(ServerType.StoreServer + "Host"), GetSetting(ServerType.StoreServer + "Port")) }
             };
             _dicomEditorAET = GetSetting("DicomEditorAET");
+            _dicomRoot = GetSetting("DicomRoot");
             _DICOMService = DICOMService;
         }
 

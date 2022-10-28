@@ -19,6 +19,7 @@ namespace DicomEditor.Services
         private readonly ISettingsService _settingsService;
         private readonly ICache _cache;
         private readonly IDICOMService _DICOMService;
+        private readonly Random _random;
 
         public string LocalExportPath { get; set; }
 
@@ -27,6 +28,7 @@ namespace DicomEditor.Services
             _settingsService = settingsService;
             _cache = cache;
             _DICOMService = DICOMService;
+            _random = new Random();
         }
 
         public ICollection<Series> GetLoadedSeries()
@@ -99,9 +101,16 @@ namespace DicomEditor.Services
 
         public void GenerateAndSetStudyUID(IList<Instance> instances)
         {
-            // TODO: add option for root UID in settings service and add it to the automatically generated UID
-            // TODO: add check for empty or null root UID
-            string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+            string generatedUID;
+            if (_settingsService.DicomRoot is not null && _settingsService.DicomRoot is not "")
+            {
+                generatedUID = GenerateUIDFromRoot(1, 0);
+            }
+            else
+            {
+                generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+            }
+
             foreach (Instance instance in instances)
             {
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
@@ -117,9 +126,16 @@ namespace DicomEditor.Services
 
         public void GenerateAndSetSeriesUID(IList<Instance> instances)
         {
-            // TODO: add option for root UID in settings service and add it to the automatically generated UID
-            // TODO: add check for empty or null root UID
-            string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+            string generatedUID;
+            if (_settingsService.DicomRoot is not null && _settingsService.DicomRoot is not "")
+            {
+                generatedUID = GenerateUIDFromRoot(2, 0);
+            }
+            else
+            {
+                generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+            }
+
             foreach (Instance instance in instances)
             {
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
@@ -135,14 +151,22 @@ namespace DicomEditor.Services
 
         public void GenerateAndSetInstanceUID(IList<Instance> instances)
         {
+            int counter = 0;
             foreach (Instance instance in instances)
             {
-                // TODO: add option for root UID in settings service and add it to the automatically generated UID
-                // TODO: add check for empty or null root UID
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
                 {
-                    string generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+                    string generatedUID;
+                    if (_settingsService.DicomRoot is not null && _settingsService.DicomRoot is not "")
+                    {
+                        generatedUID = GenerateUIDFromRoot(3, counter);
+                    }
+                    else
+                    {
+                        generatedUID = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+                    }
                     UpdateInstanceUID(instance, generatedUID, ds);
+                    counter++;
                 }
                 else
                 {
@@ -263,6 +287,26 @@ namespace DicomEditor.Services
             }
             _cache.LoadedInstances.Remove(instance.InstanceUID);
             instance.InstanceUID = newUID;
+        }
+
+        private string GenerateUIDFromRoot(int type, int counter)
+        {
+            DateTime current = DateTime.Now;
+            return
+                _settingsService.DicomRoot
+                + current.Year
+                + current.Month
+                + current.Day
+                + current.Hour
+                + current.Minute
+                + current.Second
+                + current.Millisecond
+                + "."
+                + type
+                + "."
+                + counter
+                + "."
+                + _random.Next(100000);
         }
     }
 }

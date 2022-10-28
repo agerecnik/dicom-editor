@@ -25,6 +25,16 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private string _dicomRoot;
+        public string DicomRoot
+        {
+            get => _dicomRoot;
+            set
+            {
+                SetProperty(ref _dicomRoot, value);
+            }
+        }
+
         public ICommand SaveSettingsCommand { get; }
         public ICommand VerifyCommand { get; }
 
@@ -39,6 +49,7 @@ namespace DicomEditor.ViewModel
             StoreServer = new DICOMServerViewModel(stServer.Type, stServer.AET, stServer.Host, stServer.Port, stServer.Status);
 
             DicomEditorAET = _settingsService.DicomEditorAET;
+            DicomRoot = _settingsService.DicomRoot;
 
             SaveSettingsCommand = new RelayCommand(SaveSettings, CanUseSaveSettingsOrVerifyCommand);
             VerifyCommand = new RelayCommand(Verify, CanUseSaveSettingsOrVerifyCommand);
@@ -57,6 +68,7 @@ namespace DicomEditor.ViewModel
             _settingsService.SetServer(QueryRetrieveServer);
             _settingsService.SetServer(StoreServer);
             _settingsService.DicomEditorAET = _dicomEditorAET;
+            _settingsService.DicomRoot = _dicomRoot;
         }
 
         private async void Verify(object o)
