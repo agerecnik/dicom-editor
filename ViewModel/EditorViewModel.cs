@@ -194,7 +194,8 @@ namespace DicomEditor.ViewModel
             or OverflowException
             or ArgumentException)
             {
-                // TODO: display error dialog
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
+                UpdateListOfAttributes();
             }
         }
 
@@ -226,7 +227,7 @@ namespace DicomEditor.ViewModel
             or OverflowException
             or ArgumentException)
             {
-                // TODO: display error dialog
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
             }
         }
 
@@ -259,7 +260,7 @@ namespace DicomEditor.ViewModel
             or OverflowException
             or ArgumentException)
             {
-                // TODO: display error dialog
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
             }
         }
 
@@ -291,7 +292,7 @@ namespace DicomEditor.ViewModel
             or OverflowException
             or ArgumentException)
             {
-                // TODO: display error dialog
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
             }
         }
 
@@ -299,13 +300,15 @@ namespace DicomEditor.ViewModel
         {
             if (SelectedSeries is not null)
             {
-                _dialogService.ShowDialog<ExportDialogViewModel>("Store in progress", _editorService, new List<Series> { SelectedSeries });
+                var vm = _dialogService.ShowDialog<ExportDialogViewModel>("Store in progress", _editorService, new List<Series> { SelectedSeries });
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
             }
         }
 
         private void LocalExport()
         {
-            _dialogService.ShowDialog<ExportDialogViewModel>("Local export in progress", _editorService, new List<Series> { SelectedSeries }, LocalExportPath);
+            var vm = _dialogService.ShowDialog<ExportDialogViewModel>("Local export in progress", _editorService, new List<Series> { SelectedSeries }, LocalExportPath);
+            _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
         }
 
         private bool CanUseModifyAttributeValueCommand(object o)

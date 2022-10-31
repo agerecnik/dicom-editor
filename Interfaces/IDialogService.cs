@@ -1,7 +1,9 @@
-﻿namespace DicomEditor.Interfaces
+﻿using System;
+
+namespace DicomEditor.Interfaces
 {
     public interface IDialogService
     {
-        public void ShowDialog<TViewModel>(string title, params object[] parameters);
+        public TViewModel ShowDialog<TViewModel>(string title, params object[] parameters);
     }
 }

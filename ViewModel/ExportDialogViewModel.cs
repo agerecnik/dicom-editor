@@ -76,14 +76,10 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        public void OnClosing(object sender, CancelEventArgs e)
-        {
-            Cancel();
-        }
-
         private void Cancel()
         {
             _cancellationTokenSource.Cancel();
+            Status = "Canceled";
         }
 
         private async void Store()
@@ -91,8 +87,8 @@ namespace DicomEditor.ViewModel
             try
             {
                 await _editorService.StoreAsync(_seriesList, CreateProgress(), _cancellationTokenSource.Token);
-                ExecutionFinished = true;
                 Status = "Completed";
+                ExecutionFinished = true;
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
             or DicomAssociationAbortedException
@@ -104,6 +100,7 @@ namespace DicomEditor.ViewModel
             or ArgumentException)
             {
                 Status = e.Message;
+                ExecutionFinished = true;
             }
         }
 
@@ -112,8 +109,8 @@ namespace DicomEditor.ViewModel
             try
             {
                 await _editorService.LocalExportAsync(_seriesList, _path, CreateProgress(), _cancellationTokenSource.Token);
-                ExecutionFinished = true;
                 Status = "Completed";
+                ExecutionFinished = true;
             }
             catch (Exception e) when (e is UnauthorizedAccessException
             or DirectoryNotFoundException
@@ -124,6 +121,7 @@ namespace DicomEditor.ViewModel
             or NotSupportedException)
             {
                 Status = e.Message;
+                ExecutionFinished = true;
             }
         }
 

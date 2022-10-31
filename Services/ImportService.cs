@@ -128,7 +128,6 @@ namespace DicomEditor.Services
                 DicomDataset dataset = file.Dataset;
 
                 string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
-                // TODO: tryAdd?
                 importedInstances.Add(instanceUID, dataset);
 
                 if (progress != null)
@@ -173,6 +172,12 @@ namespace DicomEditor.Services
                 {
                     series.Instances.Add(instance);
                 }
+            }
+
+            foreach(Series s in importedSeries.Values)
+            {
+                ObservableCollection<Instance> orderedInstances = new(s.Instances.OrderBy(x => x.InstanceNumber.Length).ThenBy(x => x.InstanceNumber));
+                s.Instances = orderedInstances;
             }
 
             _cache.LoadedSeries = importedSeries;

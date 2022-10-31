@@ -74,11 +74,6 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        public void OnClosing(object sender, CancelEventArgs e)
-        {
-            Cancel();
-        }
-
         private ImportDialogViewModel(IImportService importService)
         {
             _importService = importService;
@@ -89,6 +84,7 @@ namespace DicomEditor.ViewModel
         private void Cancel()
         {
             _cancellationTokenSource.Cancel();
+            Status = "Canceled";
         }
 
         private async void Retrieve()
@@ -115,8 +111,8 @@ namespace DicomEditor.ViewModel
             try
             {
                 await _importService.RetrieveAsync(_seriesList, progress, _cancellationTokenSource.Token);
-                ExecutionFinished = true;
                 Status = "Completed";
+                ExecutionFinished = true;
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
             or DicomAssociationAbortedException
@@ -125,9 +121,11 @@ namespace DicomEditor.ViewModel
             or DicomNetworkException
             or DicomRequestTimedOutException
             or AggregateException
-            or ArgumentException)
+            or ArgumentException
+            or ArgumentNullException)
             {
                 Status = e.Message;
+                ExecutionFinished = true;
             }
         }
 
@@ -159,8 +157,8 @@ namespace DicomEditor.ViewModel
             try
             {
                 await _importService.LocalImportAsync(_path, progress, _cancellationTokenSource.Token);
-                ExecutionFinished = true;
                 Status = "Completed";
+                ExecutionFinished = true;
             }
             catch (Exception e) when (e is FileFormatException
             or FileNotFoundException
@@ -173,6 +171,7 @@ namespace DicomEditor.ViewModel
             or IOException)
             {
                 Status = e.Message;
+                ExecutionFinished = true;
             }
         }
     }

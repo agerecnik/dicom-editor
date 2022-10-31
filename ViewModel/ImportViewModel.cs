@@ -1,9 +1,11 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
+using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 
@@ -162,7 +164,11 @@ namespace DicomEditor.ViewModel
 
         private void Query()
         {
-            _dialogService.ShowDialog<QueryDialogViewModel>("Query in progress", _importService);
+            var vm = _dialogService.ShowDialog<QueryDialogViewModel>("Query in progress", _importService);
+            if(vm.Status != "Completed")
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+            }
             QueryResult = _importService.QueryResult;
         }
 
@@ -170,13 +176,15 @@ namespace DicomEditor.ViewModel
         {
             if (SelectedSeriesList is not null && SelectedSeriesList.Count > 0)
             {
-                _dialogService.ShowDialog<ImportDialogViewModel>("Retrieval in progress", _importService, SelectedSeriesList);
+                var vm = _dialogService.ShowDialog<ImportDialogViewModel>("Retrieval in progress", _importService, SelectedSeriesList);
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
             }
         }
 
         private void LocalImport()
         {
-            _dialogService.ShowDialog<ImportDialogViewModel>("Import in progress", _importService, LocalImportPath);
+            var vm = _dialogService.ShowDialog<ImportDialogViewModel>("Import in progress", _importService, LocalImportPath);
+            _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
         }
 
         private bool CanUseRetrieveCommand(object o)

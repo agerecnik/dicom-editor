@@ -26,7 +26,6 @@ namespace DicomEditor.Services
             List<string> studyUIDs = new();
             request.OnResponseReceived += (req, response) =>
             {
-                DebugStudyResponse(response);
                 string studyUID = response.Dataset?.GetSingleValue<string>(DicomTag.StudyInstanceUID);
                 if (studyUID is not null and not "")
                 {
@@ -278,40 +277,6 @@ namespace DicomEditor.Services
                 await client.SendAsync();
             }
             return sopClassUIDs;
-        }
-
-        private void DebugStudyResponse(DicomCFindResponse response)
-        {
-            if (response.Status == DicomStatus.Pending)
-            {
-                // print the results
-                Console.WriteLine($"Patient {response.Dataset.GetSingleValueOrDefault(DicomTag.PatientName, string.Empty)}, {(response.Dataset.TryGetString(DicomTag.ModalitiesInStudy, out var dummy) ? dummy : string.Empty)}-Study from {response.Dataset.GetSingleValueOrDefault(DicomTag.StudyDate, new DateTime())} with UID {response.Dataset.GetSingleValueOrDefault(DicomTag.StudyInstanceUID, string.Empty)} ");
-            }
-            if (response.Status == DicomStatus.Success)
-            {
-                Console.WriteLine(response.Status.ToString());
-            }
-        }
-
-
-        private void DebugSerieResponse(DicomCFindResponse response)
-        {
-            try
-            {
-                if (response.Status == DicomStatus.Pending)
-                {
-                    // print the results
-                    Console.WriteLine($"Serie {response.Dataset.GetSingleValue<string>(DicomTag.SeriesDescription)}, {response.Dataset.GetSingleValue<string>(DicomTag.Modality)}, {response.Dataset.GetSingleValue<int>(DicomTag.NumberOfSeriesRelatedInstances)} instances");
-                }
-                if (response.Status == DicomStatus.Success)
-                {
-                    Console.WriteLine(response.Status.ToString());
-                }
-            }
-            catch (Exception)
-            {
-                // ignore errors
-            }
         }
     }
 }

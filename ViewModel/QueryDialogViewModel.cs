@@ -49,14 +49,10 @@ namespace DicomEditor.ViewModel
             StartQuery();
         }
 
-        public void OnClosing(object sender, CancelEventArgs e)
-        {
-            Cancel();
-        }
-
         private void Cancel()
         {
             _cancellationTokenSource.Cancel();
+            Status = "Canceled";
         }
 
         private async void StartQuery()
@@ -64,8 +60,8 @@ namespace DicomEditor.ViewModel
             try
             {
                 await _importService.QueryAsync(_cancellationTokenSource.Token);
-                ExecutionFinished = true;
                 Status = "Completed";
+                ExecutionFinished = true; 
             }
             catch (Exception e) when (e is ConnectionClosedPrematurelyException
             or DicomAssociationAbortedException
@@ -77,6 +73,7 @@ namespace DicomEditor.ViewModel
             or ArgumentException)
             {
                 Status = e.Message;
+                ExecutionFinished = true;
             }
         }
     }

@@ -6,36 +6,27 @@
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:ImportDialogViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="140" d:DesignWidth="250"
+             d:DesignHeight="150" d:DesignWidth="280"
              Background="{StaticResource WindowBackgroundColor}">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.6*"/>
-            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
 
-        <Grid>
-            <ProgressBar x:Name="Progress"
-                         Grid.Row="0"
-                         Height="25"
-                         Margin="10,10,10,0"
-                         Value="{Binding Progress}"
-                         Style="{StaticResource ProgressBarStyle}"/>
+         <ProgressBar x:Name="Progress"
+                      Grid.Row="0"
+                      Height="25"
+                      Margin="10,10,10,10"
+                      Value="{Binding Progress}"
+                      Style="{StaticResource ProgressBarStyle}"/>
 
-            <TextBlock x:Name="Status"
-                       Grid.Column="0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Margin="10,10,10,0"
-                       Visibility="Collapsed"
-                       FontSize="11"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource TextColor}"
-                       Background="{StaticResource ElementBackgroundColor}"
-                       Text="{Binding Status, NotifyOnTargetUpdated=True}"
-                       TargetUpdated="Status_TargetUpdated"/>
-        </Grid>
+        <TextBlock x:Name="ExecutionFinished"
+                   Grid.Row="0"
+                   Visibility="Collapsed"
+                   Text="{Binding ExecutionFinished, NotifyOnTargetUpdated=True}"
+                   TargetUpdated="ExecutionFinished_TargetUpdated" />
 
         <Button Grid.Row="1"
                 Height="25"

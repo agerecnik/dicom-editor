@@ -16,13 +16,13 @@ namespace DicomEditor.Services
             _mappings.Add(typeof(TViewModel), typeof(TView));
         }
 
-        public void ShowDialog<TViewModel>(string title, params object[] vmParameters)
+        public TViewModel ShowDialog<TViewModel>(string title, params object[] vmParameters)
         {
             var type = _mappings[typeof(TViewModel)];
-            ShowDialogInternal(title, type, typeof(TViewModel), vmParameters);
+            return (TViewModel)ShowDialogInternal(title, type, typeof(TViewModel), vmParameters);
         }
 
-        private static void ShowDialogInternal(string title, Type type, Type vmType, params object[] vmParameters)
+        private object ShowDialogInternal(string title, Type type, Type vmType, params object[] vmParameters)
         {
             var dialog = new DialogWindow
             {
@@ -37,12 +37,13 @@ namespace DicomEditor.Services
             viewModel.Execute();
 
             dialog.Content = content;
-            dialog.Closing += viewModel.OnClosing;
 
             if (!viewModel.ExecutionFinished)
             {
                 dialog.ShowDialog();
             }
+
+            return vm;
         }
     }
 }

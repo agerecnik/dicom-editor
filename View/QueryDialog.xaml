@@ -7,41 +7,29 @@
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:QueryDialogViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="140" d:DesignWidth="250"
+             d:DesignHeight="150" d:DesignWidth="280"
              Background="{StaticResource WindowBackgroundColor}">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.6*"/>
-            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <theme:Spinner x:Name="Spinner"
-                           Grid.Column="0"
-                           EllipseSize="10"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Margin="10,10,10,10"
-                           Height="30"
-                           Width="30"/>
-            <TextBlock x:Name="Status"
-                       Grid.Column="0"
+        <theme:Spinner x:Name="Spinner"
+                       Grid.Row="0"
+                       EllipseSize="10"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Margin="10,10,10,0"
-                       Visibility="Collapsed"
-                       FontSize="11"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource TextColor}"
-                       Background="{StaticResource ElementBackgroundColor}"
-                       Text="{Binding Status, NotifyOnTargetUpdated=True}"
-                       TargetUpdated="Status_TargetUpdated"/>
-        </Grid>
+                       Margin="10,10,10,10"
+                       Height="30"
+                       Width="30"/>
+        
+        <TextBlock x:Name="ExecutionFinished"
+                   Grid.Row="0"
+                   Visibility="Collapsed"
+                   Text="{Binding ExecutionFinished, NotifyOnTargetUpdated=True}"
+                   TargetUpdated="ExecutionFinished_TargetUpdated" />
 
         <Button Grid.Row="1"
                 Height="25"

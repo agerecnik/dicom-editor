@@ -19,16 +19,11 @@ namespace DicomEditor.View
             Window.GetWindow(this).Close();
         }
 
-        private void Status_TargetUpdated(object sender, DataTransferEventArgs e)
+        private void ExecutionFinished_TargetUpdated(object sender, DataTransferEventArgs e)
         {
-            if (Status.Text is "Completed")
+            if (ExecutionFinished.Text == "True")
             {
                 Window.GetWindow(this).Close();
-            }
-            else if (Status.Text is not null and not "")
-            {
-                Progress.Visibility = Visibility.Collapsed;
-                Status.Visibility = Visibility.Visible;
             }
         }
     }

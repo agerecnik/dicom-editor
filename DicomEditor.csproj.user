@@ -16,6 +16,9 @@
     <Compile Update="View\ImportView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\MessageDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\QueryDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +76,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ImportView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\QueryDialog.xaml">
