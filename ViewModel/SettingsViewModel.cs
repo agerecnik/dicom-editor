@@ -22,6 +22,7 @@ namespace DicomEditor.ViewModel
             set
             {
                 SetProperty(ref _dicomEditorAET, value);
+                _settingsService.DicomEditorAET = value;
             }
         }
 
@@ -32,27 +33,18 @@ namespace DicomEditor.ViewModel
             set
             {
                 SetProperty(ref _dicomRoot, value);
+                _settingsService.DicomRoot = value;
             }
         }
-
-        public ICommand SaveSettingsCommand { get; }
-        public ICommand VerifyCommand { get; }
 
         public SettingsViewModel(ISettingsService settingsService)
         {
             _settingsService = settingsService;
 
-            IDICOMServer qrServer = _settingsService.GetServer(ServerType.QueryRetrieveServer);
-            QueryRetrieveServer = new DICOMServerViewModel(qrServer.Type, qrServer.AET, qrServer.Host, qrServer.Port, qrServer.Status);
-
-            IDICOMServer stServer = _settingsService.GetServer(ServerType.StoreServer);
-            StoreServer = new DICOMServerViewModel(stServer.Type, stServer.AET, stServer.Host, stServer.Port, stServer.Status);
-
+            QueryRetrieveServer = _settingsService.GetServer(ServerType.QueryRetrieveServer);
+            StoreServer = _settingsService.GetServer(ServerType.StoreServer);
             DicomEditorAET = _settingsService.DicomEditorAET;
             DicomRoot = _settingsService.DicomRoot;
-
-            SaveSettingsCommand = new RelayCommand(SaveSettings, CanUseSaveSettingsOrVerifyCommand);
-            VerifyCommand = new RelayCommand(Verify, CanUseSaveSettingsOrVerifyCommand);
         }
 
         public SettingsViewModel()
@@ -61,44 +53,6 @@ namespace DicomEditor.ViewModel
             {
                 throw new Exception("Use only for design mode");
             }
-        }
-
-        private void SaveSettings(object o)
-        {
-            _settingsService.SetServer(QueryRetrieveServer);
-            _settingsService.SetServer(StoreServer);
-            _settingsService.DicomEditorAET = _dicomEditorAET;
-            _settingsService.DicomRoot = _dicomRoot;
-        }
-
-        private async void Verify(object o)
-        {
-            SaveSettings(o);
-            IDICOMServer server = (IDICOMServer)o;
-            await _settingsService.VerifyAsync(server.Type);
-            if (server.Type == ServerType.QueryRetrieveServer)
-            {
-                QueryRetrieveServer.Status = _settingsService.GetServer(server.Type).Status;
-            }
-            else if (server.Type == ServerType.StoreServer)
-            {
-                StoreServer.Status = _settingsService.GetServer(server.Type).Status;
-            }
-        }
-
-        private bool CanUseSaveSettingsOrVerifyCommand(object o)
-        {
-            if (QueryRetrieveServer.AET is null || QueryRetrieveServer.AET is ""
-                || QueryRetrieveServer.Host is null || QueryRetrieveServer.Host is ""
-                || QueryRetrieveServer.Port is null || QueryRetrieveServer.Port is ""
-                || StoreServer.AET is null || StoreServer.AET is ""
-                || StoreServer.Host is null || StoreServer.Host is ""
-                || StoreServer.Port is null || StoreServer.Port is ""
-                || DicomEditorAET is null || DicomEditorAET is "")
-            {
-                return false;
-            }
-            return true;
         }
     }
 }

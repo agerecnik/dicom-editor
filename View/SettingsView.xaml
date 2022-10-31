@@ -151,7 +151,7 @@
                 MaxWidth="100"
                 Margin="10,10,10,10"
                 Content="Verify"
-                Command="{Binding VerifyCommand}"
+                Command="{Binding QueryRetrieveServer.VerifyCommand}"
                 CommandParameter="{Binding QueryRetrieveServer}"
                 Style="{StaticResource ButtonStyle}" />
 
@@ -168,18 +168,8 @@
                 MaxWidth="100"
                 Margin="10,10,10,10"
                 Content="Verify"
-                Command="{Binding VerifyCommand}"
+                Command="{Binding StoreServer.VerifyCommand}"
                 CommandParameter="{Binding StoreServer}"
-                Style="{StaticResource ButtonStyle}" />
-
-        <Button Grid.Column="2"
-                Grid.Row="5"
-                Height="30"
-                MaxWidth="150"
-                Margin="10,10,10,10"
-                Content="Save Settings"
-                VerticalAlignment="Bottom"
-                Command="{Binding SaveSettingsCommand}"
                 Style="{StaticResource ButtonStyle}" />
     </Grid>
 </UserControl>

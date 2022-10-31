@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using DicomEditor.Interfaces;
+using DicomEditor.ViewModel;
+using FellowOakDicom.Network;
 using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.Services
@@ -40,8 +43,8 @@ namespace DicomEditor.Services
         {
             _servers = new Dictionary<ServerType, IDICOMServer>
             {
-                { ServerType.QueryRetrieveServer, new DICOMServer(ServerType.QueryRetrieveServer, GetSetting(ServerType.QueryRetrieveServer + "AET"), GetSetting(ServerType.QueryRetrieveServer + "Host"), GetSetting(ServerType.QueryRetrieveServer + "Port")) },
-                { ServerType.StoreServer, new DICOMServer(ServerType.StoreServer, GetSetting(ServerType.StoreServer + "AET"), GetSetting(ServerType.StoreServer + "Host"), GetSetting(ServerType.StoreServer + "Port")) }
+                { ServerType.QueryRetrieveServer, new DICOMServer(ServerType.QueryRetrieveServer, GetSetting(ServerType.QueryRetrieveServer + "AET"), GetSetting(ServerType.QueryRetrieveServer + "Host"), GetSetting(ServerType.QueryRetrieveServer + "Port"), VerificationStatus.NA, this) },
+                { ServerType.StoreServer, new DICOMServer(ServerType.StoreServer, GetSetting(ServerType.StoreServer + "AET"), GetSetting(ServerType.StoreServer + "Host"), GetSetting(ServerType.StoreServer + "Port"), VerificationStatus.NA, this) }
             };
             _dicomEditorAET = GetSetting("DicomEditorAET");
             _dicomRoot = GetSetting("DicomRoot");
@@ -77,7 +80,14 @@ namespace DicomEditor.Services
                     server.Status = VerificationStatus.Failed;
                 }
             }
-            catch (AggregateException)
+            catch (Exception e) when (e is AggregateException
+            or DicomAssociationRequestTimedOutException
+            or DicomAssociationRejectedException
+            or DicomAssociationAbortedException
+            or ConnectionClosedPrematurelyException
+            or DicomNetworkException
+            or DicomRequestTimedOutException
+            or ArgumentException)
             {
                 server.Status = VerificationStatus.Failed;
             }
@@ -101,22 +111,5 @@ namespace DicomEditor.Services
         {
             return ConfigurationManager.AppSettings[key];
         }
-    }
-
-    public class DICOMServer : IDICOMServer
-    {
-        public DICOMServer(ServerType type, string aet, string host, string port)
-        {
-            Type = type;
-            AET = aet;
-            Host = host;
-            Port = port;
-            Status = VerificationStatus.NA;
-        }
-        public ServerType Type { get; }
-        public string AET { get; set; }
-        public string Host { get; set; }
-        public string Port { get; set; }
-        public VerificationStatus Status { get; set; }
     }
 }

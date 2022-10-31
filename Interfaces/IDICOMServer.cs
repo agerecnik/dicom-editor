@@ -1,4 +1,6 @@
-﻿namespace DicomEditor.Interfaces
+﻿using System.Windows.Input;
+
+namespace DicomEditor.Interfaces
 {
     public interface IDICOMServer
     {
@@ -20,5 +22,7 @@
         public string Host { get; set; }
         public string Port { get; set; }
         public VerificationStatus Status { get; set; }
+
+        public ICommand VerifyCommand { get; }
     }
 }
