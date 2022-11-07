@@ -93,7 +93,7 @@ namespace DicomEditor.Services
             }
         }
 
-        private void SetSetting(string key, string value)
+        public void SetSetting(string key, string value)
         {
             Configuration configuration =
                 ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -107,7 +107,7 @@ namespace DicomEditor.Services
             }
         }
 
-        private string GetSetting(string key)
+        public string GetSetting(string key)
         {
             return ConfigurationManager.AppSettings[key];
         }

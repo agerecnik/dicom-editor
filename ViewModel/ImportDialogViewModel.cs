@@ -9,6 +9,7 @@ using System.Windows.Input;
 using FellowOakDicom.Network;
 using System.IO;
 using DicomEditor.Interfaces;
+using FellowOakDicom;
 
 namespace DicomEditor.ViewModel
 {
@@ -120,6 +121,7 @@ namespace DicomEditor.ViewModel
             or DicomAssociationRequestTimedOutException
             or DicomNetworkException
             or DicomRequestTimedOutException
+            or DicomDataException
             or AggregateException
             or ArgumentException
             or ArgumentNullException)
@@ -163,6 +165,7 @@ namespace DicomEditor.ViewModel
             catch (Exception e) when (e is FileFormatException
             or FileNotFoundException
             or DirectoryNotFoundException
+            or DicomDataException
             or ArgumentException
             or ArgumentNullException
             or ArgumentOutOfRangeException

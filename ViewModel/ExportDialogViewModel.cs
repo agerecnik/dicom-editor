@@ -1,6 +1,7 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
+using FellowOakDicom;
 using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,7 @@ namespace DicomEditor.ViewModel
             or DicomAssociationRequestTimedOutException
             or DicomNetworkException
             or DicomRequestTimedOutException
+            or DicomDataException
             or AggregateException
             or ArgumentException)
             {

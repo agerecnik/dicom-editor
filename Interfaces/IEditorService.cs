@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using DicomEditor.Model;
+using FellowOakDicom;
 
 namespace DicomEditor.Interfaces
 {
@@ -13,6 +14,8 @@ namespace DicomEditor.Interfaces
         public ICollection<Series> GetLoadedSeries();
         public ITreeModel GetInstance(string instanceUID);
         public void SetAttributeValue(IList<Instance> instances, IDatasetModel attribute, string value);
+        public void AddAttribute(IList<Instance> instances, IDatasetModel attribute, ushort group, ushort element, string value);
+        public void DeleteAttribute(IList<Instance> instances, IDatasetModel attribute);
         public void GenerateAndSetStudyUID(IList<Instance> instances);
         public void GenerateAndSetSeriesUID(IList<Instance> instances);
         public void GenerateAndSetInstanceUID(IList<Instance> instances);

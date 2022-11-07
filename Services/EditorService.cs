@@ -99,6 +99,82 @@ namespace DicomEditor.Services
             }
         }
 
+        public void AddAttribute(IList<Instance> instances, IDatasetModel attribute, ushort group, ushort element, string value)
+        {
+            if (attribute.Tag is null)
+            {
+                throw new ArgumentException("Invalid attribute tag");
+            }
+
+            List<IDatasetModel> attributes = new();
+            while (attribute is not null)
+            {
+                attributes.Insert(0, attribute);
+                attribute = attribute.ParentDataset;
+            }
+
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    for (int i = 0; i < attributes.Count - 2; i += 2)
+                    {
+                        DicomSequence sequence = ds.GetSequence(attributes[i].Tag);
+                        int itemIndex = int.Parse(attributes[i + 1].Value);
+                        ds = sequence.Items[itemIndex];
+                    }
+
+                    DicomTag newTag = new(group, element);
+                    ds.AddOrUpdate<string>(newTag, value);
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
+
+        public void DeleteAttribute(IList<Instance> instances, IDatasetModel attribute)
+        {
+            if (attribute.Tag is null)
+            {
+                throw new ArgumentException("Invalid attribute tag");
+            }
+
+            List<IDatasetModel> attributes = new();
+            while (attribute is not null)
+            {
+                attributes.Insert(0, attribute);
+                attribute = attribute.ParentDataset;
+            }
+
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    for (int i = 0; i < attributes.Count - 2; i += 2)
+                    {
+                        DicomSequence sequence = ds.GetSequence(attributes[i].Tag);
+                        int itemIndex = int.Parse(attributes[i + 1].Value);
+                        ds = sequence.Items[itemIndex];
+                    }
+
+                    DicomTag lastTag = attributes[^1].Tag;
+
+                    ds.Remove(lastTag);
+
+                    if (lastTag != DicomTag.SOPInstanceUID && lastTag != DicomTag.SeriesInstanceUID)
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
+
         public void GenerateAndSetStudyUID(IList<Instance> instances)
         {
             string generatedUID;

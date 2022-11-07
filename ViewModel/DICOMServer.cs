@@ -18,6 +18,7 @@ namespace DicomEditor.ViewModel
             set
             {
                 SetProperty(ref _AET, value);
+                _settingsService.SetSetting(Type + nameof(AET), AET);
             }
         }
 
@@ -28,6 +29,7 @@ namespace DicomEditor.ViewModel
             set
             {
                 SetProperty(ref _host, value);
+                _settingsService.SetSetting(Type + nameof(Host), Host);
             }
         }
 
@@ -38,6 +40,7 @@ namespace DicomEditor.ViewModel
             set
             {
                 SetProperty(ref _port, value);
+                _settingsService.SetSetting(Type + nameof(Port), Port);
             }
         }
 

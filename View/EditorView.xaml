@@ -40,15 +40,19 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.8*"/>
             <ColumnDefinition Width="2.5*"/>
         </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <ListView Grid.Row="0"
                       Margin="10,10,5,5"
@@ -78,14 +82,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button Grid.Row="2"
-                    Height="30"
-                    MaxWidth="200"
-                    Margin="10,5,5,10"
-                    Content="Store selected series"
-                    Command="{Binding StoreCommand}"
-                    Style="{StaticResource ButtonStyle}">
-            </Button>
         </Grid>
 
         <Grid Grid.Column="1">
@@ -123,7 +119,7 @@
                   HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="400"/>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"
@@ -139,8 +135,63 @@
                         Style="{StaticResource ButtonStyle}">
                 </Button>
             </Grid>
-            
+
             <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Height="30"
+                        MaxWidth="150"
+                        Margin="10,5,10,10"
+                        Content="Delete"
+                        Command="{Binding DeleteAttributeCommand}"
+                        Style="{StaticResource ButtonStyle}">
+                </Button>
+
+                <Grid Grid.Column="1"
+                      Grid.ColumnSpan="3"
+                      HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0"
+                             Margin="5,5,0,10"
+                             theme:ThemeProperties.SearchFieldName="Group"
+                             Style="{StaticResource TextBoxStyle}"
+                             Text="{Binding Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                    
+                    <TextBox Grid.Column="1"
+                             Margin="5,5,0,10"
+                             theme:ThemeProperties.SearchFieldName="Element"
+                             Style="{StaticResource TextBoxStyle}"
+                             Text="{Binding Element, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    
+                    <TextBox Grid.Column="2"
+                             Margin="5,5,0,10"
+                             theme:ThemeProperties.SearchFieldName="Value"
+                             Style="{StaticResource TextBoxStyle}"
+                             Text="{Binding AddAttributeValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    
+                    <Button Grid.Column="3"
+                            Height="30"
+                            Margin="10,5,10,10"
+                            Content="Add attribute"
+                            Command="{Binding AddAttributeCommand}"
+                            Style="{StaticResource ButtonStyle}" />
+
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -180,28 +231,39 @@
                           Style="{StaticResource CheckBoxStyle}">
                     Apply to entire series
                 </CheckBox>
-                
+
             </Grid>
+        </Grid>
 
-            <Grid Grid.Row="4"
-                  HorizontalAlignment="Right">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400"/>
-                    <ColumnDefinition Width="200"/>
-                </Grid.ColumnDefinitions>
+        <Button Grid.Row="1"
+                Grid.Column="0"
+                    Height="30"
+                    MaxWidth="200"
+                    Margin="10,5,5,10"
+                    Content="Store selected series"
+                    Command="{Binding StoreCommand}"
+                    Style="{StaticResource ButtonStyle}" />
 
-                <TextBox Grid.Column="0"
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0"
                          Margin="5,5,0,10"
                          theme:ThemeProperties.SearchFieldName="Local Export Path"
                          Style="{StaticResource TextBoxStyle}"
                          Text="{Binding LocalExportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Column="1"
+            <Button Grid.Column="1"
                         Height="30"
                         Margin="10,5,10,10"
                         Content="Export selected series"
                         Command="{Binding LocalExportCommand}"
                         Style="{StaticResource ButtonStyle}" />
-            </Grid>
         </Grid>
+
     </Grid>
 </UserControl>

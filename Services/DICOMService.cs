@@ -127,6 +127,7 @@ namespace DicomEditor.Services
             };
 
             ISet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID);
+            client.AdditionalPresentationContexts.Clear();
             foreach (string sopClassUID in sopClassUIDs)
             {
                 var pc = DicomPresentationContext.GetScpRolePresentationContext(
@@ -134,7 +135,6 @@ namespace DicomEditor.Services
                     DicomTransferSyntax.ExplicitVRLittleEndian,
                     DicomTransferSyntax.ImplicitVRLittleEndian,
                     DicomTransferSyntax.ImplicitVRBigEndian);
-                client.AdditionalPresentationContexts.Clear();
                 client.AdditionalPresentationContexts.Add(pc);
             }
 

@@ -96,6 +96,36 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private string _group;
+        public string Group
+        {
+            get => _group;
+            set
+            {
+                SetProperty(ref _group, value);
+            }
+        }
+
+        private string _element;
+        public string Element
+        {
+            get => _element;
+            set
+            {
+                SetProperty(ref _element, value);
+            }
+        }
+
+        private string _addAttributeValue;
+        public string AddAttributeValue
+        {
+            get => _addAttributeValue;
+            set
+            {
+                SetProperty(ref _addAttributeValue, value);
+            }
+        }
+
         private bool _applyToAll;
         public bool ApplyToAll
         {
@@ -120,10 +150,11 @@ namespace DicomEditor.ViewModel
         public ICommand StoreCommand { get; }
         public ICommand LocalExportCommand { get; }
         public ICommand ModifyAttributeValueCommand { get; }
+        public ICommand AddAttributeCommand { get; }
+        public ICommand DeleteAttributeCommand { get; }
         public ICommand GenerateStudyUIDCommand { get; }
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
-
 
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
@@ -134,6 +165,8 @@ namespace DicomEditor.ViewModel
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
             ModifyAttributeValueCommand = new RelayCommand(o => ModifyAttributeValue(), CanUseModifyAttributeValueCommand);
+            AddAttributeCommand = new RelayCommand(o => AddAttribute(), CanUseAddAttributeCommand);
+            DeleteAttributeCommand = new RelayCommand(o => DeleteAttribute(), CanUseDeleteAttributeCommand);
             GenerateStudyUIDCommand = new RelayCommand(o => GenerateStudyUID(), CanUseGenerateUIDCommand);
             GenerateSeriesUIDCommand = new RelayCommand(o => GenerateSeriesUID(), CanUseGenerateUIDCommand);
             GenerateInstanceUIDCommand = new RelayCommand(o => GenerateInstanceUID(), CanUseGenerateUIDCommand);
@@ -196,6 +229,71 @@ namespace DicomEditor.ViewModel
             {
                 _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
                 UpdateListOfAttributes();
+            }
+        }
+
+        private void AddAttribute()
+        {
+            List<Instance> instances;
+            if (ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            }
+            else
+            {
+                instances = new List<Instance>() { SelectedInstance };
+            }
+
+            try
+            {
+                _editorService.AddAttribute(instances, SelectedAttribute, ushort.Parse(Group, System.Globalization.NumberStyles.HexNumber), ushort.Parse(Element, System.Globalization.NumberStyles.HexNumber), AddAttributeValue);
+                UpdateListOfAttributes();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException
+            or ArgumentException)
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
+                UpdateListOfAttributes();
+            }
+        }
+
+        private void DeleteAttribute()
+        {
+            List<Instance> instances;
+            if (ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            }
+            else
+            {
+                instances = new List<Instance>() { SelectedInstance };
+            }
+
+            try
+            {
+                _editorService.DeleteAttribute(instances, SelectedAttribute);
+                UpdateListOfAttributes();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException
+            or ArgumentException)
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
             }
         }
 
@@ -314,6 +412,24 @@ namespace DicomEditor.ViewModel
         private bool CanUseModifyAttributeValueCommand(object o)
         {
             if(SelectedAttribute is null || SelectedAttribute.Tag is null || SelectedAttribute.ValueRepresentation is "SQ")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseAddAttributeCommand(object o)
+        {
+            if (SelectedAttribute is null || Group is null || Group is "" || Element is null || Element is "")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseDeleteAttributeCommand(object o)
+        {
+            if (SelectedAttribute is null || SelectedAttribute.Tag is null)
             {
                 return false;
             }

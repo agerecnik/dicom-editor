@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using FellowOakDicom.Network;
 using DicomEditor.Interfaces;
+using FellowOakDicom;
 
 namespace DicomEditor.ViewModel
 {
@@ -69,6 +70,7 @@ namespace DicomEditor.ViewModel
             or DicomAssociationRequestTimedOutException
             or DicomNetworkException
             or DicomRequestTimedOutException
+            or DicomDataException
             or AggregateException
             or ArgumentException)
             {

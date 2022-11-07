@@ -15,5 +15,7 @@ namespace DicomEditor.Interfaces
         public void SetServer(IDICOMServer server);
         public IDICOMServer GetServer(ServerType type);
         public Task VerifyAsync(ServerType serverType);
+        public void SetSetting(string key, string value);
+        public string GetSetting(string key);
     }
 }
