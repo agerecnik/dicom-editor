@@ -151,11 +151,12 @@ namespace DicomEditor.ViewModel
         public ICommand LocalExportCommand { get; }
         public ICommand ModifyAttributeValueCommand { get; }
         public ICommand AddAttributeCommand { get; }
-        public ICommand DeleteAttributeCommand { get; }
+        public ICommand AddItemCommand { get; }
+        public ICommand DeleteCommand { get; }
         public ICommand GenerateStudyUIDCommand { get; }
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
-
+        
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
@@ -166,7 +167,8 @@ namespace DicomEditor.ViewModel
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
             ModifyAttributeValueCommand = new RelayCommand(o => ModifyAttributeValue(), CanUseModifyAttributeValueCommand);
             AddAttributeCommand = new RelayCommand(o => AddAttribute(), CanUseAddAttributeCommand);
-            DeleteAttributeCommand = new RelayCommand(o => DeleteAttribute(), CanUseDeleteAttributeCommand);
+            AddItemCommand = new RelayCommand(o => AddItem(), CanUseAddItemCommand);
+            DeleteCommand = new RelayCommand(o => Delete(), CanUseDeleteCommand);
             GenerateStudyUIDCommand = new RelayCommand(o => GenerateStudyUID(), CanUseGenerateUIDCommand);
             GenerateSeriesUIDCommand = new RelayCommand(o => GenerateSeriesUID(), CanUseGenerateUIDCommand);
             GenerateInstanceUIDCommand = new RelayCommand(o => GenerateInstanceUID(), CanUseGenerateUIDCommand);
@@ -265,7 +267,7 @@ namespace DicomEditor.ViewModel
             }
         }
 
-        private void DeleteAttribute()
+        private void AddItem()
         {
             List<Instance> instances;
             if (ApplyToAll)
@@ -279,7 +281,47 @@ namespace DicomEditor.ViewModel
 
             try
             {
-                _editorService.DeleteAttribute(instances, SelectedAttribute);
+                _editorService.AddSequenceItem(instances, SelectedAttribute);
+                UpdateListOfAttributes();
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
+            }
+            catch (Exception e) when (e is DicomValidationException
+            or ApplicationException
+            or InvalidOperationException
+            or DicomDataException
+            or ArgumentNullException
+            or FormatException
+            or OverflowException
+            or ArgumentException)
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
+                UpdateListOfAttributes();
+            }
+        }
+
+        private void Delete()
+        {
+            List<Instance> instances;
+            if (ApplyToAll)
+            {
+                instances = new List<Instance>(SelectedSeries.Instances);
+            }
+            else
+            {
+                instances = new List<Instance>() { SelectedInstance };
+            }
+
+            try
+            {
+                if (SelectedAttribute.Name is "Item")
+                {
+                    _editorService.DeleteSequenceItem(instances, SelectedAttribute);
+                }
+                else
+                {
+                    _editorService.DeleteAttribute(instances, SelectedAttribute);
+                }
                 UpdateListOfAttributes();
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
@@ -420,16 +462,28 @@ namespace DicomEditor.ViewModel
 
         private bool CanUseAddAttributeCommand(object o)
         {
-            if (SelectedAttribute is null || Group is null || Group is "" || Element is null || Element is "")
+            if (SelectedAttribute is null
+                || Group is null || Group is ""
+                || Element is null || Element is ""
+                || SelectedAttribute.ValueRepresentation is "SQ")
             {
                 return false;
             }
             return true;
         }
 
-        private bool CanUseDeleteAttributeCommand(object o)
+        private bool CanUseAddItemCommand(object o)
         {
-            if (SelectedAttribute is null || SelectedAttribute.Tag is null)
+            if (SelectedAttribute is null || SelectedAttribute.ValueRepresentation is not "SQ")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanUseDeleteCommand(object o)
+        {
+            if (SelectedAttribute is null)
             {
                 return false;
             }

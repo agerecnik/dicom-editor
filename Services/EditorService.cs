@@ -101,9 +101,39 @@ namespace DicomEditor.Services
 
         public void AddAttribute(IList<Instance> instances, IDatasetModel attribute, ushort group, ushort element, string value)
         {
-            if (attribute.Tag is null)
+            List<IDatasetModel> attributes = new();
+            while (attribute is not null)
             {
-                throw new ArgumentException("Invalid attribute tag");
+                attributes.Insert(0, attribute);
+                attribute = attribute.ParentDataset;
+            }
+
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    for (int i = 0; i <= attributes.Count - 2; i += 2)
+                    {
+                        DicomSequence sequence = ds.GetSequence(attributes[i].Tag);
+                        int itemIndex = int.Parse(attributes[i + 1].Value);
+                        ds = sequence.Items[itemIndex];
+                    }
+
+                    DicomTag newTag = new(group, element);
+                    ds.AddOrUpdate<string>(newTag, value);
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
+
+        public void AddSequenceItem(IList<Instance> instances, IDatasetModel attribute)
+        {
+            if (attribute.ValueRepresentation is not "SQ")
+            {
+                throw new InvalidOperationException("Item can only be added to a sequence");
             }
 
             List<IDatasetModel> attributes = new();
@@ -124,8 +154,8 @@ namespace DicomEditor.Services
                         ds = sequence.Items[itemIndex];
                     }
 
-                    DicomTag newTag = new(group, element);
-                    ds.AddOrUpdate<string>(newTag, value);
+                    DicomDataset emptyDs = new();
+                    ds.GetSequence(attributes[^1].Tag).Items.Add(emptyDs);
                 }
                 else
                 {
@@ -162,10 +192,43 @@ namespace DicomEditor.Services
                     DicomTag lastTag = attributes[^1].Tag;
 
                     ds.Remove(lastTag);
+                }
+                else
+                {
+                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                }
+            }
+        }
 
-                    if (lastTag != DicomTag.SOPInstanceUID && lastTag != DicomTag.SeriesInstanceUID)
+        public void DeleteSequenceItem(IList<Instance> instances, IDatasetModel attribute)
+        {
+            if (attribute.Name is not "Item")
+            {
+                throw new InvalidOperationException("Only item can be deleted");
+            }
+
+            List<IDatasetModel> attributes = new();
+            while (attribute is not null)
+            {
+                attributes.Insert(0, attribute);
+                attribute = attribute.ParentDataset;
+            }
+
+            foreach (Instance instance in instances)
+            {
+                if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
+                {
+                    DicomSequence sequence = null;
+                    for (int i = 0; i <= attributes.Count - 2; i += 2)
                     {
-                        
+                        sequence = ds.GetSequence(attributes[i].Tag);
+                        int itemIndex = int.Parse(attributes[i + 1].Value);
+                        ds = sequence.Items[itemIndex];
+                    }
+
+                    if(sequence is not null)
+                    {
+                        sequence.Items.Remove(ds);
                     }
                 }
                 else
