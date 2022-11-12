@@ -154,6 +154,7 @@ namespace DicomEditor.Services
                     seriesDateTime.AddMinutes(seriesTime.Minute);
                     string modality = dataset.GetSingleValueOrDefault(DicomTag.Modality, "");
                     string studyUID = dataset.GetSingleValueOrDefault(DicomTag.StudyInstanceUID, "");
+                    string patientID = dataset.GetSingleValueOrDefault(DicomTag.PatientID, "");
 
                     int numberOfInstances = 0;
                     foreach (DicomDataset ds in importedInstances.Values)
@@ -164,7 +165,7 @@ namespace DicomEditor.Services
                         }
                     }
 
-                    series = new(seriesUID, seriesDescription, seriesDateTime, modality, numberOfInstances, studyUID, new List<Instance>());
+                    series = new(seriesUID, seriesDescription, seriesDateTime, modality, numberOfInstances, studyUID, patientID, new List<Instance>());
                     series.Instances.Add(instance);
                     importedSeries.Add(seriesUID, series);
                 }

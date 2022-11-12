@@ -23,14 +23,11 @@ namespace DicomEditor.Services
             var request = CreateStudyRequest(patientID, patientName, accessionNumber, studyID, modality);
 
             Dictionary<string, Patient> patients = new();
-            List<string> studyUIDs = new();
             request.OnResponseReceived += (req, response) =>
             {
                 string studyUID = response.Dataset?.GetSingleValue<string>(DicomTag.StudyInstanceUID);
                 if (studyUID is not null and not "")
                 {
-                    studyUIDs.Add(studyUID);
-
                     string patientIDResult = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientID, "");
                     string patientNameResult = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientName, "");
                     string dateOfBirth = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientBirthDate, "");
@@ -63,46 +60,49 @@ namespace DicomEditor.Services
             await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
 
             // find all series from a study that was previously returned
-            foreach (string studyUID in studyUIDs)
+            foreach (Patient patient in patients.Values)
             {
-                if (studyUID is not null and not "")
+                foreach(Study study in patient.Studies.Values)
                 {
-                    request = CreateSeriesRequestByStudyUID(studyUID);
-                    request.OnResponseReceived += (req, response) =>
+                    if (study.StudyUID is not null and not "")
                     {
-                        string seriesInstanceUID = response.Dataset?.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
-                        if (seriesInstanceUID is not null and not "")
+                        request = CreateSeriesRequestByStudyUID(study.StudyUID, patient.PatientID);
+                        request.OnResponseReceived += (req, response) =>
                         {
                             string patientIDResult = response.Dataset?.GetSingleValueOrDefault(DicomTag.PatientID, "");
-                            string seriesDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
-                            string modality = response.Dataset?.GetSingleValueOrDefault(DicomTag.Modality, "");
-
-                            DateTime seriesDate;
-                            DateTime seriesTime;
-                            int numberOfInstances;
-                            if (response.Dataset is not null)
+                            string seriesInstanceUID = response.Dataset?.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
+                            if (seriesInstanceUID is not null and not "")
                             {
-                                seriesDate = response.Dataset.GetSingleValueOrDefault(DicomTag.SeriesDate, new DateTime());
-                                seriesTime = response.Dataset.GetSingleValueOrDefault(DicomTag.SeriesTime, new DateTime());
-                                numberOfInstances = response.Dataset.GetSingleValueOrDefault(DicomTag.NumberOfSeriesRelatedInstances, 0);
-                            }
-                            else
-                            {
-                                seriesDate = new();
-                                seriesTime = new();
-                                numberOfInstances = 0;
-                            }
+                                string seriesDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
+                                string modality = response.Dataset?.GetSingleValueOrDefault(DicomTag.Modality, "");
 
-                            DateTime seriesDateTime = seriesDate;
-                            seriesDateTime.AddHours(seriesTime.Hour);
-                            seriesDateTime.AddMinutes(seriesTime.Minute);
+                                DateTime seriesDate;
+                                DateTime seriesTime;
+                                int numberOfInstances;
+                                if (response.Dataset is not null)
+                                {
+                                    seriesDate = response.Dataset.GetSingleValueOrDefault(DicomTag.SeriesDate, new DateTime());
+                                    seriesTime = response.Dataset.GetSingleValueOrDefault(DicomTag.SeriesTime, new DateTime());
+                                    numberOfInstances = response.Dataset.GetSingleValueOrDefault(DicomTag.NumberOfSeriesRelatedInstances, 0);
+                                }
+                                else
+                                {
+                                    seriesDate = new();
+                                    seriesTime = new();
+                                    numberOfInstances = 0;
+                                }
 
-                            Series series = new(seriesInstanceUID, seriesDescription, seriesDateTime, modality, numberOfInstances, studyUID, new List<Instance>());
-                            patients[patientIDResult].Studies[studyUID].Series.Add(seriesInstanceUID, series);
-                        }
-                    };
-                    await client.AddRequestAsync(request);
-                    await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
+                                DateTime seriesDateTime = seriesDate;
+                                seriesDateTime.AddHours(seriesTime.Hour);
+                                seriesDateTime.AddMinutes(seriesTime.Minute);
+
+                                Series series = new(seriesInstanceUID, seriesDescription, seriesDateTime, modality, numberOfInstances, study.StudyUID, patient.PatientID, new List<Instance>());
+                                patients[patientIDResult].Studies[study.StudyUID].Series.Add(seriesInstanceUID, series);
+                            }
+                        };
+                        await client.AddRequestAsync(request);
+                        await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
+                    }
                 }
             }
             return patients;
@@ -126,7 +126,7 @@ namespace DicomEditor.Services
                 return Task.FromResult(new DicomCStoreResponse(req, DicomStatus.Success));
             };
 
-            ISet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID);
+            ISet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, series.SeriesUID, series.StudyUID, series.PatientID);
             client.AdditionalPresentationContexts.Clear();
             foreach (string sopClassUID in sopClassUIDs)
             {
@@ -222,7 +222,7 @@ namespace DicomEditor.Services
             return request;
         }
 
-        private DicomCFindRequest CreateSeriesRequestByStudyUID(string studyInstanceUID)
+        private DicomCFindRequest CreateSeriesRequestByStudyUID(string studyInstanceUID, string patientID)
         {
             var request = new DicomCFindRequest(DicomQueryRetrieveLevel.Series);
 
@@ -230,7 +230,7 @@ namespace DicomEditor.Services
 
             // add the dicom tags with empty values that should be included in the result
             // add the dicom tags that contain the filter criterias
-            request.Dataset.AddOrUpdate(DicomTag.PatientID, "");
+            request.Dataset.AddOrUpdate(DicomTag.PatientID, patientID);
             request.Dataset.AddOrUpdate(DicomTag.StudyInstanceUID, studyInstanceUID);
             request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, "");
             request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, "");
@@ -243,7 +243,7 @@ namespace DicomEditor.Services
             return request;
         }
 
-        private DicomCFindRequest CreateInstanceRequestBySeriesUID(string seriesInstanceUID)
+        private DicomCFindRequest CreateInstanceRequestBySeriesUID(string seriesInstanceUID, string studyInstanceUID, string patientID)
         {
             var request = new DicomCFindRequest(DicomQueryRetrieveLevel.Image);
 
@@ -251,20 +251,22 @@ namespace DicomEditor.Services
 
             // add the dicom tags with empty values that should be included in the result
             request.Dataset.AddOrUpdate(DicomTag.SOPClassUID, "");
+            request.Dataset.AddOrUpdate(DicomTag.InstanceNumber, "");
 
             // add the dicom tags that contain the filter criterias
+            request.Dataset.AddOrUpdate(DicomTag.PatientID, patientID);
+            request.Dataset.AddOrUpdate(DicomTag.StudyInstanceUID, studyInstanceUID);
             request.Dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, seriesInstanceUID);
-            request.Dataset.AddOrUpdate(DicomTag.InstanceNumber, "");
 
             return request;
         }
 
-        private async Task<ISet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesUID)
+        private async Task<ISet<string>> RetrieveSOPClassUIDsAsync(IDicomClient client, string seriesInstanceUID, string studyInstanceUID, string patientID)
         {
             HashSet<string> sopClassUIDs = new();
-            if (seriesUID is not null and not "")
+            if (seriesInstanceUID is not null and not "")
             {
-                var request = CreateInstanceRequestBySeriesUID(seriesUID);
+                var request = CreateInstanceRequestBySeriesUID(seriesInstanceUID, studyInstanceUID, patientID);
                 request.OnResponseReceived += (req, response) =>
                 {
                     string sopClassUID = response.Dataset?.GetSingleValueOrDefault<string>(DicomTag.SOPClassUID, null);

@@ -15,9 +15,10 @@ namespace DicomEditor.Model
         public string Modality { get; set; }
         public int NumberOfInstances { get; set; }
         public string StudyUID { get; set; }
+        public string PatientID { get; set; }
         public ICollection<Instance> Instances { get; set; }
 
-        public Series(string seriesUID, string seriesDescription, DateTime seriesDateTime, string modality, int numberOfInstances, string studyUID, List<Instance> instances)
+        public Series(string seriesUID, string seriesDescription, DateTime seriesDateTime, string modality, int numberOfInstances, string studyUID, string patientID, List<Instance> instances)
         {
             SeriesUID = seriesUID;
             SeriesDescription = seriesDescription;
@@ -25,6 +26,7 @@ namespace DicomEditor.Model
             Modality = modality;
             NumberOfInstances = numberOfInstances;
             StudyUID = studyUID;
+            PatientID = patientID;
             Instances = new ObservableCollection<Instance>(instances);
         }
     }

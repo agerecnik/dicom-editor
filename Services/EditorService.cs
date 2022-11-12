@@ -59,12 +59,7 @@ namespace DicomEditor.Services
                 throw new InvalidOperationException("Cannot assign value to sequence");
             }
 
-            List<IDatasetModel> attributes = new();
-            while (attribute is not null)
-            {
-                attributes.Insert(0, attribute);
-                attribute = attribute.ParentDataset;
-            }
+            IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
             foreach (Instance instance in instances)
             {
@@ -101,12 +96,7 @@ namespace DicomEditor.Services
 
         public void AddAttribute(IList<Instance> instances, IDatasetModel attribute, ushort group, ushort element, string value)
         {
-            List<IDatasetModel> attributes = new();
-            while (attribute is not null)
-            {
-                attributes.Insert(0, attribute);
-                attribute = attribute.ParentDataset;
-            }
+            IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
             foreach (Instance instance in instances)
             {
@@ -136,12 +126,7 @@ namespace DicomEditor.Services
                 throw new InvalidOperationException("Item can only be added to a sequence");
             }
 
-            List<IDatasetModel> attributes = new();
-            while (attribute is not null)
-            {
-                attributes.Insert(0, attribute);
-                attribute = attribute.ParentDataset;
-            }
+            IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
             foreach (Instance instance in instances)
             {
@@ -171,12 +156,7 @@ namespace DicomEditor.Services
                 throw new ArgumentException("Invalid attribute tag");
             }
 
-            List<IDatasetModel> attributes = new();
-            while (attribute is not null)
-            {
-                attributes.Insert(0, attribute);
-                attribute = attribute.ParentDataset;
-            }
+            IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
             foreach (Instance instance in instances)
             {
@@ -207,12 +187,7 @@ namespace DicomEditor.Services
                 throw new InvalidOperationException("Only item can be deleted");
             }
 
-            List<IDatasetModel> attributes = new();
-            while (attribute is not null)
-            {
-                attributes.Insert(0, attribute);
-                attribute = attribute.ParentDataset;
-            }
+            IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
             foreach (Instance instance in instances)
             {
@@ -396,6 +371,17 @@ namespace DicomEditor.Services
             }
         }
 
+        private IList<IDatasetModel> GetAttributePathFromParentToChild(IDatasetModel attribute)
+        {
+            List<IDatasetModel> attributes = new();
+            while (attribute is not null)
+            {
+                attributes.Insert(0, attribute);
+                attribute = attribute.ParentDataset;
+            }
+            return attributes;
+        }
+
         private void UpdateSeriesUID(Instance instance, string newUID, DicomDataset ds)
         {
             ds.AddOrUpdate<string>(DicomTag.SeriesInstanceUID, newUID);
@@ -404,7 +390,7 @@ namespace DicomEditor.Services
                 series.Instances.Remove(instance);
                 if (!_cache.LoadedSeries.TryGetValue(newUID, out Series newSeries))
                 {
-                    newSeries = new(newUID, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, new List<Instance>());
+                    newSeries = new(newUID, series.SeriesDescription, series.SeriesDateTime, series.Modality, series.NumberOfInstances, series.StudyUID, series.PatientID, new List<Instance>());
                     _cache.LoadedSeries[newUID] = newSeries;
                 }
                 newSeries.Instances.Add(instance);
