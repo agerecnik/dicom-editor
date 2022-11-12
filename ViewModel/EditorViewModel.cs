@@ -102,7 +102,14 @@ namespace DicomEditor.ViewModel
             get => _group;
             set
             {
-                SetProperty(ref _group, value);
+                if (ValidateTagValue(value))
+                {
+                    SetProperty(ref _group, value);
+                }
+                else
+                {
+                    SetProperty(ref _group, _group);
+                }
             }
         }
 
@@ -112,7 +119,14 @@ namespace DicomEditor.ViewModel
             get => _element;
             set
             {
-                SetProperty(ref _element, value);
+                if (ValidateTagValue(value))
+                {
+                    SetProperty(ref _element, value);
+                }
+                else
+                {
+                    SetProperty(ref _element, _element);
+                }
             }
         }
 
@@ -449,6 +463,23 @@ namespace DicomEditor.ViewModel
         {
             var vm = _dialogService.ShowDialog<ExportDialogViewModel>("Local export in progress", _editorService, new List<Series> { SelectedSeries }, LocalExportPath);
             _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+        }
+
+        private bool ValidateTagValue(string value)
+        {
+            if (value.Length > 4 || value.Length > 4)
+            {
+                return false;
+            }
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private bool CanUseModifyAttributeValueCommand(object o)

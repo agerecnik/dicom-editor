@@ -110,6 +110,9 @@ namespace DicomEditor.Services
                     }
 
                     DicomTag newTag = new(group, element);
+                    if(ds.Contains(newTag)) {
+                        throw new ArgumentException("Attribute with the following tag already exists: " + newTag);
+                    }
                     ds.AddOrUpdate<string>(newTag, value);
                 }
                 else

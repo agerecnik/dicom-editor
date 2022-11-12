@@ -7,6 +7,7 @@ using System.Windows.Input;
 using FellowOakDicom.Network;
 using DicomEditor.Interfaces;
 using FellowOakDicom;
+using System.Collections.Generic;
 
 namespace DicomEditor.ViewModel
 {
@@ -72,7 +73,9 @@ namespace DicomEditor.ViewModel
             or DicomRequestTimedOutException
             or DicomDataException
             or AggregateException
-            or ArgumentException)
+            or ArgumentException
+            or ArgumentNullException
+            or KeyNotFoundException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;

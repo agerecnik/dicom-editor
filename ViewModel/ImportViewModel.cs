@@ -1,7 +1,6 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
-using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

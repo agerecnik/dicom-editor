@@ -186,7 +186,7 @@
                              Margin="5,5,0,10"
                              theme:ThemeProperties.SearchFieldName="Group"
                              Style="{StaticResource TextBoxStyle}"
-                             Text="{Binding Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                             Text="{Binding Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     
                     <TextBox Grid.Column="1"
                              Margin="5,5,0,10"

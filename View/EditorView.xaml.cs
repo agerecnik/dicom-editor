@@ -36,25 +36,5 @@ namespace DicomEditor.View
                 vm.SelectedAttribute = (IDatasetModel)node.Tag;
             }
         }
-
-        private void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            if(e.Text.Length > 4 || (e.Text.Length + textBox.Text.Length) > 4)
-            {
-                e.Handled = true;
-            }
-            else
-            {
-                for (int i = 0; i < e.Text.Length; i++)
-                {
-                    if (!char.IsDigit(e.Text[i]))
-                    {
-                        e.Handled = true;
-                        break;
-                    }
-                }
-            }
-        }
     }
 }

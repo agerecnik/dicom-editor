@@ -124,7 +124,8 @@ namespace DicomEditor.ViewModel
             or DicomDataException
             or AggregateException
             or ArgumentException
-            or ArgumentNullException)
+            or ArgumentNullException
+            or KeyNotFoundException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;
@@ -171,7 +172,8 @@ namespace DicomEditor.ViewModel
             or ArgumentOutOfRangeException
             or UnauthorizedAccessException
             or PathTooLongException
-            or IOException)
+            or IOException
+            or KeyNotFoundException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;
