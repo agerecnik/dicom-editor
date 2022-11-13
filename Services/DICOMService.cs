@@ -73,7 +73,7 @@ namespace DicomEditor.Services
                             string seriesInstanceUID = response.Dataset?.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
                             if (seriesInstanceUID is not null and not "")
                             {
-                                string seriesDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
+                                string seriesDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.SeriesDescription, "No series description");
                                 string modality = response.Dataset?.GetSingleValueOrDefault(DicomTag.Modality, "");
 
                                 DateTime seriesDate;

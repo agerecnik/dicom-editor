@@ -97,13 +97,16 @@ namespace DicomEditor.Services
         {
             Configuration configuration =
                 ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            configuration.AppSettings.Settings[key].Value = value;
-            configuration.Save(ConfigurationSaveMode.Minimal, true);
-            ConfigurationManager.RefreshSection("appSettings");
-
-            if(SettingsSavedEvent is not null)
+            if (configuration.AppSettings.Settings[key].Value != value)
             {
-                SettingsSavedEvent();
+                configuration.AppSettings.Settings[key].Value = value;
+                configuration.Save(ConfigurationSaveMode.Minimal, true);
+                ConfigurationManager.RefreshSection("appSettings");
+
+                if (SettingsSavedEvent is not null)
+                {
+                    SettingsSavedEvent();
+                }
             }
         }
 
