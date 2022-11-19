@@ -146,7 +146,7 @@ namespace DicomEditor.Services
                 Instance instance = new(instanceUID, seriesUID, instanceNumber);
                 if (!importedSeries.TryGetValue(seriesUID, out Series series))
                 {
-                    string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "");
+                    string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "No series description");
                     DateTime seriesDate = dataset.GetSingleValueOrDefault(DicomTag.SeriesDate, new DateTime());
                     DateTime seriesTime = dataset.GetSingleValueOrDefault(DicomTag.SeriesTime, new DateTime());
                     DateTime seriesDateTime = seriesDate;

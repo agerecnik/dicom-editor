@@ -40,7 +40,7 @@ namespace DicomEditor.Services
                     }
 
                     string accessionNumberStudy = response.Dataset?.GetSingleValueOrDefault(DicomTag.AccessionNumber, "");
-                    string studyDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.StudyDescription, "");
+                    string studyDescription = response.Dataset?.GetSingleValueOrDefault(DicomTag.StudyDescription, "No study description");
                     DateTime studyDate = response.Dataset.GetSingleValueOrDefault(DicomTag.StudyDate, new DateTime());
                     DateTime studyTime = response.Dataset.GetSingleValueOrDefault(DicomTag.StudyTime, new DateTime());
                     string modalitiesInStudy = response.Dataset.TryGetString(DicomTag.ModalitiesInStudy, out var dummy) ? dummy : string.Empty;

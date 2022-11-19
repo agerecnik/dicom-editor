@@ -59,6 +59,8 @@ namespace DicomEditor.Services
                 throw new InvalidOperationException("Cannot assign value to sequence");
             }
 
+            value = TrimFromZero(value);
+
             IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
             foreach (Instance instance in instances)
@@ -435,6 +437,15 @@ namespace DicomEditor.Services
                 + counter
                 + "."
                 + _random.Next(100000);
+        }
+
+        private string TrimFromZero(string input)
+        {
+            int index = input.IndexOf('\0');
+            if (index < 0)
+                return input;
+
+            return input.Substring(0, index);
         }
     }
 }
