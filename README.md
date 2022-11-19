@@ -15,7 +15,7 @@ The editor was tested with Orthanc (open-source DICOM server).
 	- Input a path to a folder (sub directories are not imported)
 	- Input a path to a single file
     
-![image](https://user-images.githubusercontent.com/48628230/202869908-5a811605-8340-43c8-a70b-f3b30ede75b9.png)
+![image](https://user-images.githubusercontent.com/48628230/202871976-f1dfa877-1a83-47f0-b293-aa63f9bc34e2.png)
 
 
 ### Editor view:
