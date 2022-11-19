@@ -57,7 +57,8 @@ The editor was tested with Orthanc (open-source DICOM server).
 - C-ECHO for each remote AE
 - Configure application AET
 - Configure DICOM root
-  - If DICOM root is present UIDs are generated in the following way: <root>.<year><month><day><hour><minute><second><millisecond>.<type>.<counter>.<random>
+  - If DICOM root is present UIDs are generated in the following way:
+  	`<root>.<year><month><day><hour><minute><second><millisecond>.<type>.<counter>.<random>`
     - Legend:
       - year: 4 characters
       - month: 2 characters
@@ -70,8 +71,8 @@ The editor was tested with Orthanc (open-source DICOM server).
       - counter: depends on the number of instances that are being changed in one run (e.g., for 1000 instances it would be 3 characters (0 - 999))
         - **NOTE:** for studies and series it is always one character (0)
       - random: a random number of up to 5 characters
-    - **NOTE:** if you already use your root for any other Application Entity you must also ensure to include a unique ID in the scope of said root for each instance of DICOM editor with whom you are going to use the root: <root>.<ID>.
-    - **NOTE2:** don't forget to add the separator '.' at the end of the root.
-    - **NOTE3:** bear in mind that the maximum allowed length of UIDs is 64 characters, and that separators '.' also count as characters.
+    - **NOTE:** if you already use your root for any other Application Entity you must also ensure to include a unique ID in the scope of said root for each instance of DICOM editor with whom you are going to use the root: `<root>.<ID>.`
+    - **NOTE2:** don't forget to add the separator `.` at the end of the root.
+    - **NOTE3:** bear in mind that the maximum allowed length of UIDs is 64 characters, and that separators `.` also count as characters.
 
 ![image](https://user-images.githubusercontent.com/48628230/202870504-f946311a-f5ad-434d-97b1-e198e078eb7f.png)
