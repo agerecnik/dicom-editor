@@ -42,7 +42,7 @@
     <Page Update="Theme\CheckBoxStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Theme\Colors.xaml">
+    <Page Update="Theme\Brushes.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\ExpandCollapseToggleStyle.xaml">

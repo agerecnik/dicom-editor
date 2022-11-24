@@ -12,7 +12,7 @@
         <Setter Property="Padding"
                 Value="1,0,0,0" />
         <Setter Property="Foreground"
-                Value="{StaticResource TextColor}" />
+                Value="{StaticResource TextBrush}" />
         <Setter Property="FontFamily"
                 Value="../Assets/Roboto-Light.ttf #Roboto" />
         <Setter Property="FontSize"
@@ -72,9 +72,9 @@
                         <Trigger Property="IsSelected"
                                  Value="True">
                             <Setter Property="Background"
-                                    Value="{StaticResource SelectedBackgroundColor}"/>
+                                    Value="{StaticResource SelectedBackgroundBrush}"/>
                             <Setter Property="Foreground"
-                                    Value="{StaticResource SelectedForegroundColor}"/>
+                                    Value="{StaticResource SelectedForegroundBrush}"/>
                         </Trigger>
                         <Trigger Property="HasItems"
                                  Value="false">
@@ -114,9 +114,9 @@
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="BorderBrush"
-                Value="{StaticResource ElementBackgroundColor}" />
+                Value="{StaticResource ElementBackgroundBrush}" />
         <Setter Property="Background"
-                Value="{StaticResource ElementBackgroundColor}" />
+                Value="{StaticResource ElementBackgroundBrush}" />
         <Setter Property="HorizontalScrollBarVisibility"
                 Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility"
@@ -185,7 +185,7 @@
                 <ControlTemplate TargetType="{x:Type TreeView}">
                     <Border Name="Border"
                             BorderThickness="0"
-                            Background="{StaticResource ElementBackgroundColor}">
+                            Background="{StaticResource ElementBackgroundBrush}">
                         <ScrollViewer Style="{StaticResource TreeViewScrollViewerStyle}">
                             <ItemsPresenter />
                         </ScrollViewer>

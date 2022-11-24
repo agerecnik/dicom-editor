@@ -150,6 +150,20 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private bool _validate;
+        public bool Validate
+        {
+            get => _validate;
+            set
+            {
+                SetProperty(ref _validate, value);
+                if(SelectedInstance is not null)
+                {
+                    UpdateListOfAttributes();
+                }
+            }
+        }
+
         private string _localExportPath;
         public string LocalExportPath
         {
@@ -170,7 +184,7 @@ namespace DicomEditor.ViewModel
         public ICommand GenerateStudyUIDCommand { get; }
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
-        
+
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
@@ -205,7 +219,7 @@ namespace DicomEditor.ViewModel
 
         private void UpdateListOfAttributes()
         {
-            SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID);
+            SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID, Validate);
             SelectedAttribute = null;
         }
         

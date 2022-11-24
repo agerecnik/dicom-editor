@@ -36,11 +36,11 @@ namespace DicomEditor.Services
             return new ObservableCollection<Series>(_cache.LoadedSeries.Values.OrderBy(x => x.SeriesDescription.Length).ThenBy(x => x.SeriesDescription));
         }
 
-        public ITreeModel GetInstance(string instanceUID)
+        public ITreeModel GetInstance(string instanceUID, bool doValidation)
         {
             if(_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset))
             {
-                return DatasetTree.CreateTree(dataset);
+                return DatasetTree.CreateTree(dataset, doValidation);
             }
             else
             {

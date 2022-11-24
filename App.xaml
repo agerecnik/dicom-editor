@@ -9,7 +9,7 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Theme/Colors.xaml"/>
+                <ResourceDictionary Source="Theme/Brushes.xaml"/>
                 <ResourceDictionary Source="Theme/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ButtonStyle.xaml"/>
                 <ResourceDictionary Source="Theme/CheckBoxStyle.xaml"/>

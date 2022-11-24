@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:ImportDialogViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="150" d:DesignWidth="280"
-             Background="{StaticResource WindowBackgroundColor}">
+             Background="{StaticResource WindowBackgroundBrush}">
 
     <Grid>
         <Grid.RowDefinitions>

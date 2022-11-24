@@ -10,7 +10,7 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <ContentControl Foreground="{StaticResource TextColor}"
+                    <ContentControl Foreground="{StaticResource TextBrush}"
                                     FontFamily="../Assets/Roboto-Light.ttf #Roboto"
                                     FontSize="14"
                                     Content="{Binding}" />
@@ -27,8 +27,8 @@
                                     Height="13"
                                     CornerRadius="0"
                                     BorderThickness="1"
-                                    BorderBrush="{StaticResource ElementBackgroundColor}"
-                                    Background="{StaticResource ElementBackgroundColor}">
+                                    BorderBrush="{StaticResource ElementBackgroundBrush}"
+                                    Background="{StaticResource ElementBackgroundBrush}">
                                 <Grid>
                                     <Path Visibility="Collapsed"
                                           Width="7"
@@ -37,7 +37,7 @@
                                           SnapsToDevicePixels="False"
                                           StrokeThickness="2"
                                           Data="M 0 0 L 7 7 M 0 7 L 7 0"
-                                          Stroke="{StaticResource TextColor}">
+                                          Stroke="{StaticResource TextBrush}">
                                     </Path>
                                     <Path Visibility="Collapsed"
                                           Width="7"
@@ -46,7 +46,7 @@
                                           SnapsToDevicePixels="False"
                                           StrokeThickness="2"
                                           Data="M 0 7 L 7 0"
-                                          Stroke="{StaticResource TextColor}">
+                                          Stroke="{StaticResource TextBrush}">
                                     </Path>
                                 </Grid>
                             </Border>

@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="{StaticResource WindowBackgroundColor}">
+             Background="{StaticResource WindowBackgroundBrush}">
     
     <UserControl.Resources>
 
@@ -18,7 +18,7 @@
             <Setter Property="BorderThickness"
                     Value="0" />
             <Setter Property="Foreground"
-                    Value="{StaticResource TextColor}" />
+                    Value="{StaticResource TextBrush}" />
             <Setter Property="IsReadOnly"
                     Value="True" />
             <Setter Property="FontSize"

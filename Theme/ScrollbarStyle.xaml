@@ -16,13 +16,13 @@
                             Margin="1"
                             CornerRadius="2"
                             BorderThickness="1"
-                            Background="{StaticResource ElementBackgroundColor}"
-                            BorderBrush="{StaticResource ElementBackgroundColor}">
+                            Background="{StaticResource ElementBackgroundBrush}"
+                            BorderBrush="{StaticResource ElementBackgroundBrush}">
                         <Path x:Name="Arrow"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               Data="{Binding Content,RelativeSource={RelativeSource TemplatedParent}}"
-                              Fill="{StaticResource ProgressBackgroundColor}"/>
+                              Fill="{StaticResource ProgressBackgroundBrush}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -80,7 +80,7 @@
             </Grid.RowDefinitions>
             <Border Grid.RowSpan="3"
                     CornerRadius="2"
-                    Background="{StaticResource ProgressBackgroundColor}" />
+                    Background="{StaticResource ProgressBackgroundBrush}" />
             <RepeatButton Grid.Row="0"
                           Style="{StaticResource ScrollBarLineButton}"
                           Height="18"
@@ -96,8 +96,8 @@
                 <Track.Thumb>
                     <Thumb Style="{StaticResource ScrollBarThumb}"
                            Margin="1,0,1,0"
-                           Background="{StaticResource ElementBackgroundColor}"
-                           BorderBrush="{StaticResource ElementBackgroundColor}"/>
+                           Background="{StaticResource ElementBackgroundBrush}"
+                           BorderBrush="{StaticResource ElementBackgroundBrush}"/>
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton Style="{StaticResource ScrollBarPageButton}"
@@ -122,7 +122,7 @@
             </Grid.ColumnDefinitions>
             <Border Grid.ColumnSpan="3"
                     CornerRadius="2"
-                    Background="{StaticResource ProgressBackgroundColor}" />
+                    Background="{StaticResource ProgressBackgroundBrush}" />
             <RepeatButton Grid.Column="0"
                           Style="{StaticResource ScrollBarLineButton}"
                           Width="18"
@@ -138,8 +138,8 @@
                 <Track.Thumb>
                     <Thumb Style="{StaticResource ScrollBarThumb}"
                            Margin="0,1,0,1"
-                           Background="{StaticResource ElementBackgroundColor}"
-                           BorderBrush="{StaticResource ElementBackgroundColor}"/>
+                           Background="{StaticResource ElementBackgroundBrush}"
+                           BorderBrush="{StaticResource ElementBackgroundBrush}"/>
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                     <RepeatButton Style="{StaticResource ScrollBarPageButton}"
