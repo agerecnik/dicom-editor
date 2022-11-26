@@ -1,16 +1,15 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace DicomEditor.View
 {
     /// <summary>
-    /// Interaction logic for StoreDialog.xaml
+    /// Interaction logic for RetrievalDialog.xaml
     /// </summary>
-    public partial class ExportDialog : UserControl
+    public partial class ProgressBarDialog : UserControl
     {
-        public ExportDialog()
+        public ProgressBarDialog()
         {
             InitializeComponent();
         }

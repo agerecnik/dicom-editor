@@ -2,6 +2,7 @@
 using DicomEditor.Interfaces;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace DicomEditor.ViewModel
@@ -63,7 +64,8 @@ namespace DicomEditor.ViewModel
                 Status = "Completed";
                 ExecutionFinished = true;
             }
-            catch (Exception e) when (e is ArgumentException)
+            catch (Exception e) when (e is ArgumentException
+            or TaskCanceledException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;

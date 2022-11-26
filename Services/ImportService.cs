@@ -117,25 +117,28 @@ namespace DicomEditor.Services
             Dictionary<string, Series> importedSeries = new();
             Dictionary<string, DicomDataset> importedInstances = new();
 
-            foreach (string filePath in filePaths)
+            await Task.Run(async () =>
             {
-                if (cancellationToken.IsCancellationRequested)
+                foreach (string filePath in filePaths)
                 {
-                    break;
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    var file = await DicomFile.OpenAsync(filePath);
+                    DicomDataset dataset = file.Dataset;
+
+                    string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
+                    importedInstances.Add(instanceUID, dataset);
+
+                    if (progress != null)
+                    {
+                        progressCounter++;
+                        progress.Report(progressCounter);
+                    }
                 }
-
-                var file = await DicomFile.OpenAsync(filePath);
-                DicomDataset dataset = file.Dataset;
-
-                string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
-                importedInstances.Add(instanceUID, dataset);
-
-                if (progress != null)
-                {
-                    progressCounter++;
-                    progress.Report(progressCounter);
-                }
-            }
+            
 
             foreach (DicomDataset dataset in importedInstances.Values)
             {
@@ -175,11 +178,12 @@ namespace DicomEditor.Services
                 }
             }
 
-            foreach(Series s in importedSeries.Values)
+            foreach (Series s in importedSeries.Values)
             {
                 ObservableCollection<Instance> orderedInstances = new(s.Instances.OrderBy(x => x.InstanceNumber.Length).ThenBy(x => x.InstanceNumber));
                 s.Instances = orderedInstances;
             }
+            }, cancellationToken);
 
             _cache.LoadedSeries = importedSeries;
             _cache.LoadedInstances = importedInstances;

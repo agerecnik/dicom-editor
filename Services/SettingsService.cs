@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using DicomEditor.Interfaces;
 using DicomEditor.ViewModel;
 using FellowOakDicom.Network;

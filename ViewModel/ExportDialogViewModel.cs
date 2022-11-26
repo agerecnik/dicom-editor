@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -59,14 +60,6 @@ namespace DicomEditor.ViewModel
             _path = path;
         }
 
-        public ExportDialogViewModel()
-        {
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                throw new Exception("Use only for design mode");
-            }
-        }
-
         public void Execute()
         {
             if (_path is null)
@@ -103,7 +96,8 @@ namespace DicomEditor.ViewModel
             or AggregateException
             or ArgumentException
             or ArgumentNullException
-            or KeyNotFoundException)
+            or KeyNotFoundException
+            or TaskCanceledException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;
@@ -125,7 +119,8 @@ namespace DicomEditor.ViewModel
             or ArgumentNullException
             or PathTooLongException
             or NotSupportedException
-            or KeyNotFoundException)
+            or KeyNotFoundException
+            or TaskCanceledException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;

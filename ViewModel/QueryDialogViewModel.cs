@@ -8,6 +8,7 @@ using FellowOakDicom.Network;
 using DicomEditor.Interfaces;
 using FellowOakDicom;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DicomEditor.ViewModel
 {
@@ -70,7 +71,8 @@ namespace DicomEditor.ViewModel
             or AggregateException
             or ArgumentException
             or ArgumentNullException
-            or KeyNotFoundException)
+            or KeyNotFoundException
+            or TaskCanceledException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;
