@@ -7,9 +7,9 @@ namespace DicomEditor.View
     /// <summary>
     /// Interaction logic for QueryDialog.xaml
     /// </summary>
-    public partial class QueryDialog : UserControl
+    public partial class SpinnerDialog : UserControl
     {
-        public QueryDialog()
+        public SpinnerDialog()
         {
             InitializeComponent();
         }

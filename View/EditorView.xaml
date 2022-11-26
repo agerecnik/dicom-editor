@@ -278,30 +278,23 @@
                     Style="{StaticResource ButtonStyle}" />
 
         <Grid Grid.Row="1"
-              Grid.Column="1">
+              Grid.Column="1"
+              HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="1"
-                  HorizontalAlignment="Right">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400"/>
-                    <ColumnDefinition Width="200"/>
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0"
-                         Margin="5,5,0,10"
-                         theme:ThemeProperties.SearchFieldName="Local Export Path"
-                         Style="{StaticResource TextBoxStyle}"
-                         Text="{Binding LocalExportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Column="1"
-                        Height="30"
-                        Margin="10,5,10,10"
-                        Content="Export selected series"
-                        Command="{Binding LocalExportCommand}"
-                        Style="{StaticResource ButtonStyle}" />
-            </Grid>
+            <TextBox Grid.Column="0"
+                     Margin="5,5,0,10"
+                     theme:ThemeProperties.SearchFieldName="Local Export Path"
+                     Style="{StaticResource TextBoxStyle}"
+                     Text="{Binding LocalExportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="1"
+                    Height="30"
+                    Margin="10,5,10,10"
+                    Content="Export selected series"
+                    Command="{Binding LocalExportCommand}"
+                    Style="{StaticResource ButtonStyle}" />
         </Grid>
 
     </Grid>

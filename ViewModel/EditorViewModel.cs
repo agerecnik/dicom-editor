@@ -219,7 +219,14 @@ namespace DicomEditor.ViewModel
 
         private void UpdateListOfAttributes()
         {
-            SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID, Validate);
+            string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
+
+            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate);
+            if (vm.Status != "Completed")
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+            }
+            SelectedInstanceAttributes = (ITreeModel)vm.Payload;
             SelectedAttribute = null;
         }
         

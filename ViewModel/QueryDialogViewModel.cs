@@ -26,6 +26,9 @@ namespace DicomEditor.ViewModel
             get => _status;
             set => SetProperty(ref _status, value);
         }
+
+        public object Payload => throw new NotImplementedException();
+
         public ICommand CancelCommand { get; }
 
         private readonly IImportService _importService;
@@ -36,14 +39,6 @@ namespace DicomEditor.ViewModel
             _importService = importService;
             CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
-        }
-
-        public QueryDialogViewModel()
-        {
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                throw new Exception("Use only for design mode");
-            }
         }
 
         public void Execute()

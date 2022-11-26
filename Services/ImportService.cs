@@ -96,7 +96,7 @@ namespace DicomEditor.Services
             {
                 if (Path.GetExtension(path) != ".dcm")
                 {
-                    throw new FileFormatException("File format must be .dcm: " + path);
+                    throw new FileFormatException(string.Join(" ", "File format must be .dcm:", path));
                 }
                 filePaths = new string[] { path };
             }
@@ -105,12 +105,12 @@ namespace DicomEditor.Services
                 filePaths = Directory.GetFiles(path, "*.dcm", SearchOption.TopDirectoryOnly);
                 if (filePaths.Length == 0)
                 {
-                    throw new FileNotFoundException("There are no .dcm files in " + path);
+                    throw new FileNotFoundException(string.Join(" ", "There are no .dcm files in", path));
                 }
             }
             else
             {
-                throw new DirectoryNotFoundException("Path does not exist: " + path);
+                throw new DirectoryNotFoundException(string.Join(" ", "Path does not exist:", path));
             }
 
             int progressCounter = 0;

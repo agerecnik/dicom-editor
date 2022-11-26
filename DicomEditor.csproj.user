@@ -19,7 +19,7 @@
     <Compile Update="View\MessageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\QueryDialog.xaml.cs">
+    <Compile Update="View\SpinnerDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\ImportDialog.xaml.cs">
@@ -81,7 +81,7 @@
     <Page Update="View\MessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\QueryDialog.xaml">
+    <Page Update="View\SpinnerDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ImportDialog.xaml">

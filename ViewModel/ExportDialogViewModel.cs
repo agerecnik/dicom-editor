@@ -36,6 +36,8 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _progress, value);
         }
 
+        public object Payload => throw new NotImplementedException();
+
         public ICommand CancelCommand { get; }
 
         private readonly IEditorService _editorService;
