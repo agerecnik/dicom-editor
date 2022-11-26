@@ -35,20 +35,23 @@ The editor was tested with Orthanc (open-source DICOM server).
 		- Delete it
 		- Add a new attribute/sequence
 - Generate a study UID for the selected instance
-	- if DICOM root is configured the root is used for generating the UID, otherwise a "2.25...." UID is generated
+	- If DICOM root is configured the root is used for generating the UID, otherwise a "2.25...." UID is generated
 - Generate a series UID for the selected instance
-	- if DICOM root is configured the root is used for generating the UID, otherwise a "2.25...." UID is generated
+	- If DICOM root is configured the root is used for generating the UID, otherwise a "2.25...." UID is generated
 	- **NOTE:** since instances are grouped by series, changing the series UID of an instance will create a new series in the series list, if the series does not exist yet.
 - Generate an instance UID for the selected instance
-	- if DICOM root is configured the root is used for generating the UID, otherwise a "2.25...." UID is generated
+	- If DICOM root is configured the root is used for generating the UID, otherwise a "2.25...." UID is generated
 - Apply an action to all instances in the selected series
 	- **NOTE:** in this case, "generate instance UID" behaves slightly different than generating study or series UID. Generate instance UID will create a new UID for each instance in the series whereas generating study or series UID will generate one UID and apply it to all instances in the series.
 	- **NOTE2:** while adding individual items and/or attributes it can happen that not all instances have the same items and/or attributes. In this case, applying a series-wide change to such an attribute will result in a notification containing a message saying that index was out of range.
+- Validate attributes of the selected instance
+	- If the option is turned on, instance gets automatically validated upon selection.
+	- Attributes, sequences and sequence items that fail validation are highlighted in red.
 - Store selected series to DICOM server
 - Export selected series to disk
 	- Input a target path; if a folder does not exist, it is created automatically
   
-![image](https://user-images.githubusercontent.com/48628230/202870404-f785df1c-7f8a-4662-9391-b97ca496a2ee.png)
+![image](https://user-images.githubusercontent.com/48628230/204093740-36010fcd-859f-4428-a86b-23739c42e7fc.png)
 
 
 ### Settings view:
