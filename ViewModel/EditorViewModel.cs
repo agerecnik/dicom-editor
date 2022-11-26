@@ -150,6 +150,20 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private bool _validate;
+        public bool Validate
+        {
+            get => _validate;
+            set
+            {
+                SetProperty(ref _validate, value);
+                if(SelectedInstance is not null)
+                {
+                    UpdateListOfAttributes();
+                }
+            }
+        }
+
         private string _localExportPath;
         public string LocalExportPath
         {
@@ -170,7 +184,7 @@ namespace DicomEditor.ViewModel
         public ICommand GenerateStudyUIDCommand { get; }
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
-        
+
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
@@ -205,7 +219,14 @@ namespace DicomEditor.ViewModel
 
         private void UpdateListOfAttributes()
         {
-            SelectedInstanceAttributes = _editorService.GetInstance(SelectedInstance.InstanceUID);
+            string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
+
+            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate);
+            if (vm.Status != "Completed")
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+            }
+            SelectedInstanceAttributes = (ITreeModel)vm.Payload;
             SelectedAttribute = null;
         }
         

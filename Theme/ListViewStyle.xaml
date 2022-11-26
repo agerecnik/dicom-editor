@@ -16,10 +16,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundColor}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundColor}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -28,13 +28,13 @@
     </Style>
 
     <Style x:Key="ListViewItemLabelStyle" TargetType="{x:Type Label}">
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource SelectedForegroundColor}" />
+                <Setter Property="Foreground" Value="{StaticResource SelectedForegroundBrush}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource SelectedForegroundColor}" />
+                <Setter Property="Foreground" Value="{StaticResource SelectedForegroundBrush}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -43,9 +43,9 @@
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="BorderBrush"
-                Value="{StaticResource ElementBackgroundColor}" />
+                Value="{StaticResource ElementBackgroundBrush}" />
         <Setter Property="Background"
-                Value="{StaticResource ElementBackgroundColor}" />
+                Value="{StaticResource ElementBackgroundBrush}" />
         <Setter Property="HorizontalScrollBarVisibility"
                 Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility"
@@ -114,7 +114,7 @@
                 <ControlTemplate TargetType="{x:Type ListView}">
                     <Border Name="Border"
                             BorderThickness="0"
-                            Background="{StaticResource ElementBackgroundColor}">
+                            Background="{StaticResource ElementBackgroundBrush}">
                         <ScrollViewer Style="{StaticResource ListViewScrollViewerStyle}">
                             <ItemsPresenter />
                         </ScrollViewer>

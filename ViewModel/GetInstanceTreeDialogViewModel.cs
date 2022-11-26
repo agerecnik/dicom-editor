@@ -1,18 +1,13 @@
 ﻿using DicomEditor.Commands;
-using System;
-using System.ComponentModel;
-using System.Threading;
-using System.Windows;
-using System.Windows.Input;
-using FellowOakDicom.Network;
 using DicomEditor.Interfaces;
-using FellowOakDicom;
-using System.Collections.Generic;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DicomEditor.ViewModel
 {
-    public class QueryDialogViewModel : ViewModelBase, IDialogViewModel
+    public class GetInstanceTreeDialogViewModel : ViewModelBase, IDialogViewModel
     {
         private bool _executionFinished;
         public bool ExecutionFinished
@@ -28,23 +23,31 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _status, value);
         }
 
-        public object Payload => throw new NotImplementedException();
+        private object _payload;
+        public object Payload
+        {
+            get => _payload;
+        }
 
         public ICommand CancelCommand { get; }
 
-        private readonly IImportService _importService;
+        private readonly IEditorService _editorService;
+        private readonly string _instanceUID;
+        private readonly bool _validate;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public QueryDialogViewModel(IImportService importService)
+        public GetInstanceTreeDialogViewModel(IEditorService editorService, string instanceUID, bool validate)
         {
-            _importService = importService;
+            _editorService = editorService;
+            _instanceUID = instanceUID;
+            _validate = validate;
             CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
         }
 
         public void Execute()
         {
-            StartQuery();
+            GetInstance();
         }
 
         private void Cancel()
@@ -53,25 +56,15 @@ namespace DicomEditor.ViewModel
             Status = "Canceled";
         }
 
-        private async void StartQuery()
+        private async void GetInstance()
         {
             try
             {
-                await _importService.QueryAsync(_cancellationTokenSource.Token);
+                _payload = await _editorService.GetInstance(_instanceUID, _validate, _cancellationTokenSource.Token);
                 Status = "Completed";
-                ExecutionFinished = true; 
+                ExecutionFinished = true;
             }
-            catch (Exception e) when (e is ConnectionClosedPrematurelyException
-            or DicomAssociationAbortedException
-            or DicomAssociationRejectedException
-            or DicomAssociationRequestTimedOutException
-            or DicomNetworkException
-            or DicomRequestTimedOutException
-            or DicomDataException
-            or AggregateException
-            or ArgumentException
-            or ArgumentNullException
-            or KeyNotFoundException
+            catch (Exception e) when (e is ArgumentException
             or TaskCanceledException)
             {
                 Status = e.Message;

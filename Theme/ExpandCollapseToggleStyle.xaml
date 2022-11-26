@@ -36,14 +36,14 @@
                               VerticalAlignment="Center"
                               Margin="1,1,1,1"
                               Data="M 4 0 L 8 4 L 4 8 Z"
-                              Fill="{StaticResource TextColor}" />
+                              Fill="{StaticResource TextBrush}" />
                         <Path x:Name="Expanded"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               Margin="1,1,1,1"
                               Data="M 0 4 L 8 4 L 4 8 Z"
                               Visibility="Hidden"
-                              Fill="{StaticResource TextColor}" />
+                              Fill="{StaticResource TextBrush}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

@@ -19,19 +19,16 @@
     <Compile Update="View\MessageDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\QueryDialog.xaml.cs">
+    <Compile Update="View\SpinnerDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\ImportDialog.xaml.cs">
+    <Compile Update="View\ProgressBarDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SettingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Theme\Spinner.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="View\ExportDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -42,7 +39,7 @@
     <Page Update="Theme\CheckBoxStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Theme\Colors.xaml">
+    <Page Update="Theme\Brushes.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\ExpandCollapseToggleStyle.xaml">
@@ -81,19 +78,16 @@
     <Page Update="View\MessageDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\QueryDialog.xaml">
+    <Page Update="View\SpinnerDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\ImportDialog.xaml">
+    <Page Update="View\ProgressBarDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Theme\Spinner.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="View\ExportDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

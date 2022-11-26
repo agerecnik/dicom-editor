@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace DicomEditor.ViewModel
 {
@@ -31,6 +32,10 @@ namespace DicomEditor.ViewModel
             get => _message;
             set => SetProperty(ref _message, value);
         }
+
+        public object Payload => throw new NotImplementedException();
+
+        public ICommand CancelCommand => throw new NotImplementedException();
 
         public MessageDialogViewModel(string message)
         {

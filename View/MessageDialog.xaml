@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:MessageDialogViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="150" d:DesignWidth="280"
-             Background="{StaticResource WindowBackgroundColor}">
+             Background="{StaticResource WindowBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.7*"/>
@@ -24,8 +24,8 @@
                  FontSize="11"
                  IsReadOnly="True"
                  TextWrapping="Wrap"
-                 Foreground="{StaticResource TextColor}"
-                 Background="{StaticResource ElementBackgroundColor}"
+                 Foreground="{StaticResource TextBrush}"
+                 Background="{StaticResource ElementBackgroundBrush}"
                  Text="{Binding Message, Mode=TwoWay}">
             <TextBox.Resources>
                 <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle}"/>

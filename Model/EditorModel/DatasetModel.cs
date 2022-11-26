@@ -13,8 +13,9 @@ namespace DicomEditor.Model.EditorModel
         public string Value { get; set; }
         public ICollection<IDatasetModel> NestedDatasets { get; set; }
         public IDatasetModel ParentDataset { get; set; }
+        public bool IsValid { get; set; }
 
-        public DatasetModel(DicomTag tag, string vr, string name, string value, IDatasetModel parentDataset)
+        public DatasetModel(DicomTag tag, string vr, string name, string value, IDatasetModel parentDataset, bool isValid)
         {
             Tag = tag;
             ValueRepresentation = vr;
@@ -22,6 +23,7 @@ namespace DicomEditor.Model.EditorModel
             Value = value;
             NestedDatasets = new ObservableCollection<IDatasetModel>();
             ParentDataset = parentDataset;
+            IsValid = isValid;
         }
     }
 }

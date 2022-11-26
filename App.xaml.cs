@@ -16,9 +16,10 @@ namespace DicomEditor
         public App()
         {
             Services = ConfigureServices();
-            DialogService.RegisterDialog<QueryDialog, QueryDialogViewModel>();
-            DialogService.RegisterDialog<ImportDialog, ImportDialogViewModel>();
-            DialogService.RegisterDialog<ExportDialog, ExportDialogViewModel>();
+            DialogService.RegisterDialog<SpinnerDialog, QueryDialogViewModel>();
+            DialogService.RegisterDialog<SpinnerDialog, GetInstanceTreeDialogViewModel>();
+            DialogService.RegisterDialog<ProgressBarDialog, ImportDialogViewModel>();
+            DialogService.RegisterDialog<ProgressBarDialog, ExportDialogViewModel>();
             DialogService.RegisterDialog<MessageDialog, MessageDialogViewModel>();
         }
 

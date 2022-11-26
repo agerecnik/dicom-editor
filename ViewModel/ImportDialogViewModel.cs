@@ -10,6 +10,7 @@ using FellowOakDicom.Network;
 using System.IO;
 using DicomEditor.Interfaces;
 using FellowOakDicom;
+using System.Threading.Tasks;
 
 namespace DicomEditor.ViewModel
 {
@@ -36,6 +37,8 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _progress, value);
         }
 
+        public object Payload => throw new NotImplementedException();
+
         public ICommand CancelCommand { get; }
 
         private readonly IImportService _importService;
@@ -53,14 +56,6 @@ namespace DicomEditor.ViewModel
         {
             _path = path;
             _seriesList = null;
-        }
-
-        public ImportDialogViewModel()
-        {
-            if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-            {
-                throw new Exception("Use only for design mode");
-            }
         }
 
         public void Execute()
@@ -125,7 +120,8 @@ namespace DicomEditor.ViewModel
             or AggregateException
             or ArgumentException
             or ArgumentNullException
-            or KeyNotFoundException)
+            or KeyNotFoundException
+            or TaskCanceledException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;
@@ -173,7 +169,8 @@ namespace DicomEditor.ViewModel
             or UnauthorizedAccessException
             or PathTooLongException
             or IOException
-            or KeyNotFoundException)
+            or KeyNotFoundException
+            or TaskCanceledException)
             {
                 Status = e.Message;
                 ExecutionFinished = true;

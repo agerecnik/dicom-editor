@@ -8,8 +8,8 @@
              xmlns:theme="clr-namespace:DicomEditor.Theme"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:ImportViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="450" d:DesignWidth="800"
-             Background="{StaticResource WindowBackgroundColor}">
+             d:DesignHeight="600" d:DesignWidth="1200"
+             Background="{StaticResource WindowBackgroundBrush}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -165,7 +165,7 @@
             <Grid Grid.Column="2"
                   HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="500"/>
                     <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
 

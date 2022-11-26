@@ -29,7 +29,7 @@
         <Setter Property="OverridesDefaultStyle"
                 Value="true"/>
         <Setter Property="Foreground"
-                Value="{StaticResource TextColor}"/>
+                Value="{StaticResource TextBrush}"/>
         <Setter Property="FontFamily"
                 Value="../Assets/Roboto-Light.ttf #Roboto" />
         <Setter Property="FontSize"
@@ -46,21 +46,27 @@
 										      SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                     </Border>
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=Tag.IsValid}"
+                                     Value="False">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{StaticResource InvalidElementBackgroundBrush}"/>
+                        </DataTrigger>
                         <Trigger Property="IsSelected"
                                  Value="true">
                             <Setter TargetName="Border"
                                     Property="Background"
-                                    Value="{StaticResource SelectedBackgroundColor}"/>
+                                    Value="{StaticResource SelectedBackgroundBrush}"/>
                             <Setter Property="Foreground"
-                                    Value="{StaticResource SelectedForegroundColor}"/>
+                                    Value="{StaticResource SelectedForegroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver"
                                  Value="true">
                             <Setter TargetName="Border"
                                     Property="Background"
-                                    Value="{StaticResource SelectedBackgroundColor}"/>
+                                    Value="{StaticResource SelectedBackgroundBrush}"/>
                             <Setter Property="Foreground"
-                                    Value="{StaticResource SelectedForegroundColor}"/>
+                                    Value="{StaticResource SelectedForegroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -73,7 +79,7 @@
         <Setter Property="Width"
                 Value="18" />
         <Setter Property="Background"
-                Value="{StaticResource TextColor}" />
+                Value="{StaticResource TextBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
@@ -87,7 +93,7 @@
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush"
-                Value="{StaticResource TextColor}"/>
+                Value="{StaticResource TextBrush}"/>
     </Style>
 
     <Style x:Key="TreeListGridViewColumnHeaderStyle"
@@ -95,7 +101,7 @@
         <Setter Property="OverridesDefaultStyle"
                     Value="True" />
         <Setter Property="Foreground"
-                    Value="{StaticResource TextColor}" />
+                    Value="{StaticResource TextBrush}" />
         <Setter Property="FontFamily"
                     Value="../Assets/Roboto-Light.ttf #Roboto" />
         <Setter Property="FontSize"
@@ -107,7 +113,7 @@
                 <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
                     <Grid>
                         <Border BorderThickness="0,0,0,3"
-                                BorderBrush="{StaticResource TextColor}"
+                                BorderBrush="{StaticResource TextBrush}"
                                 Background="Transparent">
                             <TextBlock x:Name="ContentHeader"
                                        Text="{TemplateBinding Content}"
@@ -128,9 +134,9 @@
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="BorderBrush"
-                Value="{StaticResource ElementBackgroundColor}" />
+                Value="{StaticResource ElementBackgroundBrush}" />
         <Setter Property="Background"
-                Value="{StaticResource ElementBackgroundColor}" />
+                Value="{StaticResource ElementBackgroundBrush}" />
         <Setter Property="HorizontalScrollBarVisibility"
                 Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility"
@@ -231,7 +237,7 @@
                 <ControlTemplate TargetType="{x:Type tree:TreeList}">
                     <Border Name="Border"
                             BorderThickness="0"
-                            Background="{StaticResource ElementBackgroundColor}">
+                            Background="{StaticResource ElementBackgroundBrush}">
                         <ScrollViewer Style="{StaticResource TreeListScrollViewerStyle}">
                             <ItemsPresenter />
                         </ScrollViewer>

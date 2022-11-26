@@ -9,13 +9,13 @@
                     <Grid>
                         <Border Name="PART_Track" 
                                 CornerRadius="0" 
-                                Background="{StaticResource ProgressBackgroundColor}"
-                                BorderBrush="{StaticResource ProgressBackgroundColor}"
+                                Background="{StaticResource ProgressBackgroundBrush}"
+                                BorderBrush="{StaticResource ProgressBackgroundBrush}"
                                 BorderThickness="1" />
                         <Border Name="PART_Indicator" 
                                 CornerRadius="0" 
-                                Background="{StaticResource ProgressDoneColor}" 
-                                BorderBrush="{StaticResource ProgressDoneColor}" 
+                                Background="{StaticResource ProgressDoneBrush}" 
+                                BorderBrush="{StaticResource ProgressDoneBrush}" 
                                 BorderThickness="1" 
                                 HorizontalAlignment="Left" />
                     </Grid>

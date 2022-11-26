@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static DicomEditor.Interfaces.IDICOMServer;
@@ -36,15 +37,15 @@ namespace DicomEditor.Services
             return new ObservableCollection<Series>(_cache.LoadedSeries.Values.OrderBy(x => x.SeriesDescription.Length).ThenBy(x => x.SeriesDescription));
         }
 
-        public ITreeModel GetInstance(string instanceUID)
+        public async Task<ITreeModel> GetInstance(string instanceUID, bool validate, CancellationToken cancellationToken)
         {
             if(_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset))
             {
-                return DatasetTree.CreateTree(dataset);
+                return await DatasetTree.CreateTree(dataset, validate, cancellationToken);
             }
             else
             {
-                throw new ArgumentException("Instance with the following UID does not exist: " + instanceUID);
+                throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instanceUID));
             }
         }
 
@@ -91,7 +92,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist: ", instance.InstanceUID));
                 }
             }
         }
@@ -113,13 +114,13 @@ namespace DicomEditor.Services
 
                     DicomTag newTag = new(group, element);
                     if(ds.Contains(newTag)) {
-                        throw new ArgumentException("Attribute with the following tag already exists: " + newTag);
+                        throw new ArgumentException(string.Join(" ", "Attribute with the following tag already exists:", newTag));
                     }
                     ds.AddOrUpdate<string>(newTag, value);
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -149,7 +150,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -180,7 +181,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -213,7 +214,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -238,7 +239,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -263,7 +264,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -289,7 +290,7 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                    throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
         }
@@ -316,7 +317,7 @@ namespace DicomEditor.Services
                     }
                     else
                     {
-                        throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                        throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                     }
                 }
 
@@ -328,7 +329,7 @@ namespace DicomEditor.Services
         {
             if (File.Exists(path))
             {
-                throw new DirectoryNotFoundException("Invalid directory path: " + path);
+                throw new DirectoryNotFoundException(string.Join(" ", "Invalid directory path:", path));
             }
 
             Directory.CreateDirectory(path);
@@ -346,25 +347,20 @@ namespace DicomEditor.Services
 
                     if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
                     {
-                        string filePath = path;
-                        if (path[^1] is '\\')
+                        StringBuilder filePath = new(path);
+                        if (path[^1] is not '\\')
                         {
-                            string fileName = progressCounter + ".dcm";
-                            filePath += fileName;
+                            filePath.Append('\\');
                         }
-                        else
-                        {
-                            string fileName = @"\" + progressCounter + ".dcm";
-                            filePath += fileName;
-                        }
+                        filePath.Append(progressCounter);
+                        filePath.Append(".dcm");
 
                         DicomFile file = new(ds);
-                        await file.SaveAsync(filePath, FellowOakDicom.IO.Writer.DicomWriteOptions.Default);
-
+                        await file.SaveAsync(filePath.ToString(), FellowOakDicom.IO.Writer.DicomWriteOptions.Default);
                     }
                     else
                     {
-                        throw new ArgumentException("Instance with the following UID does not exist: " + instance.InstanceUID);
+                        throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                     }
 
                     if (progress != null)
@@ -413,7 +409,7 @@ namespace DicomEditor.Services
             if (!_cache.LoadedInstances.TryAdd(newUID, ds))
             {
                 ds.AddOrUpdate<string>(DicomTag.SOPInstanceUID, instance.InstanceUID);
-                throw new ArgumentException("Instance with the following UID already exists: " + newUID);
+                throw new ArgumentException(string.Join(" ", "Instance with the following UID already exists:", newUID));
             }
             _cache.LoadedInstances.Remove(instance.InstanceUID);
             instance.InstanceUID = newUID;
@@ -422,21 +418,26 @@ namespace DicomEditor.Services
         private string GenerateUIDFromRoot(int type, int counter)
         {
             DateTime current = DateTime.Now;
-            return
-                _settingsService.DicomRoot
-                + current.Year
-                + current.Month
-                + current.Day
-                + current.Hour
-                + current.Minute
-                + current.Second
-                + current.Millisecond
-                + "."
-                + type
-                + "."
-                + counter
-                + "."
-                + _random.Next(100000);
+            StringBuilder uid = new(_settingsService.DicomRoot);
+            if (_settingsService.DicomRoot[^1] is not '.')
+            {
+                uid.Append('.');
+            }
+            uid.Append(current.Year);
+            uid.Append(current.Month);
+            uid.Append(current.Day);
+            uid.Append(current.Hour);
+            uid.Append(current.Minute);
+            uid.Append(current.Second);
+            uid.Append(current.Millisecond);
+            uid.Append('.');
+            uid.Append(type);
+            uid.Append('.');
+            uid.Append(counter);
+            uid.Append('.');
+            uid.Append(_random.Next(100000));
+
+            return uid.ToString();
         }
 
         private string TrimFromZero(string input)

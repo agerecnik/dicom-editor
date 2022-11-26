@@ -96,7 +96,7 @@ namespace DicomEditor.Services
             {
                 if (Path.GetExtension(path) != ".dcm")
                 {
-                    throw new FileFormatException("File format must be .dcm: " + path);
+                    throw new FileFormatException(string.Join(" ", "File format must be .dcm:", path));
                 }
                 filePaths = new string[] { path };
             }
@@ -105,37 +105,40 @@ namespace DicomEditor.Services
                 filePaths = Directory.GetFiles(path, "*.dcm", SearchOption.TopDirectoryOnly);
                 if (filePaths.Length == 0)
                 {
-                    throw new FileNotFoundException("There are no .dcm files in " + path);
+                    throw new FileNotFoundException(string.Join(" ", "There are no .dcm files in", path));
                 }
             }
             else
             {
-                throw new DirectoryNotFoundException("Path does not exist: " + path);
+                throw new DirectoryNotFoundException(string.Join(" ", "Path does not exist:", path));
             }
 
             int progressCounter = 0;
             Dictionary<string, Series> importedSeries = new();
             Dictionary<string, DicomDataset> importedInstances = new();
 
-            foreach (string filePath in filePaths)
+            await Task.Run(async () =>
             {
-                if (cancellationToken.IsCancellationRequested)
+                foreach (string filePath in filePaths)
                 {
-                    break;
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    var file = await DicomFile.OpenAsync(filePath);
+                    DicomDataset dataset = file.Dataset;
+
+                    string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
+                    importedInstances.Add(instanceUID, dataset);
+
+                    if (progress != null)
+                    {
+                        progressCounter++;
+                        progress.Report(progressCounter);
+                    }
                 }
-
-                var file = await DicomFile.OpenAsync(filePath);
-                DicomDataset dataset = file.Dataset;
-
-                string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, "");
-                importedInstances.Add(instanceUID, dataset);
-
-                if (progress != null)
-                {
-                    progressCounter++;
-                    progress.Report(progressCounter);
-                }
-            }
+            
 
             foreach (DicomDataset dataset in importedInstances.Values)
             {
@@ -175,11 +178,12 @@ namespace DicomEditor.Services
                 }
             }
 
-            foreach(Series s in importedSeries.Values)
+            foreach (Series s in importedSeries.Values)
             {
                 ObservableCollection<Instance> orderedInstances = new(s.Instances.OrderBy(x => x.InstanceNumber.Length).ThenBy(x => x.InstanceNumber));
                 s.Instances = orderedInstances;
             }
+            }, cancellationToken);
 
             _cache.LoadedSeries = importedSeries;
             _cache.LoadedInstances = importedInstances;

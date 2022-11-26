@@ -5,11 +5,11 @@ using System.Windows.Data;
 namespace DicomEditor.View
 {
     /// <summary>
-    /// Interaction logic for RetrievalDialog.xaml
+    /// Interaction logic for QueryDialog.xaml
     /// </summary>
-    public partial class ImportDialog : UserControl
+    public partial class SpinnerDialog : UserControl
     {
-        public ImportDialog()
+        public SpinnerDialog()
         {
             InitializeComponent();
         }

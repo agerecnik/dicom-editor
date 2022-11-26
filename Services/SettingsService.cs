@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using DicomEditor.Interfaces;
 using DicomEditor.ViewModel;
 using FellowOakDicom.Network;
@@ -43,8 +42,22 @@ namespace DicomEditor.Services
         {
             _servers = new Dictionary<ServerType, IDICOMServer>
             {
-                { ServerType.QueryRetrieveServer, new DICOMServer(ServerType.QueryRetrieveServer, GetSetting(ServerType.QueryRetrieveServer + "AET"), GetSetting(ServerType.QueryRetrieveServer + "Host"), GetSetting(ServerType.QueryRetrieveServer + "Port"), VerificationStatus.NA, this) },
-                { ServerType.StoreServer, new DICOMServer(ServerType.StoreServer, GetSetting(ServerType.StoreServer + "AET"), GetSetting(ServerType.StoreServer + "Host"), GetSetting(ServerType.StoreServer + "Port"), VerificationStatus.NA, this) }
+                { ServerType.QueryRetrieveServer, new DICOMServer(
+                    ServerType.QueryRetrieveServer,
+                    GetSetting(string.Join("", ServerType.QueryRetrieveServer, "AET")),
+                    GetSetting(string.Join("", ServerType.QueryRetrieveServer, "Host")),
+                    GetSetting(string.Join("", ServerType.QueryRetrieveServer, "Port")),
+                    VerificationStatus.NA,
+                    this)
+                },
+                { ServerType.StoreServer, new DICOMServer(
+                    ServerType.StoreServer,
+                    GetSetting(string.Join("", ServerType.StoreServer, "AET")),
+                    GetSetting(string.Join("", ServerType.StoreServer, "Host")),
+                    GetSetting(string.Join("", ServerType.StoreServer, "Port")),
+                    VerificationStatus.NA,
+                    this)
+                }
             };
             _dicomEditorAET = GetSetting("DicomEditorAET");
             _dicomRoot = GetSetting("DicomRoot");
