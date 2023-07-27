@@ -248,10 +248,8 @@ namespace DicomEditor.ViewModel
                 if(tag == DicomTag.SeriesInstanceUID)
                 {
                     UpdateLoadedSeriesList();
-                } else
-                {
-                    UpdateListOfAttributes();
-                }
+                } 
+                UpdateListOfAttributes();
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
             }

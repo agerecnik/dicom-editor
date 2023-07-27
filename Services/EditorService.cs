@@ -113,10 +113,16 @@ namespace DicomEditor.Services
                     }
 
                     DicomTag newTag = new(group, element);
-                    if(ds.Contains(newTag)) {
-                        throw new ArgumentException(string.Join(" ", "Attribute with the following tag already exists:", newTag));
+                    var vrs = newTag.DictionaryEntry.ValueRepresentations;
+                    if (vrs.Length == 1 && vrs[0] == DicomVR.SQ)
+                    {
+                        DicomSequence seq = new(newTag);
+                        ds.Add(seq);
                     }
-                    ds.AddOrUpdate<string>(newTag, value);
+                    else
+                    {
+                        ds.Add<string>(newTag, value);
+                    }
                 }
                 else
                 {

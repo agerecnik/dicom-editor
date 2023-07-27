@@ -1,6 +1,7 @@
 ﻿using DicomEditor.Interfaces;
 using FellowOakDicom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,8 +48,12 @@ namespace DicomEditor.Model.EditorModel.Tree
                         {
                             item.Validate();
                         }
-                        catch (DicomValidationException)
+                        catch (DicomValidationException e)
                         {
+                            if(tag == DicomTag.FrameOfReferenceTransformationMatrix)
+                            {
+                                Trace.WriteLine(e.Message);
+                            }
                             isValid = false;
                         }
                     }
