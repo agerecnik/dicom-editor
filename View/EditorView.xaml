@@ -112,7 +112,7 @@
                       Margin="10,5,5,5"
                       IsSynchronizedWithCurrentItem="True"
                       x:Name="SelectedSeriesView"
-                      ItemsSource="{Binding ElementName=LoadedSeriesListView, Path=SelectedItem.Instances}"
+                      ItemsSource="{Binding SelectedSeries.Instances}"
                       SelectedItem="{Binding SelectedInstance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>

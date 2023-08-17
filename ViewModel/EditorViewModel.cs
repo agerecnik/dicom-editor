@@ -535,7 +535,15 @@ namespace DicomEditor.ViewModel
 
         private void HandleSeriesListUpdated(object source, EventArgs args)
         {
+            Series tempSeries = SelectedSeries;
             LoadedSeriesList = _editorService.GetLoadedSeries();
+            foreach (var series in  _loadedSeriesList)
+            {
+                if (series.SeriesUID == tempSeries.SeriesUID)
+                {
+                    SelectedSeries = series;
+                }
+            }
         }
 
         private void HandleAttributesUpdated(object source, EventArgs args)

@@ -29,5 +29,17 @@ namespace DicomEditor.Model
             PatientID = patientID;
             Instances = new ObservableCollection<Instance>(instances);
         }
+
+        public Series(Series s)
+        {
+            SeriesUID = s.SeriesUID;
+            SeriesDescription = s.SeriesDescription;
+            SeriesDateTime = s.SeriesDateTime;
+            Modality = s.Modality;
+            NumberOfInstances = s.NumberOfInstances;
+            StudyUID = s.StudyUID;
+            PatientID = s.PatientID;
+            Instances = new ObservableCollection<Instance>(s.Instances);
+        }
     }
 }
