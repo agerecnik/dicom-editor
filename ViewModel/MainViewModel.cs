@@ -20,26 +20,12 @@ namespace DicomEditor.ViewModel
         public ICommand EditorViewCommand { get; }
         public ICommand SettingsViewCommand { get; }
 
-        public MainViewModel(IImportService importService, IEditorService editorService, ISettingsService settingsService, ICache cache, IDialogService dialogService)
+        public MainViewModel(IImportService importService, IEditorService editorService, ISettingsService settingsService, IDialogService dialogService)
         {
             CurrentView = new ImportViewModel(importService, dialogService);
-
-            ImportViewCommand = new RelayCommand(o =>
-            {
-                CurrentView = new ImportViewModel(importService, dialogService);
-            });
-
-            EditorViewCommand = new RelayCommand(o =>
-            {
-                CurrentView = new EditorViewModel(editorService, dialogService);
-                EditorViewModel evm = (EditorViewModel)CurrentView;
-                evm.UpdateLoadedSeriesList();
-            });
-
-            SettingsViewCommand = new RelayCommand(o =>
-            {
-                CurrentView = new SettingsViewModel(settingsService);
-            });
+            ImportViewCommand = new RelayCommand(o => CurrentView = new ImportViewModel(importService, dialogService));
+            EditorViewCommand = new RelayCommand(o => CurrentView = new EditorViewModel(editorService, dialogService));
+            SettingsViewCommand = new RelayCommand(o => CurrentView = new SettingsViewModel(settingsService));
         }
 
         public MainViewModel()

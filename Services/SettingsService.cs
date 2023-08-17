@@ -115,11 +115,7 @@ namespace DicomEditor.Services
                 configuration.AppSettings.Settings[key].Value = value;
                 configuration.Save(ConfigurationSaveMode.Minimal, true);
                 ConfigurationManager.RefreshSection("appSettings");
-
-                if (SettingsSavedEvent is not null)
-                {
-                    SettingsSavedEvent();
-                }
+                SettingsSavedEvent?.Invoke(this, EventArgs.Empty);
             }
         }
 

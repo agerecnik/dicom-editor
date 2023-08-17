@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.Interfaces
 {
-    public delegate void SettingsSavedHandler();
+    public delegate void SettingsSavedHandler(object source, EventArgs args);
 
     public interface ISettingsService
     {

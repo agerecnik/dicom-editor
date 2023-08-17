@@ -1,6 +1,7 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
+using DicomEditor.Services;
 using FellowOakDicom;
 using System;
 using System.Collections;
@@ -51,7 +52,7 @@ namespace DicomEditor.ViewModel
                 if (value != null)
                 {
                     SetProperty(ref _selectedInstance, value);
-                    UpdateListOfAttributes();
+                    HandleAttributesUpdated(null, null);
                 }
             }
         }
@@ -159,7 +160,7 @@ namespace DicomEditor.ViewModel
                 SetProperty(ref _validate, value);
                 if(SelectedInstance is not null)
                 {
-                    UpdateListOfAttributes();
+                    HandleAttributesUpdated(null, null);
                 }
             }
         }
@@ -181,6 +182,7 @@ namespace DicomEditor.ViewModel
         public ICommand AddAttributeCommand { get; }
         public ICommand AddItemCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand DeleteInstanceCommand { get; }
         public ICommand GenerateStudyUIDCommand { get; }
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
@@ -191,16 +193,21 @@ namespace DicomEditor.ViewModel
             _editorService = editorService;
             _dialogService = dialogService;
 
+            WeakEventManager<IEditorService, EventArgs>.AddHandler(_editorService, "SeriesListUpdatedEvent", HandleSeriesListUpdated);
+            WeakEventManager<IEditorService, EventArgs>.AddHandler(_editorService, "AttributesUpdatedEvent", HandleAttributesUpdated);
+
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
             LocalExportCommand = new RelayCommand(o => LocalExport(), CanUseLocalExportCommand);
             ModifyAttributeValueCommand = new RelayCommand(o => ModifyAttributeValue(), CanUseModifyAttributeValueCommand);
             AddAttributeCommand = new RelayCommand(o => AddAttribute(), CanUseAddAttributeCommand);
             AddItemCommand = new RelayCommand(o => AddItem(), CanUseAddItemCommand);
             DeleteCommand = new RelayCommand(o => Delete(), CanUseDeleteCommand);
+            DeleteInstanceCommand = new RelayCommand(o => DeleteInstance(o));
             GenerateStudyUIDCommand = new RelayCommand(o => GenerateStudyUID(), CanUseGenerateUIDCommand);
             GenerateSeriesUIDCommand = new RelayCommand(o => GenerateSeriesUID(), CanUseGenerateUIDCommand);
             GenerateInstanceUIDCommand = new RelayCommand(o => GenerateInstanceUID(), CanUseGenerateUIDCommand);
 
+            LoadedSeriesList = _editorService.GetLoadedSeries();
             LocalExportPath = _editorService.LocalExportPath;
         }
 
@@ -210,24 +217,6 @@ namespace DicomEditor.ViewModel
             {
                 throw new Exception("Use only for design mode");
             }
-        }
-
-        public void UpdateLoadedSeriesList()
-        {
-            LoadedSeriesList = _editorService.GetLoadedSeries();
-        }
-
-        private void UpdateListOfAttributes()
-        {
-            string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
-
-            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate);
-            if (vm.Status != "Completed")
-            {
-                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
-            }
-            SelectedInstanceAttributes = (ITreeModel)vm.Payload;
-            SelectedAttribute = null;
         }
         
         private void ModifyAttributeValue()
@@ -245,13 +234,6 @@ namespace DicomEditor.ViewModel
             {
                 DicomTag tag = SelectedAttribute.Tag;
                 _editorService.SetAttributeValue(instances, SelectedAttribute, SelectedAttributeValue);
-                if(tag == DicomTag.SeriesInstanceUID)
-                {
-                    UpdateLoadedSeriesList();
-                } 
-                UpdateListOfAttributes();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -263,7 +245,6 @@ namespace DicomEditor.ViewModel
             or ArgumentException)
             {
                 _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
-                UpdateListOfAttributes();
             }
         }
 
@@ -282,9 +263,6 @@ namespace DicomEditor.ViewModel
             try
             {
                 _editorService.AddAttribute(instances, SelectedAttribute, ushort.Parse(Group, System.Globalization.NumberStyles.HexNumber), ushort.Parse(Element, System.Globalization.NumberStyles.HexNumber), AddAttributeValue);
-                UpdateListOfAttributes();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -296,7 +274,6 @@ namespace DicomEditor.ViewModel
             or ArgumentException)
             {
                 _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
-                UpdateListOfAttributes();
             }
         }
 
@@ -315,9 +292,6 @@ namespace DicomEditor.ViewModel
             try
             {
                 _editorService.AddSequenceItem(instances, SelectedAttribute);
-                UpdateListOfAttributes();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -329,7 +303,6 @@ namespace DicomEditor.ViewModel
             or ArgumentException)
             {
                 _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
-                UpdateListOfAttributes();
             }
         }
 
@@ -355,9 +328,6 @@ namespace DicomEditor.ViewModel
                 {
                     _editorService.DeleteAttribute(instances, SelectedAttribute);
                 }
-                UpdateListOfAttributes();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -370,6 +340,12 @@ namespace DicomEditor.ViewModel
             {
                 _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
             }
+        }
+
+        private void DeleteInstance(object o)
+        {
+            Instance instance = (Instance)o;
+            _editorService.DeleteInstance(instance.InstanceUID);
         }
 
         private void GenerateStudyUID()
@@ -387,9 +363,6 @@ namespace DicomEditor.ViewModel
             try
             {
                 _editorService.GenerateAndSetStudyUID(instances);
-                UpdateListOfAttributes();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -419,10 +392,6 @@ namespace DicomEditor.ViewModel
             try
             {
                 _editorService.GenerateAndSetSeriesUID(instances);
-                UpdateListOfAttributes();
-                UpdateLoadedSeriesList();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -452,9 +421,6 @@ namespace DicomEditor.ViewModel
             try
             {
                 _editorService.GenerateAndSetInstanceUID(instances);
-                UpdateListOfAttributes();
-                SelectedAttribute = null;
-                SelectedAttributeValue = null;
             }
             catch (Exception e) when (e is DicomValidationException
             or ApplicationException
@@ -565,6 +531,25 @@ namespace DicomEditor.ViewModel
                 return false;
             }
             return true;
+        }
+
+        private void HandleSeriesListUpdated(object source, EventArgs args)
+        {
+            LoadedSeriesList = _editorService.GetLoadedSeries();
+        }
+
+        private void HandleAttributesUpdated(object source, EventArgs args)
+        {
+            string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
+
+            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate);
+            if (vm.Status != "Completed")
+            {
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+            }
+            SelectedInstanceAttributes = (ITreeModel)vm.Payload;
+            SelectedAttribute = null;
+            SelectedAttributeValue = null;
         }
     }
 }

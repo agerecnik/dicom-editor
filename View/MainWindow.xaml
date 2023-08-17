@@ -76,7 +76,6 @@
                                         TargetName="MenuToggleButtonBorder"
                                         Value="{StaticResource MenuToggleButtonMouseOver}"/>
                             </Trigger>
-
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>

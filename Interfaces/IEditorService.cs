@@ -7,8 +7,14 @@ using FellowOakDicom;
 
 namespace DicomEditor.Interfaces
 {
+    public delegate void SeriesListUpdatedHandler(object source, EventArgs args);
+    public delegate void AttributesUpdatedHandler(object source, EventArgs args);
+
     public interface IEditorService
     {
+        event SeriesListUpdatedHandler SeriesListUpdatedEvent;
+        event AttributesUpdatedHandler AttributesUpdatedEvent;
+
         public string LocalExportPath { get; set; }
 
         public ICollection<Series> GetLoadedSeries();
@@ -18,6 +24,7 @@ namespace DicomEditor.Interfaces
         public void AddSequenceItem(IList<Instance> instances, IDatasetModel attribute);
         public void DeleteAttribute(IList<Instance> instances, IDatasetModel attribute);
         public void DeleteSequenceItem(IList<Instance> instances, IDatasetModel attribute);
+        public void DeleteInstance(string instanceUID);
         public void GenerateAndSetStudyUID(IList<Instance> instances);
         public void GenerateAndSetSeriesUID(IList<Instance> instances);
         public void GenerateAndSetInstanceUID(IList<Instance> instances);

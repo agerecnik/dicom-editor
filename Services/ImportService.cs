@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.Services
@@ -29,7 +30,7 @@ namespace DicomEditor.Services
         public ImportService(ISettingsService settingsService, ICache cache, IDICOMService DICOMService)
         {
             _settingsService = settingsService;
-            _settingsService.SettingsSavedEvent += HandleSettingsSaved;
+            WeakEventManager<ISettingsService, EventArgs>.AddHandler(_settingsService, "SettingsSavedEvent", HandleSettingsSaved);
             _cache = cache;
             _DICOMService = DICOMService;
         }
@@ -189,7 +190,7 @@ namespace DicomEditor.Services
             _cache.LoadedInstances = importedInstances;
         }
 
-        private void HandleSettingsSaved()
+        private void HandleSettingsSaved(object source, EventArgs args)
         {
             QueryResult = new Collection<Patient>();
         }
