@@ -98,6 +98,15 @@ namespace DicomEditor.Services
                     else
                     {
                         ds.AddOrUpdate<string>(lastTag, value);
+                        if (lastTag == DicomTag.SeriesDescription)
+                        {
+                            Series series = _cache.LoadedSeries[instance.SeriesUID];
+                            if (series.Instances.ElementAt(0).InstanceUID == instance.InstanceUID)
+                            {
+                                series.SeriesDescription = value;
+                                SeriesListUpdatedEvent?.Invoke(this, EventArgs.Empty);
+                            }
+                        }
                     }
                 }
                 else
