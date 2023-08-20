@@ -165,6 +165,34 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private string _searchTerm;
+        public string SearchTerm
+        {
+            get => _searchTerm;
+            set
+            {
+                SetProperty(ref _searchTerm, value);
+                if (Search && SelectedInstance is not null)
+                {
+                    HandleAttributesUpdated(null, null);
+                }
+            }
+        }
+
+        private bool _search;
+        public bool Search
+        {
+            get => _search;
+            set
+            {
+                SetProperty(ref _search, value);
+                if (SelectedInstance is not null)
+                {
+                    HandleAttributesUpdated(null, null);
+                }
+            }
+        }
+
         private string _localExportPath;
         public string LocalExportPath
         {
@@ -549,8 +577,8 @@ namespace DicomEditor.ViewModel
         private void HandleAttributesUpdated(object source, EventArgs args)
         {
             string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
-
-            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate);
+            var tempSearchTerm = Search ? SearchTerm : string.Empty;
+            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate, tempSearchTerm);
             if (vm.Status != "Completed")
             {
                 _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);

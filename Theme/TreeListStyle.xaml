@@ -52,6 +52,12 @@
                                     Property="Background"
                                     Value="{StaticResource InvalidElementBackgroundBrush}"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Tag.IsSearchResult}"
+                                     Value="True">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="{StaticResource SearchResultElementBackgroundBrush}"/>
+                        </DataTrigger>
                         <Trigger Property="IsSelected"
                                  Value="true">
                             <Setter TargetName="Border"

@@ -4,10 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -27,7 +24,21 @@ namespace DicomEditor.Model.EditorModel.Tree
 			private set;
 		}
 
-		public static readonly DependencyProperty ModelProperty =
+        // Register a custom routed event using the Bubble routing strategy.
+        public static readonly RoutedEvent ModelChangedEvent = EventManager.RegisterRoutedEvent(
+			name: "ModelChanged",
+			routingStrategy: RoutingStrategy.Bubble,
+			handlerType: typeof(RoutedEventHandler),
+			ownerType: typeof(TreeList));
+
+        // Provide CLR accessors for assigning an event handler.
+        public event RoutedEventHandler ModelChanged
+        {
+            add { AddHandler(ModelChangedEvent, value); }
+            remove { RemoveHandler(ModelChangedEvent, value); }
+        }
+
+        public static readonly DependencyProperty ModelProperty =
 			DependencyProperty.Register("Model", typeof(ITreeModel), typeof(TreeList), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnModelChangedCallBack)));
 
 		//private ITreeModel _model;
@@ -46,11 +57,21 @@ namespace DicomEditor.Model.EditorModel.Tree
             }
         }
 
+		private void RaiseModelChangedEvent()
+		{
+            // Create a RoutedEventArgs instance.
+            RoutedEventArgs routedEventArgs = new(routedEvent: ModelChangedEvent);
+
+            // Raise the event, which will bubble up through the element tree.
+            RaiseEvent(routedEventArgs);
+        }
+
 		protected virtual void OnModelChanged()
         {
 			_root.Children.Clear();
 			Rows.Clear();
 			CreateChildrenNodes(_root);
+			RaiseModelChangedEvent();
 		}
 
 		private TreeNode _root;

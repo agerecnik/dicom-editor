@@ -1,7 +1,6 @@
 ﻿using DicomEditor.Interfaces;
 using FellowOakDicom;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,14 +9,14 @@ namespace DicomEditor.Model.EditorModel.Tree
 {
     public class DatasetTree : ITreeModel
     {
-        public static async Task<DatasetTree> CreateTree(DicomDataset dataset, bool validate, CancellationToken cancellationToken)
+        public static async Task<DatasetTree> CreateTree(DicomDataset dataset, bool validate, string searchTerm, CancellationToken cancellationToken)
         {
             var tree = new DatasetTree();
-            await Task.Run(() => ReadDataset(dataset, tree.Root, null, validate, cancellationToken), cancellationToken);
+            await Task.Run(() => ReadDataset(dataset, tree.Root, null, validate, searchTerm, cancellationToken), cancellationToken);
             return cancellationToken.IsCancellationRequested ? new DatasetTree() : tree;
         }
 
-        private static void ReadDataset(DicomDataset dataset, IDatasetModel datasetModel, IDatasetModel parent, bool validate, CancellationToken cancellationToken)
+        private static void ReadDataset(DicomDataset dataset, IDatasetModel datasetModel, IDatasetModel parent, bool validate, string searchTerm, CancellationToken cancellationToken)
         {
             if (!cancellationToken.IsCancellationRequested)
             {
@@ -29,6 +28,8 @@ namespace DicomEditor.Model.EditorModel.Tree
                     string name;
                     DicomVR vr;
                     bool isValid = true;
+                    string validationFailedMessage = string.Empty;
+                    bool isSearchResult = false;
 
                     if (item.Tag.IsPrivate)
                     {
@@ -50,12 +51,14 @@ namespace DicomEditor.Model.EditorModel.Tree
                         }
                         catch (DicomValidationException e)
                         {
-                            if(tag == DicomTag.FrameOfReferenceTransformationMatrix)
-                            {
-                                Trace.WriteLine(e.Message);
-                            }
                             isValid = false;
+                            validationFailedMessage = e.Message;
                         }
+                    }
+
+                    if (!string.IsNullOrEmpty(searchTerm) && (tag.ToString().Contains(searchTerm, System.StringComparison.CurrentCultureIgnoreCase) || name.Contains(searchTerm, System.StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        isSearchResult = true;
                     }
 
                     if (vr != DicomVR.SQ)
@@ -63,8 +66,12 @@ namespace DicomEditor.Model.EditorModel.Tree
                         test = dataset.TryGetValues<string>(tag, out string[] values);
                         if (test)
                         {
-                            string str = string.Join("\\", values);
-                            IDatasetModel attribute = new DatasetModel(tag, item.ValueRepresentation.ToString(), name, str, parent, isValid);
+                            string value = string.Join("\\", values);
+                            if (!string.IsNullOrEmpty(searchTerm) && value.Contains(searchTerm, System.StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                isSearchResult = true;
+                            }
+                            IDatasetModel attribute = new DatasetModel(tag, item.ValueRepresentation.ToString(), name, value, parent, isValid, validationFailedMessage, isSearchResult);
                             datasetModel.NestedDatasets.Add(attribute);
                         }
                     }
@@ -73,7 +80,7 @@ namespace DicomEditor.Model.EditorModel.Tree
                         test = dataset.TryGetSequence(tag, out DicomSequence seq);
                         if (test)
                         {
-                            IDatasetModel sequenceModel = new DatasetModel(tag, item.ValueRepresentation.ToString(), name, "", parent, isValid);
+                            IDatasetModel sequenceModel = new DatasetModel(tag, item.ValueRepresentation.ToString(), name, string.Empty, parent, isValid, string.Empty, isSearchResult);
                             datasetModel.NestedDatasets.Add(sequenceModel);
                             int counter = 0;
                             foreach (DicomDataset sequenceItem in seq.Items)
@@ -90,8 +97,8 @@ namespace DicomEditor.Model.EditorModel.Tree
                                         isValid = false;
                                     }
                                 }
-                                IDatasetModel nestedDatasetModel = new DatasetModel(null, null, "Item", counter.ToString(), sequenceModel, isValid);
-                                ReadDataset(sequenceItem, nestedDatasetModel, nestedDatasetModel, validate, cancellationToken);
+                                IDatasetModel nestedDatasetModel = new DatasetModel(null, null, "Item", counter.ToString(), sequenceModel, isValid, string.Empty, false);
+                                ReadDataset(sequenceItem, nestedDatasetModel, nestedDatasetModel, validate, searchTerm, cancellationToken);
                                 sequenceModel.NestedDatasets.Add(nestedDatasetModel);
                                 counter++;
                             }
@@ -105,7 +112,7 @@ namespace DicomEditor.Model.EditorModel.Tree
 
         public DatasetTree()
         {
-            Root = new DatasetModel(null, "", "", "", null, true);
+            Root = new DatasetModel(null, string.Empty, string.Empty, string.Empty, null, true, string.Empty, false);
         }
 
         public System.Collections.IEnumerable GetChildren(object parent)

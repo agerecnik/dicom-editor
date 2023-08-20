@@ -4,6 +4,7 @@
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#272537" />
     <SolidColorBrush x:Key="ElementBackgroundBrush" Color="#353340" />
     <SolidColorBrush x:Key="InvalidElementBackgroundBrush" Color="#7a302b" />
+    <SolidColorBrush x:Key="SearchResultElementBackgroundBrush" Color="#2b4b7a" />
     <SolidColorBrush x:Key="TextBrush" Color="DarkGray" />
 
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#FFC5CBF9" />

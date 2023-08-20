@@ -34,13 +34,15 @@ namespace DicomEditor.ViewModel
         private readonly IEditorService _editorService;
         private readonly string _instanceUID;
         private readonly bool _validate;
+        private readonly string _searchTerm;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-        public GetInstanceTreeDialogViewModel(IEditorService editorService, string instanceUID, bool validate)
+        public GetInstanceTreeDialogViewModel(IEditorService editorService, string instanceUID, bool validate, string searchTerm)
         {
             _editorService = editorService;
             _instanceUID = instanceUID;
             _validate = validate;
+            _searchTerm = searchTerm;
             CancelCommand = new RelayCommand(o => Cancel());
             ExecutionFinished = false;
         }
@@ -60,7 +62,7 @@ namespace DicomEditor.ViewModel
         {
             try
             {
-                _payload = await _editorService.GetInstance(_instanceUID, _validate, _cancellationTokenSource.Token);
+                _payload = await _editorService.GetInstance(_instanceUID, _validate, _searchTerm, _cancellationTokenSource.Token);
                 Status = "Completed";
                 ExecutionFinished = true;
             }

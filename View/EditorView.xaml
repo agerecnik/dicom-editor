@@ -6,12 +6,15 @@
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              xmlns:tree="clr-namespace:DicomEditor.Model.EditorModel.Tree"
              xmlns:theme="clr-namespace:DicomEditor.Theme"
+             xmlns:converters="clr-namespace:DicomEditor.Converters" 
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:EditorViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="600" d:DesignWidth="1200"
              Background="{StaticResource WindowBackgroundBrush}">
 
     <UserControl.Resources>
+        <converters:DatasetModelConverter x:Key="DatasetModelConverter"></converters:DatasetModelConverter>
+        
         <ImageBrush x:Key="DeleteButtonMouseOver"
                     ImageSource="../Assets/img_delete_MouseOver.png"/>
 
@@ -74,6 +77,12 @@
         <DataTemplate x:Key="ValueCell">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Value}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ValidationFailedMessageCell">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ValidationFailedMessage}" />
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
@@ -152,19 +161,40 @@
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
-            <tree:TreeList x:Name="tree"
-                           Grid.Column="1"
+
+            <StackPanel Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <TextBox Margin="5,5,0,0"
+                         Width="200"
+                         theme:ThemeProperties.SearchFieldName="Search Term"
+                         Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <CheckBox Grid.Row="0"
+                          VerticalAlignment="Center"
+                          FlowDirection="LeftToRight"
+                          Margin="10,0,10,0"
+                          IsChecked="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Style="{StaticResource CheckBoxStyle}">
+                    Search
+                </CheckBox>
+            </StackPanel>
+
+            <tree:TreeList x:Name="Tree"
+                           Grid.Row="1"
                            Grid.RowSpan="2"    
-                           Model="{Binding SelectedInstanceAttributes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Model="{Binding SelectedInstanceAttributes, Mode=OneWay}"
                            Margin="5,10,10,5"
                            Style="{StaticResource TreeListStyle}"
-                           SelectionChanged="tree_SelectionChanged">
+                           SelectedItem="{Binding SelectedAttribute, Mode=OneWayToSource, Converter={StaticResource DatasetModelConverter}}"
+                           ModelChanged="Tree_ModelChanged">
                 <tree:TreeList.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
                         <GridView.Columns>
@@ -176,12 +206,14 @@
                                             CellTemplate="{StaticResource ValueRepresentationCell}" />
                             <GridViewColumn Header="Value"
                                             CellTemplate="{StaticResource ValueCell}" />
+                            <GridViewColumn Header="Validation Message"
+                                            CellTemplate="{StaticResource ValidationFailedMessageCell}" />
                         </GridView.Columns>
                     </GridView>
                 </tree:TreeList.View>
             </tree:TreeList>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -235,7 +267,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -290,7 +322,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="4">
+            <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>

@@ -18,7 +18,7 @@ namespace DicomEditor.Interfaces
         public string LocalExportPath { get; set; }
 
         public ICollection<Series> GetLoadedSeries();
-        public Task<ITreeModel> GetInstance(string instanceUID, bool validate, CancellationToken cancellationToken);
+        public Task<ITreeModel> GetInstance(string instanceUID, bool validate, string searchTerm, CancellationToken cancellationToken);
         public void SetAttributeValue(IList<Instance> instances, IDatasetModel attribute, string value);
         public void AddAttribute(IList<Instance> instances, IDatasetModel attribute, ushort group, ushort element, string value);
         public void AddSequenceItem(IList<Instance> instances, IDatasetModel attribute);

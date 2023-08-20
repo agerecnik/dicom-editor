@@ -5,13 +5,11 @@ using FellowOakDicom;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.Services
@@ -46,11 +44,11 @@ namespace DicomEditor.Services
             return tempCollection;
         }
 
-        public async Task<ITreeModel> GetInstance(string instanceUID, bool validate, CancellationToken cancellationToken)
+        public async Task<ITreeModel> GetInstance(string instanceUID, bool validate, string searchTerm, CancellationToken cancellationToken)
         {
             if(_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset))
             {
-                return await DatasetTree.CreateTree(dataset, validate, cancellationToken);
+                return await DatasetTree.CreateTree(dataset, validate, searchTerm, cancellationToken);
             }
             else
             {
@@ -372,6 +370,11 @@ namespace DicomEditor.Services
                 }
             }
             AttributesUpdatedEvent?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Find(DicomTag tag, Instance instance)
+        {
+
         }
 
         public async Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)

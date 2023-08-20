@@ -12,5 +12,7 @@ namespace DicomEditor.Interfaces
         public ICollection<IDatasetModel> NestedDatasets { get; set; }
         public IDatasetModel ParentDataset { get; set; }
         public bool IsValid { get; set; }
+        public string ValidationFailedMessage { get; set; }
+        public bool IsSearchResult { get; set; }
     }
 }

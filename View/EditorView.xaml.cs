@@ -2,10 +2,12 @@
 using DicomEditor.Model.EditorModel.Tree;
 using DicomEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml.Linq;
 
 namespace DicomEditor.View
 {
@@ -22,18 +24,58 @@ namespace DicomEditor.View
 
         private void Toggle_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var node in tree.SelectedNodes)
+            foreach (var node in Tree.SelectedNodes)
                 if (node.IsExpandable)
                     node.IsExpanded = !node.IsExpanded;
         }
 
-        private void tree_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Tree_ModelChanged(object sender, RoutedEventArgs e)
         {
-            var vm = (EditorViewModel)DataContext;
-            TreeNode node = (TreeNode)tree.SelectedItem;
-            if(node is not null)
+            Stack<TreeNode> stack = new();
+            foreach (var node in Traverse(Tree.Nodes))
             {
-                vm.SelectedAttribute = (IDatasetModel)node.Tag;
+                stack.Push(node);
+            }
+
+            foreach (var node in stack)
+            {
+                node.IsExpanded = false;
+            }
+
+            foreach (var node in stack)
+            {
+                IDatasetModel attribute = (IDatasetModel)node.Tag;
+                if (attribute.IsSearchResult)
+                {
+                    ExpandNodes(node);
+                }
+            }
+        }
+
+        private IEnumerable<TreeNode> Traverse(IEnumerable<TreeNode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                yield return node;
+
+                if (node.IsExpandable)
+                {
+                    node.IsExpanded = true;
+                    foreach (var child in Traverse(node.Nodes))
+                    {
+                        yield return child;
+                    }
+                }
+            }
+        }
+
+        private void ExpandNodes(TreeNode node)
+        {
+            node = node.Parent;
+            while (node.Level > -1)
+            {
+                node.IsExpanded = true;
+                node = node.Parent;
             }
         }
     }
