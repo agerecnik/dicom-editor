@@ -22,13 +22,6 @@ namespace DicomEditor.View
             DataContext = App.Current.Services.GetService<MainViewModel>().CurrentView;
         }
 
-        private void Toggle_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var node in Tree.SelectedNodes)
-                if (node.IsExpandable)
-                    node.IsExpanded = !node.IsExpanded;
-        }
-
         private void Tree_ModelChanged(object sender, RoutedEventArgs e)
         {
             Stack<TreeNode> stack = new();

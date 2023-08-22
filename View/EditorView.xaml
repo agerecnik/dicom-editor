@@ -191,7 +191,7 @@
                            Grid.Row="1"
                            Grid.RowSpan="2"    
                            Model="{Binding SelectedInstanceAttributes, Mode=OneWay}"
-                           Margin="5,10,10,5"
+                           Margin="5,5,10,5"
                            Style="{StaticResource TreeListStyle}"
                            SelectedItem="{Binding SelectedAttribute, Mode=OneWayToSource, Converter={StaticResource DatasetModelConverter}}"
                            ModelChanged="Tree_ModelChanged">
