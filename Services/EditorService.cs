@@ -16,8 +16,8 @@ namespace DicomEditor.Services
 {
     public class EditorService : IEditorService
     {
-        public event SeriesListUpdatedHandler SeriesListUpdatedEvent;
-        public event AttributesUpdatedHandler AttributesUpdatedEvent;
+        public event EventHandler<SeriesListUpdatedEventArgs> SeriesListUpdatedEvent;
+        public event EventHandler AttributesUpdatedEvent;
 
         private readonly ISettingsService _settingsService;
         private readonly ICache _cache;
@@ -71,6 +71,7 @@ namespace DicomEditor.Services
 
             IList<IDatasetModel> attributes = GetAttributePathFromParentToChild(attribute);
 
+            DicomTag lastTag = attributes[^1].Tag;
             foreach (Instance instance in instances)
             {
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
@@ -82,8 +83,6 @@ namespace DicomEditor.Services
                         ds = sequence.Items[itemIndex];
                     }
 
-                    DicomTag lastTag = attributes[^1].Tag;
-                    
                     if (lastTag == DicomTag.SOPInstanceUID)
                     {
                         UpdateInstanceUID(instance, value, ds);
@@ -91,7 +90,6 @@ namespace DicomEditor.Services
                     else if (lastTag == DicomTag.SeriesInstanceUID)
                     {
                         UpdateSeriesUID(instance, value, ds);
-                        SeriesListUpdatedEvent?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
@@ -102,16 +100,24 @@ namespace DicomEditor.Services
                             if (series.Instances.ElementAt(0).InstanceUID == instance.InstanceUID)
                             {
                                 series.SeriesDescription = value;
-                                SeriesListUpdatedEvent?.Invoke(this, EventArgs.Empty);
+                                SeriesListUpdatedEvent?.Invoke(this, new(instance.SeriesUID));
                             }
                         }
                     }
                 }
                 else
                 {
+                    if (lastTag == DicomTag.SeriesInstanceUID)
+                    {
+                        SeriesListUpdatedEvent?.Invoke(this, new(value));
+                    }
                     AttributesUpdatedEvent?.Invoke(this, EventArgs.Empty);
                     throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
+            }
+            if (lastTag == DicomTag.SeriesInstanceUID)
+            {
+                SeriesListUpdatedEvent?.Invoke(this, new(value));
             }
             AttributesUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
@@ -238,10 +244,7 @@ namespace DicomEditor.Services
                         ds = sequence.Items[itemIndex];
                     }
 
-                    if(sequence is not null)
-                    {
-                        sequence.Items.Remove(ds);
-                    }
+                    sequence?.Items.Remove(ds);
                 }
                 else
                 {
@@ -270,6 +273,7 @@ namespace DicomEditor.Services
                         {
                             _cache.LoadedSeries.Remove(seriesUID);
                         }
+                        SeriesListUpdatedEvent?.Invoke(this, new(seriesUID));
                     }
                     else
                     {
@@ -285,13 +289,12 @@ namespace DicomEditor.Services
             {
                 throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instanceUID));
             }
-            SeriesListUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void GenerateAndSetStudyUID(IList<Instance> instances)
         {
             string generatedUID;
-            if (_settingsService.DicomRoot is not null && _settingsService.DicomRoot is not "")
+            if (!string.IsNullOrWhiteSpace(_settingsService.DicomRoot))
             {
                 generatedUID = GenerateUIDFromRoot(1, 0);
             }
@@ -318,7 +321,7 @@ namespace DicomEditor.Services
         public void GenerateAndSetSeriesUID(IList<Instance> instances)
         {
             string generatedUID;
-            if (_settingsService.DicomRoot is not null && _settingsService.DicomRoot is not "")
+            if (!string.IsNullOrWhiteSpace(_settingsService.DicomRoot))
             {
                 generatedUID = GenerateUIDFromRoot(2, 0);
             }
@@ -335,12 +338,12 @@ namespace DicomEditor.Services
                 }
                 else
                 {
-                    SeriesListUpdatedEvent?.Invoke(this, EventArgs.Empty);
+                    SeriesListUpdatedEvent?.Invoke(this, new(generatedUID));
                     AttributesUpdatedEvent?.Invoke(this, EventArgs.Empty);
                     throw new ArgumentException(string.Join(" ", "Instance with the following UID does not exist:", instance.InstanceUID));
                 }
             }
-            SeriesListUpdatedEvent?.Invoke(this, EventArgs.Empty);
+            SeriesListUpdatedEvent?.Invoke(this, new(generatedUID));
             AttributesUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
@@ -352,7 +355,7 @@ namespace DicomEditor.Services
                 if (_cache.LoadedInstances.TryGetValue(instance.InstanceUID, out DicomDataset ds))
                 {
                     string generatedUID;
-                    if (_settingsService.DicomRoot is not null && _settingsService.DicomRoot is not "")
+                    if (!string.IsNullOrWhiteSpace(_settingsService.DicomRoot))
                     {
                         generatedUID = GenerateUIDFromRoot(3, counter);
                     }

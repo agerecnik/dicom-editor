@@ -1,5 +1,4 @@
-﻿using DicomEditor.Model;
-using FellowOakDicom;
+﻿using FellowOakDicom;
 using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;

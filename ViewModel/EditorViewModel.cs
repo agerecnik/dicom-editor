@@ -221,7 +221,7 @@ namespace DicomEditor.ViewModel
             _editorService = editorService;
             _dialogService = dialogService;
 
-            WeakEventManager<IEditorService, EventArgs>.AddHandler(_editorService, "SeriesListUpdatedEvent", HandleSeriesListUpdated);
+            WeakEventManager<IEditorService, SeriesListUpdatedEventArgs>.AddHandler(_editorService, "SeriesListUpdatedEvent", HandleSeriesListUpdated);
             WeakEventManager<IEditorService, EventArgs>.AddHandler(_editorService, "AttributesUpdatedEvent", HandleAttributesUpdated);
 
             StoreCommand = new RelayCommand(o => Store(), CanUseStoreCommand);
@@ -561,13 +561,12 @@ namespace DicomEditor.ViewModel
             return true;
         }
 
-        private void HandleSeriesListUpdated(object source, EventArgs args)
+        private void HandleSeriesListUpdated(object source, SeriesListUpdatedEventArgs args)
         {
-            Series tempSeries = SelectedSeries;
             LoadedSeriesList = _editorService.GetLoadedSeries();
             foreach (var series in  _loadedSeriesList)
             {
-                if (series.SeriesUID == tempSeries.SeriesUID)
+                if (series.SeriesUID == args.SeriesUID)
                 {
                     SelectedSeries = series;
                 }

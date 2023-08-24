@@ -11,7 +11,7 @@ namespace DicomEditor.Services
 {
     public class SettingsService : ISettingsService
     {
-        public event SettingsSavedHandler SettingsSavedEvent;
+        public event EventHandler SettingsSavedEvent;
 
         private readonly IDictionary<ServerType, IDICOMServer> _servers;
         private readonly IDICOMService _DICOMService;

@@ -4,11 +4,9 @@ using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.Interfaces
 {
-    public delegate void SettingsSavedHandler(object source, EventArgs args);
-
     public interface ISettingsService
     {
-        event SettingsSavedHandler SettingsSavedEvent;
+        event EventHandler SettingsSavedEvent;
 
         public string DicomEditorAET { get; set; }
         public string DicomRoot { get; set; }

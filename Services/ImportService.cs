@@ -69,7 +69,7 @@ namespace DicomEditor.Services
             foreach(var dataset in studies)
             {
                 string studyUID = dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID);
-                if (!string.IsNullOrEmpty(studyUID))
+                if (!string.IsNullOrWhiteSpace(studyUID))
                 {
                     string patientIDResult = dataset.GetSingleValueOrDefault(DicomTag.PatientID, string.Empty);
                     string patientNameResult = dataset.GetSingleValueOrDefault(DicomTag.PatientName, string.Empty);
@@ -103,7 +103,7 @@ namespace DicomEditor.Services
             {
                 foreach (Study study in patient.Studies.Values)
                 {
-                    if (!string.IsNullOrEmpty(study.StudyUID))
+                    if (!string.IsNullOrWhiteSpace(study.StudyUID))
                     {
                         attributes = new List<Tuple<DicomTag, string>>
                         {
@@ -124,7 +124,7 @@ namespace DicomEditor.Services
                         {
                             string patientIDResult = dataset.GetSingleValueOrDefault(DicomTag.PatientID, string.Empty);
                             string seriesInstanceUID = dataset.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
-                            if (seriesInstanceUID is not null and not "")
+                            if (!string.IsNullOrWhiteSpace(seriesInstanceUID))
                             {
                                 string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "No series description");
                                 string modality = dataset.GetSingleValueOrDefault(DicomTag.Modality, string.Empty);
