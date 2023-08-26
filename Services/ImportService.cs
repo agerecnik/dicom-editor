@@ -173,7 +173,8 @@ namespace DicomEditor.Services
                 {
                     string instanceUID = dataset?.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, string.Empty);
                     string instanceNumber = dataset?.GetSingleValueOrDefault(DicomTag.InstanceNumber, instanceUID);
-                    Instance instance = new(instanceUID, series.SeriesUID, instanceNumber);
+                    bool isImage = (bool)(dataset?.Contains(DicomTag.PixelData));
+                    Instance instance = new(instanceUID, series.SeriesUID, instanceNumber, isImage);
                     instances.Add(instance);
                     retrievedInstances.Add(instanceUID, dataset);
                 }
@@ -242,8 +243,8 @@ namespace DicomEditor.Services
                     string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, string.Empty);
                     string seriesUID = dataset.GetSingleValueOrDefault(DicomTag.SeriesInstanceUID, string.Empty);
                     string instanceNumber = dataset.GetSingleValueOrDefault(DicomTag.InstanceNumber, instanceUID);
-
-                    Instance instance = new(instanceUID, seriesUID, instanceNumber);
+                    bool isImage = (bool)(dataset?.Contains(DicomTag.PixelData));
+                    Instance instance = new(instanceUID, seriesUID, instanceNumber, isImage);
                     if (!importedSeries.TryGetValue(seriesUID, out Series series))
                     {
                         string seriesDescription = dataset.GetSingleValueOrDefault(DicomTag.SeriesDescription, "No series description");

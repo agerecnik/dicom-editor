@@ -19,6 +19,8 @@
     <Resource Include="Assets\toggle_button_MouseOver.png" />
 	<Resource Include="Assets\img_delete_default.png" />
 	<Resource Include="Assets\img_delete_MouseOver.png" />
+    <Resource Include="Assets\img_view_image_default.png" />
+	<Resource Include="Assets\img_view_image_MouseOver.png" />
   </ItemGroup>
 
 </Project>

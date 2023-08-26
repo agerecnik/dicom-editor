@@ -211,6 +211,7 @@ namespace DicomEditor.ViewModel
         public ICommand AddItemCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand DeleteInstanceCommand { get; }
+        public ICommand DisplayImageCommand { get; }
         public ICommand GenerateStudyUIDCommand { get; }
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
@@ -231,6 +232,7 @@ namespace DicomEditor.ViewModel
             AddItemCommand = new RelayCommand(o => AddItem(), CanUseAddItemCommand);
             DeleteCommand = new RelayCommand(o => Delete(), CanUseDeleteCommand);
             DeleteInstanceCommand = new RelayCommand(o => DeleteInstance(o));
+            DisplayImageCommand = new RelayCommand(o => DisplayImage(o), o => CanUseDisplayImageCommand(o));
             GenerateStudyUIDCommand = new RelayCommand(o => GenerateStudyUID(), CanUseGenerateUIDCommand);
             GenerateSeriesUIDCommand = new RelayCommand(o => GenerateSeriesUID(), CanUseGenerateUIDCommand);
             GenerateInstanceUIDCommand = new RelayCommand(o => GenerateInstanceUID(), CanUseGenerateUIDCommand);
@@ -374,6 +376,18 @@ namespace DicomEditor.ViewModel
         {
             Instance instance = (Instance)o;
             _editorService.DeleteInstance(instance.InstanceUID);
+        }
+
+        private void DisplayImage(object o)
+        {
+            if (o is Instance instance)
+            {
+                Trace.WriteLine("Display instance");
+            }
+            else if (o is Series series)
+            {
+                Trace.WriteLine("Display series");
+            }
         }
 
         private void GenerateStudyUID()
@@ -532,6 +546,25 @@ namespace DicomEditor.ViewModel
                 return false;
             }
             return true;
+        }
+
+        private bool CanUseDisplayImageCommand(object o)
+        {
+            if (o is Instance instance)
+            {
+                if (instance.IsImage)
+                {
+                    return true;
+                }
+            }
+            else if (o is Series series)
+            {
+                if (series.Instances.First().IsImage)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool CanUseGenerateUIDCommand(object o)

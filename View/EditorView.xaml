@@ -18,6 +18,9 @@
         <ImageBrush x:Key="DeleteButtonMouseOver"
                     ImageSource="../Assets/img_delete_MouseOver.png"/>
 
+        <ImageBrush x:Key="DisplayImageButtonMouseOver"
+                    ImageSource="../Assets/img_view_image_MouseOver.png"/>
+
         <Style x:Key="DeleteButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -48,6 +51,49 @@
                                 <Setter Property="BorderBrush"
                                         TargetName="DeleteButtonBorder"
                                         Value="{StaticResource DeleteButtonMouseOver}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DisplayImageButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="DisplayImageButtonBorder"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="True"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        TargetName="DisplayImageButtonBorder"
+                                        Value="{StaticResource DisplayImageButtonMouseOver}"/>
+                                <Setter Property="BorderBrush"
+                                        TargetName="DisplayImageButtonBorder"
+                                        Value="{StaticResource DisplayImageButtonMouseOver}"/>
+                                <Setter Property="Cursor"
+                                        TargetName="DisplayImageButtonBorder"
+                                        Value="Hand"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        TargetName="DisplayImageButtonBorder"
+                                        Value="{StaticResource DisplayImageButtonMouseOver}"/>
+                                <Setter Property="BorderBrush"
+                                        TargetName="DisplayImageButtonBorder"
+                                        Value="{StaticResource DisplayImageButtonMouseOver}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled"
+                                 Value="False">
+                                <Setter Property="Visibility"
+                                    Value="Collapsed" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -119,8 +165,22 @@
                       Style="{StaticResource ListViewStyle}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding SeriesDescription}"
-                               Style="{StaticResource ListViewItemLabelStyle}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{Binding SeriesDescription}"
+                                   Style="{StaticResource ListViewItemLabelStyle}"/>
+                            <Button x:Name="DisplaySeriesImageButton"
+                                        Style="{StaticResource DisplayImageButtonStyle}"
+                                        Padding="0"
+                                        Margin="20 0 0 0"
+                                        Width="20"
+                                        Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DisplayImageCommand}"
+                                        CommandParameter="{Binding}">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="../Assets/img_view_image_default.png"
+                                                    Stretch="None"/>
+                                </Button.Background>
+                            </Button>
+                        </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -141,10 +201,22 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{Binding InstanceNumber}"
                                    Style="{StaticResource ListViewItemLabelStyle}"/>
+                            <Button x:Name="DisplayInstanceImageButton"
+                                    Style="{StaticResource DisplayImageButtonStyle}"
+                                    Padding="0"
+                                    Margin="20 0 0 0"
+                                    Width="20"
+                                    Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DisplayImageCommand}"
+                                    CommandParameter="{Binding}">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="../Assets/img_view_image_default.png"
+                                                Stretch="None"/>
+                                </Button.Background>
+                            </Button>
                             <Button x:Name="DeleteInstanceButton"
                                     Style="{StaticResource DeleteButtonStyle}"
                                     Padding="0"
-                                    Margin="20 0 0 0"
+                                    Margin="10 0 0 0"
                                     Width="20"
                                     Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DeleteInstanceCommand}"
                                     CommandParameter="{Binding}">
