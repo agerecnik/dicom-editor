@@ -2,6 +2,7 @@
 using DicomEditor.View;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Windows;
 using static DicomEditor.Interfaces.IDialogViewModel;
 
@@ -19,10 +20,16 @@ namespace DicomEditor.Services
         public TViewModel ShowDialog<TViewModel>(string title, params object[] vmParameters)
         {
             var type = _mappings[typeof(TViewModel)];
-            return (TViewModel)ShowDialogInternal(title, type, typeof(TViewModel), vmParameters);
+            return (TViewModel)ShowDialogInternal(title, type, typeof(TViewModel), true, vmParameters);
         }
 
-        private object ShowDialogInternal(string title, Type type, Type vmType, params object[] vmParameters)
+        public TViewModel Show<TViewModel>(string title, params object[] vmParameters)
+        {
+            var type = _mappings[typeof(TViewModel)];
+            return (TViewModel)ShowDialogInternal(title, type, typeof(TViewModel), false, vmParameters);
+        }
+
+        private object ShowDialogInternal(string title, Type type, Type vmType, bool modal, params object[] vmParameters)
         {
             var dialog = new DialogWindow
             {
@@ -40,9 +47,15 @@ namespace DicomEditor.Services
 
             if (!viewModel.ExecutionFinished)
             {
-                dialog.ShowDialog();
+                if (modal)
+                {
+                    dialog.ShowDialog();
+                }
+                else
+                {
+                    dialog.Show();
+                }
             }
-
             return vm;
         }
     }

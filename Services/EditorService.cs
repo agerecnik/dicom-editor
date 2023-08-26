@@ -10,7 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using static DicomEditor.Interfaces.IDICOMServer;
+using DicomImage = FellowOakDicom.Imaging.DicomImage;
 
 namespace DicomEditor.Services
 {
@@ -375,11 +377,6 @@ namespace DicomEditor.Services
             AttributesUpdatedEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Find(DicomTag tag, Instance instance)
-        {
-
-        }
-
         public async Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken)
         {
             string serverHost = _settingsService.GetServer(ServerType.StoreServer).Host;
@@ -455,6 +452,19 @@ namespace DicomEditor.Services
                     }
                 }
             }
+        }
+
+        public IList<ImageSource> GetImages(IList<Instance> instances)
+        {
+            //Dicom.Imaging.ImageManager.SetImplementation(WinFormsImageManager.Instance);
+            List<ImageSource> images = new();
+            foreach (Instance instance in instances)
+            {
+                var dicomImage = new DicomImage(_cache.LoadedInstances[instance.InstanceUID]);
+                var frames = Enumerable.Range(0, dicomImage.NumberOfFrames).Select(frame => dicomImage.RenderImage(frame).As<ImageSource>());
+                images.AddRange(frames);
+            }
+            return images;
         }
 
         private IList<IDatasetModel> GetAttributePathFromParentToChild(IDatasetModel attribute)

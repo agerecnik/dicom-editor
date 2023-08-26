@@ -382,7 +382,7 @@ namespace DicomEditor.ViewModel
         {
             if (o is Instance instance)
             {
-                Trace.WriteLine("Display instance");
+                _dialogService.Show<ImageViewDialogViewModel>("Image Viewer", _editorService, new List<Instance>() { instance });
             }
             else if (o is Series series)
             {

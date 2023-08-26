@@ -6,7 +6,10 @@
              xmlns:viewModel="clr-namespace:DicomEditor.ViewModel"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModel:MessageDialogViewModel, IsDesignTimeCreatable=True}"
-             d:DesignHeight="150" d:DesignWidth="280"
+             d:DesignHeight="140"
+             d:DesignWidth="280"
+             MinHeight="140"
+             MinWidth="280"
              Background="{StaticResource WindowBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>

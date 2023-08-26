@@ -21,6 +21,7 @@ namespace DicomEditor
             DialogService.RegisterDialog<ProgressBarDialog, ImportDialogViewModel>();
             DialogService.RegisterDialog<ProgressBarDialog, ExportDialogViewModel>();
             DialogService.RegisterDialog<MessageDialog, MessageDialogViewModel>();
+            DialogService.RegisterDialog<ImageViewDialog, ImageViewDialogViewModel>();
         }
 
         public new static App Current => (App)Application.Current;
