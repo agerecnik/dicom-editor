@@ -2,6 +2,8 @@
 using DicomEditor.Services;
 using DicomEditor.View;
 using DicomEditor.ViewModel;
+using FellowOakDicom;
+using FellowOakDicom.Imaging;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -22,6 +24,7 @@ namespace DicomEditor
             DialogService.RegisterDialog<ProgressBarDialog, ExportDialogViewModel>();
             DialogService.RegisterDialog<MessageDialog, MessageDialogViewModel>();
             DialogService.RegisterDialog<ImageViewDialog, ImageViewDialogViewModel>();
+            new DicomSetupBuilder().RegisterServices(s => s.AddFellowOakDicom().AddImageManager<WPFImageManager>()).Build();
         }
 
         public new static App Current => (App)Application.Current;

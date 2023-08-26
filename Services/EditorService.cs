@@ -2,6 +2,7 @@
 using DicomEditor.Model;
 using DicomEditor.Model.EditorModel.Tree;
 using FellowOakDicom;
+using FellowOakDicom.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using static DicomEditor.Interfaces.IDICOMServer;
-using DicomImage = FellowOakDicom.Imaging.DicomImage;
 
 namespace DicomEditor.Services
 {
@@ -456,11 +456,12 @@ namespace DicomEditor.Services
 
         public IList<ImageSource> GetImages(IList<Instance> instances)
         {
-            //Dicom.Imaging.ImageManager.SetImplementation(WinFormsImageManager.Instance);
             List<ImageSource> images = new();
             foreach (Instance instance in instances)
             {
                 var dicomImage = new DicomImage(_cache.LoadedInstances[instance.InstanceUID]);
+                dicomImage.WindowCenter = 500;
+                dicomImage.WindowWidth = 1000;
                 var frames = Enumerable.Range(0, dicomImage.NumberOfFrames).Select(frame => dicomImage.RenderImage(frame).As<ImageSource>());
                 images.AddRange(frames);
             }

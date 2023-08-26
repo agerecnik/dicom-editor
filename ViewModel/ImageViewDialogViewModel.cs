@@ -47,6 +47,16 @@ namespace DicomEditor.ViewModel
             set => SetProperty(ref _currentImage, value);
         }
 
+        private int _numberOfImages;
+        public int NumberOfImages
+        {
+            get => _numberOfImages;
+            set
+            {
+                SetProperty(ref _numberOfImages, value);
+            }
+        }
+
         private IList<ImageSource> _images;
         private readonly IEditorService _editorService;
         private readonly IList<Instance> _instances;
@@ -60,6 +70,8 @@ namespace DicomEditor.ViewModel
             _instances = instances;
 
             _images = _editorService.GetImages(_instances);
+            NumberOfImages = _images.Count - 1;
+            CurrentImageIndex = 0;
         }
 
         public ImageViewDialogViewModel()

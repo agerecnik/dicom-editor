@@ -15,9 +15,12 @@
             <RowDefinition Height="0.8*"/>
             <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>
-        <Image x:Name="CurrentImage"
-               Grid.Row="0"
-               Source="{Binding CurrentImage}"/>
+        <Grid x:Name="CurrentImage"
+              Grid.Row="0">
+            <Grid.Background>
+                <ImageBrush ImageSource="{Binding CurrentImage}" Stretch="Uniform"></ImageBrush>
+            </Grid.Background>
+        </Grid>
         <Slider x:Name="ImageSlider"
                 Grid.Row="1"
                 Minimum="0"
