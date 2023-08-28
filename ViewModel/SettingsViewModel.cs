@@ -1,9 +1,7 @@
-﻿using DicomEditor.Commands;
-using DicomEditor.Interfaces;
+﻿using DicomEditor.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Input;
 using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.ViewModel

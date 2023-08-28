@@ -5,11 +5,9 @@ using FellowOakDicom;
 using FellowOakDicom.Network;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace DicomEditor.ViewModel

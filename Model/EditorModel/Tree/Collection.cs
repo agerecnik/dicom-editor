@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DicomEditor.Model.EditorModel.Tree
 {
-	public class ObservableCollectionAdv<T> : ObservableCollection<T>
+    public class ObservableCollectionAdv<T> : ObservableCollection<T>
 	{
 		public void RemoveRange(int index, int count)
         {

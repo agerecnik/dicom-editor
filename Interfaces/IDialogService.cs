@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DicomEditor.Interfaces
+﻿namespace DicomEditor.Interfaces
 {
     public interface IDialogService
     {

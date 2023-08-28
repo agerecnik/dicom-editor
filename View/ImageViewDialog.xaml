@@ -4,11 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DicomEditor.View"
-             mc:Ignorable="d" 
-             d:DesignHeight="450"
-             d:DesignWidth="800"
-             MinHeight="450"
-             MinWidth="800"
+             xmlns:theme="clr-namespace:DicomEditor.Theme"
+             MinHeight="600"
+             MinWidth="500"
              Background="{StaticResource WindowBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
@@ -16,15 +14,56 @@
             <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>
         <Grid x:Name="CurrentImage"
-              Grid.Row="0">
+              Grid.Row="0"
+              Margin="10 10 10 0">
             <Grid.Background>
-                <ImageBrush ImageSource="{Binding CurrentImage}" Stretch="Uniform"></ImageBrush>
+                <ImageBrush ImageSource="{Binding CurrentImage}"
+                            Stretch="Uniform"/>
             </Grid.Background>
         </Grid>
-        <Slider x:Name="ImageSlider"
-                Grid.Row="1"
-                Minimum="0"
-                Maximum="{Binding NumberOfImages}"
-                Value="{Binding CurrentImageIndex}"/>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+>
+                <TextBox x:Name="WindowCenterInput"
+                         Margin="5,5,0,0"
+                         Width="100"
+                         theme:ThemeProperties.SearchFieldName="Window Center"
+                         Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding WindowCenter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox x:Name="WindowWidthInput"
+                         Margin="5,5,0,0"
+                         Width="100"
+                         theme:ThemeProperties.SearchFieldName="Window Width"
+                         Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding WindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Height="25"
+                        Width="80"
+                        Margin="10,10,10 5"
+                        Content="Apply"
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding ApplyWindowCenterAndWidthCommand}"/>
+            </StackPanel>
+            <Slider x:Name="ImageSlider"
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    MaxWidth="300"
+                    Minimum="0"
+                    Maximum="{Binding NumberOfImages}"
+                    Value="{Binding CurrentImageIndex}"/>
+            <Button Grid.Row="2"
+                    Height="25"
+                    Width="80"
+                    Margin="10,0,10,10"
+                    Content="Close"
+                    Click="Button_Click"
+                    Style="{StaticResource ButtonStyle}"/>
+        </Grid>
+
     </Grid>
 </UserControl>

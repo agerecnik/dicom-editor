@@ -2,9 +2,7 @@
 using DicomEditor.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
-using System.Windows;
 using System.Windows.Input;
 using FellowOakDicom.Network;
 using System.IO;

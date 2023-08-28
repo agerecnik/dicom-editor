@@ -39,7 +39,7 @@ namespace DicomEditor.Services
         public ICollection<Series> GetLoadedSeries()
         {
             ObservableCollection<Series> tempCollection = new();
-            foreach(var series in _cache.LoadedSeries.Values.OrderBy(x => x.SeriesDescription))
+            foreach (var series in _cache.LoadedSeries.Values.OrderBy(x => x.SeriesDescription))
             {
                 tempCollection.Add(new Series(series));
             }
@@ -48,7 +48,7 @@ namespace DicomEditor.Services
 
         public async Task<ITreeModel> GetInstance(string instanceUID, bool validate, string searchTerm, CancellationToken cancellationToken)
         {
-            if(_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset))
+            if (_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset dataset))
             {
                 return await DatasetTree.CreateTree(dataset, validate, searchTerm, cancellationToken);
             }
@@ -60,7 +60,7 @@ namespace DicomEditor.Services
 
         public void SetAttributeValue(IList<Instance> instances, IDatasetModel attribute, string value)
         {
-            if(attribute.Tag is null)
+            if (attribute.Tag is null)
             {
                 throw new ArgumentException("Invalid attribute tag");
             }
@@ -259,19 +259,19 @@ namespace DicomEditor.Services
 
         public void DeleteInstance(string instanceUID)
         {
-            if(_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset instance))
+            if (_cache.LoadedInstances.TryGetValue(instanceUID, out DicomDataset instance))
             {
                 if (instance.TryGetValue<string>(DicomTag.SeriesInstanceUID, 0, out string seriesUID))
                 {
-                    if(!_cache.LoadedInstances.Remove(instanceUID))
+                    if (!_cache.LoadedInstances.Remove(instanceUID))
                     {
                         throw new ArgumentException(string.Join(" ", "Couldn't remove the instance with the following UID:", instanceUID));
                     }
 
-                    if(_cache.LoadedSeries.TryGetValue(seriesUID, out Series series))
+                    if (_cache.LoadedSeries.TryGetValue(seriesUID, out Series series))
                     {
                         series.Instances.Remove(series.Instances.Single(s => s.InstanceUID == instanceUID));
-                        if(series.Instances.Count == 0)
+                        if (series.Instances.Count == 0)
                         {
                             _cache.LoadedSeries.Remove(seriesUID);
                         }
@@ -422,7 +422,7 @@ namespace DicomEditor.Services
             {
                 foreach (Instance instance in series.Instances)
                 {
-                    if(cancellationToken.IsCancellationRequested)
+                    if (cancellationToken.IsCancellationRequested)
                     {
                         break;
                     }
@@ -454,14 +454,31 @@ namespace DicomEditor.Services
             }
         }
 
-        public IList<ImageSource> GetImages(IList<Instance> instances)
+        public Tuple<IList<ImageSource>, double[]> GetImages(IList<Instance> instances)
+        {
+            IList<ImageSource> images = new List<ImageSource>();
+            double center = 0;
+            double width = 0;
+            double[] centerAndWidth = new double[2];
+            foreach (Instance instance in instances)
+            {
+                var dicomImage = new DicomImage(_cache.LoadedInstances[instance.InstanceUID]);
+                center = dicomImage.WindowCenter;
+                width = dicomImage.WindowWidth;
+                var frames = Enumerable.Range(0, dicomImage.NumberOfFrames).Select(frame => dicomImage.RenderImage(frame).As<ImageSource>());
+                frames.Each(frame => images.Add(frame));
+            }
+            return Tuple.Create(images, new[] { center, width });
+        }
+
+        public IList<ImageSource> GetImages(IList<Instance> instances, double windowCenter, double windowWidth)
         {
             List<ImageSource> images = new();
             foreach (Instance instance in instances)
             {
                 var dicomImage = new DicomImage(_cache.LoadedInstances[instance.InstanceUID]);
-                dicomImage.WindowCenter = 500;
-                dicomImage.WindowWidth = 1000;
+                dicomImage.WindowCenter = windowCenter;
+                dicomImage.WindowWidth = windowWidth;
                 var frames = Enumerable.Range(0, dicomImage.NumberOfFrames).Select(frame => dicomImage.RenderImage(frame).As<ImageSource>());
                 images.AddRange(frames);
             }

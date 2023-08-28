@@ -1,10 +1,11 @@
-﻿using DicomEditor.Interfaces;
+﻿using DicomEditor.Commands;
+using DicomEditor.Interfaces;
+using DicomEditor.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Input;
 using System.Windows;
-using DicomEditor.Model;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace DicomEditor.ViewModel
@@ -57,10 +58,46 @@ namespace DicomEditor.ViewModel
             }
         }
 
+        private string _windowCenter;
+        public string WindowCenter
+        {
+            get => _windowCenter;
+            set
+            {
+                if (ValidateValue(value))
+                {
+                    SetProperty(ref _windowCenter, value);
+                }
+                else
+                {
+                    SetProperty(ref _windowCenter, _windowCenter);
+                }
+            }
+        }
+
+        private string _windowWidth;
+        public string WindowWidth
+        {
+            get => _windowWidth;
+            set
+            {
+                if (ValidateValue(value))
+                {
+                    SetProperty(ref _windowWidth, value);
+                }
+                else
+                {
+                    SetProperty(ref _windowWidth, _windowWidth);
+                }
+            }
+        }
+
+        public ICommand ApplyWindowCenterAndWidthCommand { get; }
+
         private IList<ImageSource> _images;
         private readonly IEditorService _editorService;
         private readonly IList<Instance> _instances;
-        
+
 
         public ImageViewDialogViewModel(IEditorService editorService, IList<Instance> instances)
         {
@@ -69,9 +106,17 @@ namespace DicomEditor.ViewModel
             _editorService = editorService;
             _instances = instances;
 
-            _images = _editorService.GetImages(_instances);
+            var imagesAndWCWW = _editorService.GetImages(_instances);
+            _images = imagesAndWCWW.Item1;
             NumberOfImages = _images.Count - 1;
             CurrentImageIndex = 0;
+            if (imagesAndWCWW.Item2.Length > 1)
+            {
+                WindowCenter = imagesAndWCWW.Item2[0].ToString();
+                WindowWidth = imagesAndWCWW.Item2[1].ToString();
+            }
+
+            ApplyWindowCenterAndWidthCommand = new RelayCommand(o => UpdateWindowCenterAndWidth(), CanUseApplyWindowCenterAndWidthCommand);
         }
 
         public ImageViewDialogViewModel()
@@ -83,5 +128,37 @@ namespace DicomEditor.ViewModel
         }
 
         public void Execute() { }
+
+        public void UpdateWindowCenterAndWidth()
+        {
+            _images = _editorService.GetImages(_instances, double.Parse(WindowCenter), double.Parse(WindowWidth));
+            CurrentImageIndex = _currentImageIndex;
+        }
+
+        private bool CanUseApplyWindowCenterAndWidthCommand(object o)
+        {
+            if (string.IsNullOrWhiteSpace(WindowCenter) || string.IsNullOrWhiteSpace(WindowWidth) || WindowCenter == "-" || WindowWidth == "-")
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidateValue(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return true;
+            }
+            if (value == "-")
+            {
+                return true;
+            }
+            if (double.TryParse(value, out _))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

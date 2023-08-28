@@ -27,7 +27,8 @@ namespace DicomEditor.Interfaces
         public void GenerateAndSetInstanceUID(IList<Instance> instances);
         public Task StoreAsync(IList<Series> seriesList, IProgress<int> progress, CancellationToken cancellationToken);
         public Task LocalExportAsync(IList<Series> seriesList, string path, IProgress<int> progress, CancellationToken cancellationToken);
-        public IList<ImageSource> GetImages(IList<Instance> instances);
+        public Tuple<IList<ImageSource>, double[]> GetImages(IList<Instance> instances);
+        public IList<ImageSource> GetImages(IList<Instance> instances, double windowCenter, double windowWidth);
     }
 
     public class SeriesListUpdatedEventArgs : EventArgs

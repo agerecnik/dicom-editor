@@ -2,9 +2,7 @@
 using DicomEditor.View;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Windows;
-using static DicomEditor.Interfaces.IDialogViewModel;
 
 namespace DicomEditor.Services
 {

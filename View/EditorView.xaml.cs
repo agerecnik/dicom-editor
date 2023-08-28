@@ -2,12 +2,9 @@
 using DicomEditor.Model.EditorModel.Tree;
 using DicomEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Xml.Linq;
 
 namespace DicomEditor.View
 {
