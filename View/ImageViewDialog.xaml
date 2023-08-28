@@ -28,8 +28,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"
-                        Orientation="Horizontal"
->
+                        Orientation="Horizontal">
                 <TextBox x:Name="WindowCenterInput"
                          Margin="5,5,0,0"
                          Width="100"
@@ -42,7 +41,8 @@
                          theme:ThemeProperties.SearchFieldName="Window Width"
                          Style="{StaticResource TextBoxStyle}"
                          Text="{Binding WindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <Button Height="25"
+                <Button x:Name="ApplyButton"
+                        Height="25"
                         Width="80"
                         Margin="10,10,10 5"
                         Content="Apply"
@@ -52,18 +52,20 @@
             <Slider x:Name="ImageSlider"
                     Grid.Row="1"
                     VerticalAlignment="Center"
-                    MaxWidth="300"
+                    Orientation="Horizontal"
+                    MaxWidth="400"
                     Minimum="0"
                     Maximum="{Binding NumberOfImages}"
-                    Value="{Binding CurrentImageIndex}"/>
-            <Button Grid.Row="2"
+                    Value="{Binding CurrentImageIndex}"
+                    Style="{StaticResource SliderStyle}"/>
+            <Button x:Name="CloseButton"
+                    Grid.Row="2"
                     Height="25"
                     Width="80"
                     Margin="10,0,10,10"
                     Content="Close"
-                    Click="Button_Click"
+                    Click="CloseButton_Click"
                     Style="{StaticResource ButtonStyle}"/>
         </Grid>
-
     </Grid>
 </UserControl>

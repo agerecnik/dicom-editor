@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Theme/TreeListStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ListViewStyle.xaml"/>
                 <ResourceDictionary Source="Theme/ProgressBarStyle.xaml"/>
+                <ResourceDictionary Source="Theme/SliderStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:ImportViewModel}">

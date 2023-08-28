@@ -57,6 +57,9 @@
     <Page Update="Theme\ScrollBarStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Theme\SliderStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Theme\TreeListStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
