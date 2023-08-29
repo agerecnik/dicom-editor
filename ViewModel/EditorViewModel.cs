@@ -610,16 +610,19 @@ namespace DicomEditor.ViewModel
 
         private void HandleAttributesUpdated(object source, EventArgs args)
         {
-            string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
-            var tempSearchTerm = Search ? SearchTerm : string.Empty;
-            var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate, tempSearchTerm);
-            if (vm.Status != "Completed")
+            if (SelectedInstance != null)
             {
-                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+                string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
+                var tempSearchTerm = Search ? SearchTerm : string.Empty;
+                var vm = _dialogService.ShowDialog<GetInstanceTreeDialogViewModel>(dialogTitle, _editorService, SelectedInstance.InstanceUID, Validate, tempSearchTerm);
+                if (vm.Status != "Completed")
+                {
+                    _dialogService.ShowDialog<MessageDialogViewModel>("Notification", vm.Status);
+                }
+                SelectedInstanceAttributes = (ITreeModel)vm.Payload;
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
             }
-            SelectedInstanceAttributes = (ITreeModel)vm.Payload;
-            SelectedAttribute = null;
-            SelectedAttributeValue = null;
         }
     }
 }
