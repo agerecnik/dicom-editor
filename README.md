@@ -55,7 +55,7 @@ The editor was tested with Orthanc (open-source DICOM server).
 - Export selected series to disk
 	- Input a target path; if a folder does not exist, it is created automatically
   
-![image](https://github.com/agerecnik/dicom-editor/assets/48628230/ce1431b6-3780-4282-ab51-567c7cfd7947)
+![image](https://github.com/agerecnik/dicom-editor/assets/48628230/a3c1850f-f17a-40d1-8d58-a65ba99d7fd1)
 
 ![image](https://github.com/agerecnik/dicom-editor/assets/48628230/0b5c5d3d-b821-4155-b939-f44e3efd02b7)
 
