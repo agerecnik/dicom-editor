@@ -21,8 +21,12 @@ The editor was tested with Orthanc (open-source DICOM server).
 ### Editor view:
 - Series list (series descriptions are displayed)
 	- Select the desired series
+	- Next to each series that contains images there is a button to display the images.
 - Instances list (instance numbers are displayed; if instance number is missing instance UID is displayed)
 	- Select the desired instance from the previously selected series
+	- Next to each instance that is an image there is a button to display the image.
+	- Next to each instance there is a button to delete the instance.
+- Search the attribute table based on the entered search term. The tags or values that partially or completely match the search term are marked blue.
 - Attributes table
 	- Select an attribute to:
 		- Modify its value
@@ -51,7 +55,10 @@ The editor was tested with Orthanc (open-source DICOM server).
 - Export selected series to disk
 	- Input a target path; if a folder does not exist, it is created automatically
   
-![image](https://user-images.githubusercontent.com/48628230/204093740-36010fcd-859f-4428-a86b-23739c42e7fc.png)
+![image](https://github.com/agerecnik/dicom-editor/assets/48628230/a3c1850f-f17a-40d1-8d58-a65ba99d7fd1)
+
+![image](https://github.com/agerecnik/dicom-editor/assets/48628230/0b5c5d3d-b821-4155-b939-f44e3efd02b7)
+
 
 
 ### Settings view:
