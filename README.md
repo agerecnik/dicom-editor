@@ -26,7 +26,7 @@ The editor was tested with Orthanc (open-source DICOM server).
 	- Select the desired instance from the previously selected series
 	- Next to each instance that is an image there is a button to display the image.
 	- Next to each instance there is a button to delete the instance.
-- Search the attribute table based on the entered search term. The tags or values that partially or completely match the search term are marked blue.
+- Search the attribute table based on the entered search term. The tags, names or values that partially or completely match the search term are marked blue.
 - Attributes table
 	- Select an attribute to:
 		- Modify its value
