@@ -1,6 +1,8 @@
 ﻿using DicomEditor.Commands;
 using DicomEditor.Interfaces;
 using DicomEditor.Model;
+using DicomEditor.Services;
+using FellowOakDicom.Imaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -96,27 +98,37 @@ namespace DicomEditor.ViewModel
 
         private IList<ImageSource> _images;
         private readonly IEditorService _editorService;
+        private readonly IDialogService _dialogService;
         private readonly IList<Instance> _instances;
 
 
-        public ImageViewDialogViewModel(IEditorService editorService, IList<Instance> instances)
+        public ImageViewDialogViewModel(IEditorService editorService, IDialogService dialogService, IList<Instance> instances)
         {
             Status = "N/A";
             ExecutionFinished = false;
             _editorService = editorService;
+            _dialogService = dialogService;
             _instances = instances;
 
-            var imagesAndWCWW = _editorService.GetImages(_instances);
-            _images = imagesAndWCWW.Item1;
-            NumberOfImages = _images.Count - 1;
-            CurrentImageIndex = 0;
-            if (imagesAndWCWW.Item2.Length > 1)
+            try
             {
-                WindowCenter = imagesAndWCWW.Item2[0].ToString();
-                WindowWidth = imagesAndWCWW.Item2[1].ToString();
-            }
+                var imagesAndWCWW = _editorService.GetImages(_instances);
+                _images = imagesAndWCWW.Item1;
+                NumberOfImages = _images.Count - 1;
+                CurrentImageIndex = 0;
+                if (imagesAndWCWW.Item2.Length > 1)
+                {
+                    WindowCenter = imagesAndWCWW.Item2[0].ToString();
+                    WindowWidth = imagesAndWCWW.Item2[1].ToString();
+                }
 
-            ApplyWindowCenterAndWidthCommand = new RelayCommand(o => UpdateWindowCenterAndWidth(), CanUseApplyWindowCenterAndWidthCommand);
+                ApplyWindowCenterAndWidthCommand = new RelayCommand(o => UpdateWindowCenterAndWidth(), CanUseApplyWindowCenterAndWidthCommand);
+            }
+            catch (DicomImagingException e)
+            {
+                ExecutionFinished = true;
+                _dialogService.ShowDialog<MessageDialogViewModel>("Notification", e.Message);
+            }
         }
 
         public ImageViewDialogViewModel()

@@ -32,10 +32,7 @@ namespace DicomEditor.ViewModel
             get => _selectedSeries;
             set
             {
-                if (value != null)
-                {
-                    SetProperty(ref _selectedSeries, value);
-                }
+                SetProperty(ref _selectedSeries, value);
             }
         }
 
@@ -45,11 +42,12 @@ namespace DicomEditor.ViewModel
             get => _selectedInstance;
             set
             {
+                SetProperty(ref _selectedInstance, value);
                 if (value != null)
                 {
-                    SetProperty(ref _selectedInstance, value);
                     HandleAttributesUpdated(null, null);
                 }
+                
             }
         }
 
@@ -59,10 +57,7 @@ namespace DicomEditor.ViewModel
             get => _selectedInstanceAttributes;
             set
             {
-                if (value != null)
-                {
-                    SetProperty(ref _selectedInstanceAttributes, value);
-                }
+                SetProperty(ref _selectedInstanceAttributes, value);
             }
         }
 
@@ -378,11 +373,11 @@ namespace DicomEditor.ViewModel
         {
             if (o is Instance instance)
             {
-                _dialogService.Show<ImageViewDialogViewModel>("Image Viewer", _editorService, new List<Instance>() { instance });
+                _dialogService.Show<ImageViewDialogViewModel>("Image Viewer", _editorService, _dialogService, new List<Instance>() { instance });
             }
             else if (o is Series series)
             {
-                _dialogService.Show<ImageViewDialogViewModel>("Image Viewer", _editorService, series.Instances);
+                _dialogService.Show<ImageViewDialogViewModel>("Image Viewer", _editorService, _dialogService, series.Instances);
             }
         }
 
@@ -593,12 +588,23 @@ namespace DicomEditor.ViewModel
         private void HandleSeriesListUpdated(object source, SeriesListUpdatedEventArgs args)
         {
             LoadedSeriesList = _editorService.GetLoadedSeries();
-            foreach (var series in  _loadedSeriesList)
-            {
-                if (series.SeriesUID == args.SeriesUID)
+            if(_loadedSeriesList.Count > 0)
+            { 
+                foreach (var series in  _loadedSeriesList)
                 {
-                    SelectedSeries = series;
+                    if (args is not null && series.SeriesUID == args.SeriesUID)
+                    {
+                        SelectedSeries = series;
+                    }
                 }
+            }
+            else
+            {
+                SelectedSeries = null;
+                SelectedInstance = null;
+                SelectedInstanceAttributes = null;
+                SelectedAttribute = null;
+                SelectedAttributeValue = null;
             }
         }
 

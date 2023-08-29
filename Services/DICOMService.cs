@@ -17,11 +17,12 @@ namespace DicomEditor.Services
             client.NegotiateAsyncOps();
             var request = CreateCFindRequest(attributes, level);
             List<DicomDataset> datasets = new();
-            request.OnResponseReceived += (req, response) =>
+
+            request.OnResponseReceived += (req, res) =>
             {
-                if (response.HasDataset)
+                if (res.HasDataset)
                 {
-                    datasets.Add(response.Dataset);
+                    datasets.Add(res.Dataset);
                 }
             };
             await client.AddRequestAsync(request);
@@ -47,6 +48,12 @@ namespace DicomEditor.Services
                 return Task.FromResult(new DicomCStoreResponse(req, DicomStatus.Success));
             };
 
+            DicomStatus status = null;
+            cGetRequest.OnResponseReceived += (req, res) =>
+            {
+                status = res.Status;   
+            };
+
             ISet<string> sopClassUIDs = await RetrieveSOPClassUIDsAsync(client, studyInstanceUID, seriesInstanceUID);
             client.AdditionalPresentationContexts.Clear();
             foreach (string sopClassUID in sopClassUIDs)
@@ -61,8 +68,18 @@ namespace DicomEditor.Services
 
             await client.AddRequestAsync(cGetRequest);
             await client.SendAsync(cancellationToken, DicomClientCancellationMode.ImmediatelyReleaseAssociation);
+            if (status is null && retrievedSeries.Count == 0)
+            {
+                throw new DicomNetworkException(string.Join(" ", "Unknown error\nSeries with the following series instance UID could not be retrieved:", seriesInstanceUID));
+            }
+            else if (status.State == DicomState.Failure)
+            {
+                throw new DicomNetworkException(string.Join(" ", status.ToString(), "\nSeries with the following series instance UID could not be retrieved:", seriesInstanceUID));
+            }
             return retrievedSeries;
         }
+
+
 
         public async Task StoreAsync(string serverHost, int serverPort, string serverAET, string appAET, IList<DicomDataset> series, IProgress<int> progress, CancellationToken cancellationToken)
         {

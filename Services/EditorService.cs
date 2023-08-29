@@ -275,7 +275,7 @@ namespace DicomEditor.Services
                         {
                             _cache.LoadedSeries.Remove(seriesUID);
                         }
-                        SeriesListUpdatedEvent?.Invoke(this, new(seriesUID));
+                        SeriesListUpdatedEvent?.Invoke(this, null);
                     }
                     else
                     {
