@@ -5,6 +5,7 @@ using FellowOakDicom;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -207,6 +208,8 @@ namespace DicomEditor.ViewModel
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
 
+        private int id;
+        private static Random rnd = new Random();
 
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
@@ -230,6 +233,8 @@ namespace DicomEditor.ViewModel
 
             LoadedSeriesList = _editorService.GetLoadedSeries();
             LocalExportPath = _editorService.LocalExportPath;
+
+            id = rnd.Next(0, 1000000);
         }
 
         public EditorViewModel()
@@ -610,6 +615,7 @@ namespace DicomEditor.ViewModel
 
         private void HandleAttributesUpdated(object source, EventArgs args)
         {
+            Trace.WriteLine("ViewModel id: " + id);
             if (SelectedInstance != null)
             {
                 string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";
@@ -622,6 +628,19 @@ namespace DicomEditor.ViewModel
                 SelectedInstanceAttributes = (ITreeModel)vm.Payload;
                 SelectedAttribute = null;
                 SelectedAttributeValue = null;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    WeakEventManager<IEditorService, SeriesListUpdatedEventArgs>.RemoveHandler(_editorService, "SeriesListUpdatedEvent", HandleSeriesListUpdated);
+                    WeakEventManager<IEditorService, EventArgs>.RemoveHandler(_editorService, "AttributesUpdatedEvent", HandleAttributesUpdated);
+                }
+                disposed = true;
             }
         }
     }

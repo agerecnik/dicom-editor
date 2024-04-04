@@ -266,9 +266,10 @@
                            Margin="5,5,10,5"
                            Style="{StaticResource TreeListStyle}"
                            SelectedItem="{Binding SelectedAttribute, Mode=OneWayToSource, Converter={StaticResource DatasetModelConverter}}"
-                           ModelChanged="Tree_ModelChanged">
+                           ModelChanged="Tree_ModelChanged" MouseDoubleClick="Tree_MouseDoubleClick">
                 <tree:TreeList.View>
-                    <GridView ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
+                    <GridView x:Name="GridTest"
+                              ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
                         <GridView.Columns>
                             <GridViewColumn Header="Tag"
                                             CellTemplate="{StaticResource TagCell}" />

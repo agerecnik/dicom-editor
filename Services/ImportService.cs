@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Animation;
 using static DicomEditor.Interfaces.IDICOMServer;
 
 namespace DicomEditor.Services
@@ -171,8 +172,19 @@ namespace DicomEditor.Services
                 List<Instance> instances = new();
                 foreach (DicomDataset dataset in retrievedDataset)
                 {
-                    string instanceUID = dataset?.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, string.Empty);
-                    string instanceNumber = dataset?.GetSingleValueOrDefault(DicomTag.InstanceNumber, instanceUID);
+                    string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, string.Empty);
+
+                    if (!dataset.TryGetSingleValue(DicomTag.InstanceNumber, out string instanceNumber) && string.IsNullOrWhiteSpace(instanceNumber))
+                    {
+                        if (dataset.TryGetValues(DicomTag.ImagePositionPatient, out int[] values) && values.Length == 3) {
+                            instanceNumber = values[2].ToString();
+                        }
+                        else
+                        {
+                            instanceNumber = dataset.GetSingleValueOrDefault(DicomTag.ImagePositionPatient, instanceUID);
+                        }
+                    }
+
                     bool isImage = (bool)(dataset?.Contains(DicomTag.PixelData));
                     Instance instance = new(instanceUID, series.SeriesUID, instanceNumber, isImage);
                     instances.Add(instance);
@@ -242,7 +254,19 @@ namespace DicomEditor.Services
                 {
                     string instanceUID = dataset.GetSingleValueOrDefault(DicomTag.SOPInstanceUID, string.Empty);
                     string seriesUID = dataset.GetSingleValueOrDefault(DicomTag.SeriesInstanceUID, string.Empty);
-                    string instanceNumber = dataset.GetSingleValueOrDefault(DicomTag.InstanceNumber, instanceUID);
+
+                    if (!dataset.TryGetSingleValue(DicomTag.InstanceNumber, out string instanceNumber) && string.IsNullOrWhiteSpace(instanceNumber))
+                    {
+                        if (dataset.TryGetValues(DicomTag.ImagePositionPatient, out int[] values) && values.Length == 3)
+                        {
+                            instanceNumber = values[2].ToString();
+                        }
+                        else
+                        {
+                            instanceNumber = dataset.GetSingleValueOrDefault(DicomTag.ImagePositionPatient, instanceUID);
+                        }
+                    }
+
                     bool isImage = (bool)(dataset?.Contains(DicomTag.PixelData));
                     Instance instance = new(instanceUID, seriesUID, instanceNumber, isImage);
                     if (!importedSeries.TryGetValue(seriesUID, out Series series))
