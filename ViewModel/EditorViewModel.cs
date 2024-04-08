@@ -208,9 +208,6 @@ namespace DicomEditor.ViewModel
         public ICommand GenerateSeriesUIDCommand { get; }
         public ICommand GenerateInstanceUIDCommand { get; }
 
-        private int id;
-        private static Random rnd = new Random();
-
         public EditorViewModel(IEditorService editorService, IDialogService dialogService)
         {
             _editorService = editorService;
@@ -233,8 +230,6 @@ namespace DicomEditor.ViewModel
 
             LoadedSeriesList = _editorService.GetLoadedSeries();
             LocalExportPath = _editorService.LocalExportPath;
-
-            id = rnd.Next(0, 1000000);
         }
 
         public EditorViewModel()
@@ -615,7 +610,6 @@ namespace DicomEditor.ViewModel
 
         private void HandleAttributesUpdated(object source, EventArgs args)
         {
-            Trace.WriteLine("ViewModel id: " + id);
             if (SelectedInstance != null)
             {
                 string dialogTitle = Validate ? "Validation in progress" : "Creating instance tree";

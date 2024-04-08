@@ -266,21 +266,26 @@
                            Margin="5,5,10,5"
                            Style="{StaticResource TreeListStyle}"
                            SelectedItem="{Binding SelectedAttribute, Mode=OneWayToSource, Converter={StaticResource DatasetModelConverter}}"
-                           ModelChanged="Tree_ModelChanged" MouseDoubleClick="Tree_MouseDoubleClick">
+                           ModelChanged="Tree_ModelChanged">
                 <tree:TreeList.View>
                     <GridView x:Name="GridTest"
                               ColumnHeaderContainerStyle="{StaticResource TreeListGridViewColumnHeaderStyle}">
                         <GridView.Columns>
                             <GridViewColumn Header="Tag"
-                                            CellTemplate="{StaticResource TagCell}" />
+                                            CellTemplate="{StaticResource TagCell}"
+                                            Width="150"/>
                             <GridViewColumn Header="Name"
-                                            CellTemplate="{StaticResource NameCell}" />
+                                            CellTemplate="{StaticResource NameCell}"
+                                            Width="200"/>
                             <GridViewColumn Header="Value Representation"
-                                            CellTemplate="{StaticResource ValueRepresentationCell}" />
+                                            CellTemplate="{StaticResource ValueRepresentationCell}"
+                                            Width="120"/>
                             <GridViewColumn Header="Value"
-                                            CellTemplate="{StaticResource ValueCell}" />
+                                            CellTemplate="{StaticResource ValueCell}"
+                                            Width="220"/>
                             <GridViewColumn Header="Validation Message"
-                                            CellTemplate="{StaticResource ValidationFailedMessageCell}" />
+                                            CellTemplate="{StaticResource ValidationFailedMessageCell}"
+                                            Width="120"/>
                         </GridView.Columns>
                     </GridView>
                 </tree:TreeList.View>

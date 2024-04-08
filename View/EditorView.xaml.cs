@@ -68,19 +68,5 @@ namespace DicomEditor.View
                 node = node.Parent;
             }
         }
-
-        private void Tree_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            // TODO
-            foreach(var column in GridTest.Columns)
-            {
-                if (double.IsNaN(column.Width))
-                {
-                    column.Width = column.ActualWidth;
-                }
-
-                column.Width = double.NaN;
-            }
-        }
     }
 }

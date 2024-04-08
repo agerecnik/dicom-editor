@@ -112,8 +112,6 @@
                     Value="../Assets/Roboto-Light.ttf #Roboto" />
         <Setter Property="FontSize"
                     Value="12" />
-        <Setter Property="Width"
-                    Value="Auto" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
